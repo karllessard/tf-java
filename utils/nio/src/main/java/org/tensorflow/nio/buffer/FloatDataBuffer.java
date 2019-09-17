@@ -20,13 +20,30 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
 
-import org.tensorflow.nio.buffer.impl.ByteDataBufferWindow;
-import org.tensorflow.nio.buffer.impl.FloatDataBufferWindow;
+import java.util.stream.Stream;
+import org.tensorflow.nio.buffer.impl.view.FloatDataBufferView;
 
 /**
  * A {@link DataBuffer} of floats.
  */
 public interface FloatDataBuffer extends DataBuffer<Float> {
+
+  interface FloatMapper extends ValueMapper<Float> {
+
+    void writeFloat(ByteDataBuffer physicalBuffer, float value);
+
+    float readFloat(ByteDataBuffer physicalBuffer);
+
+    @Override
+    default void writeValue(ByteDataBuffer physicalBuffer, Float value) {
+      writeFloat(physicalBuffer, value);
+    }
+
+    @Override
+    default Float readValue(ByteDataBuffer physicalBuffer) {
+      return readFloat(physicalBuffer);
+    }
+  }
 
   /**
    * Relative bulk <i>get</i> method, using float arrays.
@@ -134,6 +151,6 @@ public interface FloatDataBuffer extends DataBuffer<Float> {
 
   @Override
   default FloatDataBuffer slice() {
-    return new FloatDataBufferWindow(duplicate(), position(), limit());
+    return new FloatDataBufferView(duplicate(), position(), limit());
   }
 }

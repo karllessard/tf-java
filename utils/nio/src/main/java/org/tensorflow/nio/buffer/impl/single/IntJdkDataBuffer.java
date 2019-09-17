@@ -123,14 +123,6 @@ public final class IntJdkDataBuffer extends AbstractJdkDataBuffer<Integer, IntDa
   }
 
   @Override
-  public Stream<Integer> stream() {
-    if (!buf.hasArray()) {
-      throw new UnsupportedOperationException("Only buffers backed by an array supports streaming");
-    }
-    return Arrays.stream(buf.array()).boxed();
-  }
-
-  @Override
   public IntDataBuffer duplicate() {
     return new IntJdkDataBuffer(buf.duplicate());
   }

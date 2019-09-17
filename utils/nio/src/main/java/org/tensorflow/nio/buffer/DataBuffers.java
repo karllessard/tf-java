@@ -22,6 +22,16 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
+import org.tensorflow.nio.buffer.DataBuffer.ValueMapper;
+import org.tensorflow.nio.buffer.DoubleDataBuffer.DoubleMapper;
+import org.tensorflow.nio.buffer.FloatDataBuffer.FloatMapper;
+import org.tensorflow.nio.buffer.IntDataBuffer.IntMapper;
+import org.tensorflow.nio.buffer.LongDataBuffer.LongMapper;
+import org.tensorflow.nio.buffer.impl.logical.DoubleLogicalDataBuffer;
+import org.tensorflow.nio.buffer.impl.logical.FloatLogicalDataBuffer;
+import org.tensorflow.nio.buffer.impl.logical.IntLogicalDataBuffer;
+import org.tensorflow.nio.buffer.impl.logical.LogicalDataBuffer;
+import org.tensorflow.nio.buffer.impl.logical.LongLogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.ArrayDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.ByteJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.DoubleJdkDataBuffer;
@@ -88,6 +98,11 @@ public final class DataBuffers {
     return LongJdkDataBuffer.allocate(capacity);
   }
 
+  public static LongDataBuffer ofLongs(long capacity, LongMapper mapper) {
+    ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
+    return LongLogicalDataBuffer.map(physicalBuffer, mapper);
+  }
+
   /**
    * Wraps an array of longs into a data buffer.
    *
@@ -121,6 +136,11 @@ public final class DataBuffers {
       return IntLargeDataBuffer.allocate(capacity);
     }
     return IntJdkDataBuffer.allocate(capacity);
+  }
+
+  public static IntDataBuffer ofIntegers(long capacity, IntMapper mapper) {
+    ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
+    return IntLogicalDataBuffer.map(physicalBuffer, mapper);
   }
 
   /**
@@ -158,6 +178,11 @@ public final class DataBuffers {
     return DoubleJdkDataBuffer.allocate(capacity);
   }
 
+  public static DoubleDataBuffer ofDoubles(long capacity, DoubleMapper mapper) {
+    ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
+    return DoubleLogicalDataBuffer.map(physicalBuffer, mapper);
+  }
+
   /**
    * Wraps an array of doubles into a data buffer.
    *
@@ -191,6 +216,11 @@ public final class DataBuffers {
       return FloatLargeDataBuffer.allocate(capacity);
     }
     return FloatJdkDataBuffer.allocate(capacity);
+  }
+
+  public static FloatDataBuffer ofFloats(long capacity, FloatMapper mapper) {
+    ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
+    return FloatLogicalDataBuffer.map(physicalBuffer, mapper);
   }
 
   /**
@@ -229,6 +259,10 @@ public final class DataBuffers {
     return ArrayDataBuffer.allocate(clazz, capacity);
   }
 
+  public static <T> DataBuffer<T> of(long capacity, ValueMapper<T> mapper) {
+    ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
+    return LogicalDataBuffer.map(physicalBuffer, mapper);
+  }
   /**
    * Wraps an array of objects into a data buffer.
    *

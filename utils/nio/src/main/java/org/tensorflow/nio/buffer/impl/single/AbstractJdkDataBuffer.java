@@ -26,10 +26,10 @@ import org.tensorflow.nio.buffer.DataBuffer;
  * Base class for all JDK-based data buffers.
  * 
  * @param <T> type of elements (or values) stored in this buffer
- * @param <U> the {@link DataBuffer} variant implemented by the subclass extending this base class
+ * @param <B> the {@link DataBuffer} variant implemented by the subclass extending this base class
  */
 @SuppressWarnings("unchecked")
-abstract class AbstractJdkDataBuffer<T, U extends DataBuffer<T>> extends AbstractDataBuffer<T, U> {
+abstract class AbstractJdkDataBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T, B> {
 
   protected static long MAX_CAPACITY = Integer.MAX_VALUE - 10;
 
@@ -44,9 +44,9 @@ abstract class AbstractJdkDataBuffer<T, U extends DataBuffer<T>> extends Abstrac
   }
 
   @Override
-  public U limit(long newLimit) {
+  public B limit(long newLimit) {
     buf().limit((int)newLimit);
-    return (U)this;
+    return (B)this;
   }
 
   @Override
@@ -65,15 +65,15 @@ abstract class AbstractJdkDataBuffer<T, U extends DataBuffer<T>> extends Abstrac
   }
 
   @Override
-  public U position(long newPosition) {
+  public B position(long newPosition) {
     buf().position((int)newPosition);
-    return (U)this;
+    return (B)this;
   }
 
   @Override
-  public U rewind() {
+  public B rewind() {
     buf().rewind();
-    return (U)this;
+    return (B)this;
   }
 
   @Override

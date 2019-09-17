@@ -14,38 +14,31 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.buffer.impl;
+package org.tensorflow.nio.buffer.impl.view;
 
-import java.util.stream.IntStream;
+import org.tensorflow.nio.buffer.FloatDataBuffer;
 
-import org.tensorflow.nio.buffer.IntDataBuffer;
+public class FloatDataBufferView extends DataBufferView<Float, FloatDataBuffer> implements FloatDataBuffer {
 
-public class IntDataBufferWindow extends DataBufferWindow<Integer, IntDataBuffer> implements IntDataBuffer {
-
-    public IntDataBufferWindow(IntDataBuffer delegate, long start, long end) {
+    public FloatDataBufferView(FloatDataBuffer delegate, long start, long end) {
         super(delegate, start, end);
     }
 
-    @Override public IntStream intStream() {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
-
-    @Override public IntDataBuffer get(int[] dst, int offset, int length) {
+    @Override public FloatDataBuffer get(float[] dst, int offset, int length) {
         return delegate.get(dst, offset, length);
     }
 
-    @Override public IntDataBuffer put(int[] src, int offset, int length) {
+    @Override public FloatDataBuffer put(float[] src, int offset, int length) {
         return delegate.put(src, offset, length);
     }
 
     @Override
-    public IntDataBuffer duplicate() {
-        return new IntDataBufferWindow(delegate.duplicate(), start, end);
+    public FloatDataBuffer duplicate() {
+        return new FloatDataBufferView(delegate.duplicate(), start, end);
     }
 
     @Override
-    public IntDataBuffer slice() {
-        return new IntDataBufferWindow(delegate.duplicate(), position(), limit());
+    public FloatDataBuffer slice() {
+        return new FloatDataBufferView(delegate.duplicate(), position(), limit());
     }
 }

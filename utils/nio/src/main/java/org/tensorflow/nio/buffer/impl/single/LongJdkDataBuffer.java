@@ -123,11 +123,6 @@ public final class LongJdkDataBuffer extends AbstractJdkDataBuffer<Long, LongDat
   }
 
   @Override
-  public Stream<Long> stream() {
-    return longStream().boxed();
-  }
-
-  @Override
   public LongDataBuffer duplicate() {
     return new LongJdkDataBuffer(buf.duplicate());
   }

@@ -21,14 +21,31 @@ import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
 import java.util.stream.IntStream;
 
-import org.tensorflow.nio.buffer.impl.ByteDataBufferWindow;
-import org.tensorflow.nio.buffer.impl.IntDataBufferWindow;
+import java.util.stream.Stream;
+import org.tensorflow.nio.buffer.impl.view.IntDataBufferView;
 
 /**
  * A {@link DataBuffer} of integers.
  */
 public interface IntDataBuffer extends DataBuffer<Integer> {
-  
+
+  interface IntMapper extends ValueMapper<Integer> {
+
+    void writeInt(ByteDataBuffer physicalBuffer, int value);
+
+    int readInt(ByteDataBuffer physicalBuffer);
+
+    @Override
+    default void writeValue(ByteDataBuffer physicalBuffer, Integer value) {
+      writeInt(physicalBuffer, value);
+    }
+
+    @Override
+    default Integer readValue(ByteDataBuffer physicalBuffer) {
+      return readInt(physicalBuffer);
+    }
+  }
+
   /**
    * Retrieve values of this buffer as a stream of integers <i>(optional operation)</i>.
    * 
@@ -130,6 +147,11 @@ public interface IntDataBuffer extends DataBuffer<Integer> {
   IntDataBuffer rewind();
 
   @Override
+  default Stream<Integer> stream() {
+    return intStream().boxed();
+  }
+
+  @Override
   IntDataBuffer put(Integer value);
 
   @Override
@@ -143,6 +165,6 @@ public interface IntDataBuffer extends DataBuffer<Integer> {
 
   @Override
   default IntDataBuffer slice() {
-    return new IntDataBufferWindow(duplicate(), position(), limit());
+    return new IntDataBufferView(duplicate(), position(), limit());
   }
 }

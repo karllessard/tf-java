@@ -96,11 +96,6 @@ public final class DoubleJdkDataBuffer extends AbstractJdkDataBuffer<Double, Dou
   }
 
   @Override
-  public Stream<Double> stream() {
-    return doubleStream().boxed();
-  }
-
-  @Override
   public DoubleDataBuffer put(Double value) {
     buf.put(value);
     return this;

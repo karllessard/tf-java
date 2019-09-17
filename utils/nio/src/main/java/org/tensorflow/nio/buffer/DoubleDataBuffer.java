@@ -21,13 +21,30 @@ import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
 import java.util.stream.DoubleStream;
 
-import org.tensorflow.nio.buffer.impl.ByteDataBufferWindow;
-import org.tensorflow.nio.buffer.impl.DoubleDataBufferWindow;
+import java.util.stream.Stream;
+import org.tensorflow.nio.buffer.impl.view.DoubleDataBufferView;
 
 /**
  * A {@link DataBuffer} of doubles.
  */
 public interface DoubleDataBuffer extends DataBuffer<Double> {
+
+  interface DoubleMapper extends ValueMapper<Double> {
+
+    void writeDouble(ByteDataBuffer physicalBuffer, double value);
+
+    double readDouble(ByteDataBuffer physicalBuffer);
+
+    @Override
+    default void writeValue(ByteDataBuffer physicalBuffer, Double value) {
+      writeDouble(physicalBuffer, value);
+    }
+
+    @Override
+    default Double readValue(ByteDataBuffer physicalBuffer) {
+      return readDouble(physicalBuffer);
+    }
+  }
 
   /**
    * Retrieve values of this buffer as a stream of doubles <i>(optional operation)</i>.
@@ -130,6 +147,11 @@ public interface DoubleDataBuffer extends DataBuffer<Double> {
   DoubleDataBuffer rewind();
 
   @Override
+  default Stream<Double> stream() {
+    return doubleStream().boxed();
+  }
+
+  @Override
   DoubleDataBuffer put(Double value);
 
   @Override
@@ -143,6 +165,6 @@ public interface DoubleDataBuffer extends DataBuffer<Double> {
 
   @Override
   default DoubleDataBuffer slice() {
-    return new DoubleDataBufferWindow(duplicate(), position(), limit());
+    return new DoubleDataBufferView(duplicate(), position(), limit());
   }
 }

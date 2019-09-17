@@ -21,13 +21,30 @@ import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
 import java.util.stream.LongStream;
 
-import org.tensorflow.nio.buffer.impl.ByteDataBufferWindow;
-import org.tensorflow.nio.buffer.impl.LongDataBufferWindow;
+import java.util.stream.Stream;
+import org.tensorflow.nio.buffer.impl.view.LongDataBufferView;
 
 /**
  * A {@link DataBuffer} of longs.
  */
 public interface LongDataBuffer extends DataBuffer<Long> {
+
+  interface LongMapper extends ValueMapper<Long> {
+
+    void writeLong(ByteDataBuffer physicalBuffer, long value);
+
+    long readLong(ByteDataBuffer physicalBuffer);
+
+    @Override
+    default void writeValue(ByteDataBuffer physicalBuffer, Long value) {
+      writeLong(physicalBuffer, value);
+    }
+
+    @Override
+    default Long readValue(ByteDataBuffer physicalBuffer) {
+      return readLong(physicalBuffer);
+    }
+  }
 
   /**
    * Retrieve values of this buffer as a stream of longs <i>(optional operation)</i>.
@@ -128,7 +145,12 @@ public interface LongDataBuffer extends DataBuffer<Long> {
 
   @Override
   LongDataBuffer rewind();
-  
+
+  @Override
+  default Stream<Long> stream() {
+    return longStream().boxed();
+  }
+
   @Override
   LongDataBuffer put(Long value);
 
@@ -143,6 +165,6 @@ public interface LongDataBuffer extends DataBuffer<Long> {
 
   @Override
   default LongDataBuffer slice() {
-    return new LongDataBufferWindow(duplicate(), position(), limit());
+    return new LongDataBufferView(duplicate(), position(), limit());
   }
 }

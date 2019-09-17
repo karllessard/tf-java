@@ -14,39 +14,38 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.buffer.impl;
+package org.tensorflow.nio.buffer.impl.view;
 
-import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
-import org.tensorflow.nio.buffer.ByteDataBuffer;
-import org.tensorflow.nio.buffer.DoubleDataBuffer;
+import org.tensorflow.nio.buffer.IntDataBuffer;
 
-public class DoubleDataBufferWindow extends DataBufferWindow<Double, DoubleDataBuffer> implements DoubleDataBuffer {
+public class IntDataBufferView extends DataBufferView<Integer, IntDataBuffer> implements IntDataBuffer {
 
-    public DoubleDataBufferWindow(DoubleDataBuffer delegate, long start, long end) {
+    public IntDataBufferView(IntDataBuffer delegate, long start, long end) {
         super(delegate, start, end);
     }
 
-    @Override public DoubleStream doubleStream() {
+    @Override public IntStream intStream() {
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    @Override public DoubleDataBuffer get(double[] dst, int offset, int length) {
+    @Override public IntDataBuffer get(int[] dst, int offset, int length) {
         return delegate.get(dst, offset, length);
     }
 
-    @Override public DoubleDataBuffer put(double[] src, int offset, int length) {
+    @Override public IntDataBuffer put(int[] src, int offset, int length) {
         return delegate.put(src, offset, length);
     }
 
     @Override
-    public DoubleDataBuffer duplicate() {
-        return new DoubleDataBufferWindow(delegate.duplicate(), start, end);
+    public IntDataBuffer duplicate() {
+        return new IntDataBufferView(delegate.duplicate(), start, end);
     }
 
     @Override
-    public DoubleDataBuffer slice() {
-        return new DoubleDataBufferWindow(delegate.duplicate(), position(), limit());
+    public IntDataBuffer slice() {
+        return new IntDataBufferView(delegate.duplicate(), position(), limit());
     }
 }

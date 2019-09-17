@@ -25,7 +25,7 @@
       <version>${project.version}</version>
       <classifier>darwin-x86_64</classifier>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>tensorflow-core-native</artifactId>
       <version>${project.version}</version>
@@ -36,7 +36,7 @@
       <artifactId>tensorflow-core-native</artifactId>
       <version>${project.version}</version>
       <classifier>windows-x86_64</classifier>
-    </dependency>
+    </dependency-->
   </dependencies>
 
   <build>
@@ -50,7 +50,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Class-Path>tensorflow-core-${project.version}.jar tensorflow-core-native-${project.version}.jar</Class-Path>
+                  <Class-Path>tensorflow-core-${project.version}.jar tensorflow-core-native-${project.version}-darwin-x86_64.jar tensorflow-core-native-${project.version}-linux-x86_64.jar tensorflow-core-native-${project.version}-windows-x86_64.jar</Class-Path>
                 </manifestEntries>
               </archive>
             </configuration>

@@ -14,16 +14,16 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.buffer.impl;
+package org.tensorflow.nio.buffer.impl.view;
 
 import java.util.stream.Stream;
 
 import org.tensorflow.nio.buffer.DataBuffer;
 
 @SuppressWarnings("unchecked")
-public class DataBufferWindow<T, B extends DataBuffer<T>> implements DataBuffer<T> {
+public class DataBufferView<T, B extends DataBuffer<T>> implements DataBuffer<T> {
 
-    public DataBufferWindow(B delegate, long start, long end) {
+    public DataBufferView(B delegate, long start, long end) {
         this.delegate = delegate;
         this.start = start;
         this.end = end;
@@ -108,12 +108,12 @@ public class DataBufferWindow<T, B extends DataBuffer<T>> implements DataBuffer<
 
     @Override
     public DataBuffer<T> duplicate() {
-        return new DataBufferWindow(delegate.duplicate(), start, end);
+        return new DataBufferView(delegate.duplicate(), start, end);
     }
 
     @Override
     public DataBuffer<T> slice() {
-        return new DataBufferWindow(delegate.duplicate(), position(), limit());
+        return new DataBufferView(delegate.duplicate(), position(), limit());
     }
 
     protected final B delegate;

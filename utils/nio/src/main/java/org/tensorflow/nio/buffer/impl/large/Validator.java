@@ -16,10 +16,6 @@
  */
 package org.tensorflow.nio.buffer.impl.large;
 
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
-import java.nio.ReadOnlyBufferException;
-
 import org.tensorflow.nio.buffer.DataBuffer;
 
 class Validator extends org.tensorflow.nio.buffer.impl.Validator {
@@ -39,37 +35,5 @@ class Validator extends org.tensorflow.nio.buffer.impl.Validator {
       }
     }
     return readOnly;
-  }
-
-  static <T> void getArrayArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
-    if (length > buffer.remaining()) {
-      throw new BufferUnderflowException();
-    }
-    arrayCopyArgs(arrayLength, offset, length);
-  }
-
-  static <T> void putArrayArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
-    if (length > buffer.remaining()) {
-      throw new BufferOverflowException();
-    }
-    if (buffer.isReadOnly()) {
-      throw new ReadOnlyBufferException();
-    }
-    arrayCopyArgs(arrayLength, offset, length);
-  }
-
-  private static void arrayCopyArgs(int arrayLength, int offset, int length) {
-    if (offset < 0) {
-      throw new IndexOutOfBoundsException("Offset must be non-negative");
-    }
-    if (offset > arrayLength) {
-      throw new IndexOutOfBoundsException("Offset must be no larger than array length");
-    }
-    if (length < 0) {
-      throw new IndexOutOfBoundsException("Length must be non-negative");
-    }
-    if (length > arrayLength - offset) {
-      throw new IndexOutOfBoundsException("Length must be no larger than array length minus the offset");
-    }
   }
 }

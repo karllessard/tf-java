@@ -26,6 +26,7 @@ public abstract class AbstractDataBuffer<T, B extends DataBuffer<T>> implements 
 
   @Override
   public B put(DataBuffer<T> src) {
+    Validator.putArgs(this, src);
     if (src.remaining() > remaining()) {
       throw new BufferOverflowException();
     }
