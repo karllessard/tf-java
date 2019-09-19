@@ -17,6 +17,11 @@
   <dependencies>
     <dependency>
       <groupId>org.tensorflow</groupId>
+      <artifactId>nio</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.tensorflow</groupId>
       <artifactId>annotation-processor</artifactId>
       <version>${project.version}</version>
       <optional>true</optional> <!-- for compilation only -->

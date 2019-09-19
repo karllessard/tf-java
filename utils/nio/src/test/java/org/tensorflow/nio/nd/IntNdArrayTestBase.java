@@ -38,7 +38,7 @@ public abstract class IntNdArrayTestBase extends NdArrayTestBase<Integer> {
     public void writeAndReadWithPrimitiveArrays() {
         int[] values = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
-        IntNdArray matrix = allocate(Shape.create(3, 4));
+        IntNdArray matrix = allocate(Shape.make(3, 4));
         matrix.write(values);
         assertEquals(Integer.valueOf(0), matrix.get(0, 0));
         assertEquals(Integer.valueOf(3), matrix.get(0, 3));

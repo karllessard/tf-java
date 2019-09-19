@@ -76,13 +76,16 @@ public final class DataBuffers {
   }
 
   /**
-   * Wraps a JDK byte buffer into a data buffer.
+   * Wraps one or more JDK byte buffers into a data buffer.
    *
-   * @param buf buffer to wrap
+   * @param bufs buffer(s) to wrap
    * @return a new buffer
    */
-  public static ByteDataBuffer wrap(ByteBuffer buf) {
-    return ByteJdkDataBuffer.wrap(buf);
+  public static ByteDataBuffer wrap(ByteBuffer... bufs) {
+    if (bufs.length > 1) {
+      return ByteLargeDataBuffer.join(bufs);
+    }
+    return ByteJdkDataBuffer.wrap(bufs[0]);
   }
 
   /**

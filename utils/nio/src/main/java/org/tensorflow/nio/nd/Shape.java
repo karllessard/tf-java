@@ -49,7 +49,7 @@ public final class Shape {
    * Shape batch = Shape.create(-1, 4);
    * }</pre>
    */
-  public static Shape create(long... dimensionSizes) {
+  public static Shape make(long... dimensionSizes) {
     if (dimensionSizes == null) {
       return new Shape(new Dimension[0]);
     }
@@ -66,7 +66,7 @@ public final class Shape {
     }
     return new Shape(dimensions);
   }
-  
+
   public Shape mapTo(Index[] indices) {
     if (indices.length > dimensions.length) {
       throw new ArrayIndexOutOfBoundsException();

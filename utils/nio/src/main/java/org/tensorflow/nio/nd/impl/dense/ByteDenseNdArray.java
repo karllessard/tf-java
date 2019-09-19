@@ -27,6 +27,11 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray> im
     return new ByteDenseNdArray(buffer, shape);
   }
 
+  protected ByteDenseNdArray(ByteDataBuffer buffer, Shape shape) {
+    super(shape);
+    this.buffer = buffer;
+  }
+
   @Override
   protected ByteDataBuffer buffer() {
     return buffer;
@@ -35,11 +40,6 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray> im
   @Override
   protected ByteDenseNdArray allocateSlice(long position, Shape shape) {
     return new ByteDenseNdArray(buffer.withPosition(position).slice(), shape);
-  }
-
-  private ByteDenseNdArray(ByteDataBuffer buffer, Shape shape) {
-    super(shape);
-    this.buffer = buffer;
   }
 
   private ByteDataBuffer buffer;

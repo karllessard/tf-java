@@ -38,7 +38,7 @@ public abstract class LongNdArrayTestBase extends NdArrayTestBase<Long> {
     public void writeAndReadWithPrimitiveArrays() {
         long[] values = new long[] { 0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L };
 
-        LongNdArray matrix = allocate(Shape.create(3, 4));
+        LongNdArray matrix = allocate(Shape.make(3, 4));
         matrix.write(values);
         assertEquals(Long.valueOf(0L), matrix.get(0, 0));
         assertEquals(Long.valueOf(3L), matrix.get(0, 3));
