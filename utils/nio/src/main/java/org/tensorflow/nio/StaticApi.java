@@ -141,7 +141,7 @@ public interface StaticApi {
   }
 
   static Shape shape(long... dimensionSize) {
-    return Shape.create(dimensionSize);
+    return Shape.make(dimensionSize);
   }
 
   static Index at(long index) {

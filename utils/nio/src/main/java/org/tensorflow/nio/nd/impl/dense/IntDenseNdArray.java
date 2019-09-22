@@ -37,7 +37,7 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray> i
     return new IntDenseNdArray(buffer.withPosition(position).slice(), shape);
   }
 
-  private IntDenseNdArray(IntDataBuffer buffer, Shape shape) {
+  protected IntDenseNdArray(IntDataBuffer buffer, Shape shape) {
     super(shape);
     this.buffer = buffer;
   }

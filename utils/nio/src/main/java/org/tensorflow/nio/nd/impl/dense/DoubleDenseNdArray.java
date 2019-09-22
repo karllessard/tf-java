@@ -37,7 +37,7 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
     return new DoubleDenseNdArray(buffer.withPosition(position).slice(), shape);
   }
 
-  private DoubleDenseNdArray(DoubleDataBuffer buffer, Shape shape) {
+  protected DoubleDenseNdArray(DoubleDataBuffer buffer, Shape shape) {
     super(shape);
     this.buffer = buffer;
   }

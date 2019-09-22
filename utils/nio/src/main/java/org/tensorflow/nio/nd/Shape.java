@@ -108,7 +108,7 @@ public final class Shape {
     return new Shape(Arrays.copyOfRange(dimensions, dimensionStart, dimensions.length));
   }
 
-  public long[] toArray() {
+  public long[] asArray() {
     return Arrays.stream(dimensions).mapToLong(Dimension::numElements).toArray();
   }
 

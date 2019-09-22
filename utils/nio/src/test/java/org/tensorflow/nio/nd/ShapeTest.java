@@ -35,7 +35,7 @@ public class ShapeTest {
         assertEquals(4, shape.numElements(1));
         assertEquals(5, shape.numElements(2));
         assertEquals(100, shape.size());
-        assertArrayEquals(new long[] {5, 4, 5}, shape.toArray());
+        assertArrayEquals(new long[] {5, 4, 5}, shape.asArray());
         try {
             shape.numElements(3);
             fail();
@@ -67,7 +67,7 @@ public class ShapeTest {
         assertEquals(2, subshape.numDimensions());
         assertEquals(4, subshape.numElements(0));
         assertEquals(5, subshape.numElements(1));
-        assertArrayEquals(new long[] {4, 5}, subshape.toArray());
+        assertArrayEquals(new long[] {4, 5}, subshape.asArray());
         assertEquals(20, subshape.size());
         try {
             subshape.numElements(2);

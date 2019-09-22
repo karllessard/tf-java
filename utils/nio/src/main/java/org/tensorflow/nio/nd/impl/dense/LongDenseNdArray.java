@@ -37,7 +37,7 @@ public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray> im
     return new LongDenseNdArray(buffer.withPosition(position).slice(), shape);
   }
 
-  private LongDenseNdArray(LongDataBuffer buffer, Shape shape) {
+  protected LongDenseNdArray(LongDataBuffer buffer, Shape shape) {
     super(shape);
     this.buffer = buffer;
   }

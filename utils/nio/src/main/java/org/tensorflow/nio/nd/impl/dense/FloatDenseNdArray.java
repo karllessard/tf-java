@@ -36,7 +36,7 @@ public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
     return new FloatDenseNdArray(buffer.withPosition(position).slice(), shape);
   }
 
-  private FloatDenseNdArray(FloatDataBuffer buffer, Shape shape) {
+  protected FloatDenseNdArray(FloatDataBuffer buffer, Shape shape) {
     super(shape);
     this.buffer = buffer;
   }

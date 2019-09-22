@@ -26,7 +26,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
-import org.tensorflow.EagerSession.NativeReference;
+import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.types.TBool;
 import org.tensorflow.types.TDouble;
 import org.tensorflow.types.TFloat;
@@ -51,7 +51,7 @@ import org.tensorflow.types.family.TType;
  * }
  * }</pre>
  */
-public final class Tensor<T extends TType> implements AutoCloseable {
+public final class Tensor<T> implements AutoCloseable {
 
   /**
    * Creates a Tensor from a Java object.
@@ -315,8 +315,8 @@ public final class Tensor<T extends TType> implements AutoCloseable {
   public T data() {
     if (data == null) {
       // TODO synchronize???
-      org.tensorflow.nio.nd.Shape shape = org.tensorflow.nio.nd.Shape.make(shapeCopy);
-      data = dtype.mapTensor(shape, buffer());  // TODO map more than one buffer!
+      Shape shape = Shape.make(shapeCopy);
+      data = dtype.mapTensor(shape, new ByteBuffer[] { buffer() });  // TODO map more than one buffer!
     }
     return data;
   }

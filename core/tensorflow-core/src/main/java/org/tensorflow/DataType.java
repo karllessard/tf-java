@@ -16,27 +16,25 @@ limitations under the License.
 package org.tensorflow;
 
 import java.nio.ByteBuffer;
-import org.tensorflow.types.family.TType;
+import org.tensorflow.nio.nd.Shape;
 
 /** Represents the type of elements in a {@link Tensor} as an enum. */
-public class DataType<T extends TType> {
+public class DataType<T> {
 
   @FunctionalInterface
   public interface TensorDataMapper<T> {
-    T mapTensor(org.tensorflow.nio.nd.Shape shape, ByteBuffer... tensorBuffers);
+    T mapTensor(ByteBuffer[] tensorBuffer, Shape shape);
   }
 
   private final int value;
-  
   private final int byteSize;
-
   private final TensorDataMapper<T> tensorDataMapper;
 
   /**
    * @param value must match the corresponding TF_* value in the TensorFlow C API.
    * @param byteSize size of an element of this type, in bytes, -1 if unknown
    */
-  protected DataType(int value, int byteSize, TensorDataMapper<T> tensorDataMapper) {
+  public DataType(int value, int byteSize, TensorDataMapper<T> tensorDataMapper) {
     this.value = value;
     this.byteSize = byteSize;
     this.tensorDataMapper = tensorDataMapper;
@@ -54,8 +52,8 @@ public class DataType<T extends TType> {
     return value;
   }
 
-  T mapTensor(org.tensorflow.nio.nd.Shape shape, ByteBuffer... tensorBuffers) {
-    return tensorDataMapper.mapTensor(shape, tensorBuffers);
+  T mapTensor(Shape shape, ByteBuffer[] tensorBuffers) {
+    return tensorDataMapper.mapTensor(tensorBuffers, shape);
   }
 
   static DataType<?> fromC(int c) {

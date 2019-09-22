@@ -16,6 +16,7 @@ limitations under the License.
 package org.tensorflow;
 
 import java.util.Objects;
+import org.tensorflow.nio.nd.Shape;
 
 /**
  * A symbolic handle to a tensor produced by an {@link Operation}.
@@ -40,7 +41,7 @@ public final class Output<T> implements Operand<T> {
 
   /** Returns the (possibly partially known) shape of the tensor referred to by this Output. */
   public Shape shape() {
-    return new Shape(operation.shape(index));
+    return Shape.make(operation.shape(index));
   }
 
   /** Returns the DataType of the tensor referred to by this Output. */

@@ -37,7 +37,7 @@ public class DenseNdArray<T> extends AbstractDenseNdArray<T, NdArray<T>> {
     return new DenseNdArray<>(buffer.withPosition(position).slice(), shape);
   }
 
-  private DenseNdArray(DataBuffer<T> buffer, Shape shape) {
+  protected DenseNdArray(DataBuffer<T> buffer, Shape shape) {
     super(shape);
     this.buffer = buffer;
   }

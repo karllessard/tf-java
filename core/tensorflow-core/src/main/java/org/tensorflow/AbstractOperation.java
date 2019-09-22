@@ -15,6 +15,8 @@ limitations under the License.
 
 package org.tensorflow;
 
+import org.tensorflow.types.family.TType;
+
 /**
  * Base class for {@link Operation} implementations.
  *
@@ -34,7 +36,7 @@ abstract class AbstractOperation implements Operation {
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public <T> Output<T> output(int idx) {
+  public <T extends TType> Output<T> output(int idx) {
     return new Output(this, idx);
   }
 

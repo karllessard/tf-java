@@ -17,6 +17,7 @@ package org.tensorflow;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import org.tensorflow.nio.nd.Shape;
 
 /**
  * An {@link OperationBuilder} for building {@link Operation Operations} that are executed eagerly.

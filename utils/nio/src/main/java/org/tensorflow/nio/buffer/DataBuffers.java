@@ -22,6 +22,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
+import java.util.Arrays;
 import org.tensorflow.nio.buffer.DataBuffer.ValueMapper;
 import org.tensorflow.nio.buffer.DoubleDataBuffer.DoubleMapper;
 import org.tensorflow.nio.buffer.FloatDataBuffer.FloatMapper;
@@ -76,16 +77,13 @@ public final class DataBuffers {
   }
 
   /**
-   * Wraps one or more JDK byte buffers into a data buffer.
+   * Wraps a JDK byte buffers into a data buffer.
    *
-   * @param bufs buffer(s) to wrap
+   * @param buf buffer to wrap
    * @return a new buffer
    */
-  public static ByteDataBuffer wrap(ByteBuffer... bufs) {
-    if (bufs.length > 1) {
-      return ByteLargeDataBuffer.join(bufs);
-    }
-    return ByteJdkDataBuffer.wrap(bufs[0]);
+  public static ByteDataBuffer wrap(ByteBuffer buf) {
+    return ByteJdkDataBuffer.wrap(buf);
   }
 
   /**
