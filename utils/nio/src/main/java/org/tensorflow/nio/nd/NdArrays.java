@@ -16,6 +16,7 @@
  */
 package org.tensorflow.nio.nd;
 
+import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
@@ -23,6 +24,7 @@ import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.buffer.LongDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.BooleanDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.ByteDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.DenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.DoubleDenseNdArray;
@@ -90,6 +92,14 @@ public final class NdArrays {
 
   public static DoubleNdArray wrap(DoubleDataBuffer buffer, Shape shape) {
     return DoubleDenseNdArray.wrap(buffer, shape);
+  }
+
+  public static BooleanNdArray ofBooleans(Shape shape) {
+    return wrap(DataBuffers.ofBooleans(shape.size()), shape);
+  }
+
+  public static BooleanNdArray wrap(BooleanDataBuffer buffer, Shape shape) {
+    return BooleanDenseNdArray.wrap(buffer, shape);
   }
 
   public static <T> NdArray<T> of(Class<T> clazz, Shape shape) {

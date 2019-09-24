@@ -17,6 +17,7 @@
 package org.tensorflow.nio.nd.impl.dense;
 
 import org.tensorflow.nio.buffer.ByteDataBuffer;
+import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.Shape;
 
@@ -25,6 +26,18 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray> im
   public static ByteNdArray wrap(ByteDataBuffer buffer, Shape shape) {
     Validator.denseShape(shape);
     return new ByteDenseNdArray(buffer, shape);
+  }
+
+  @Override
+  public ByteNdArray read(byte[] dst, int offset) {
+    Validator.getArrayArgs(this, dst.length, offset);
+    return read(DataBuffers.wrap(dst, false).position(offset));
+  }
+
+  @Override
+  public ByteNdArray write(byte[] src, int offset) {
+    Validator.putArrayArgs(this, src.length, offset);
+    return write(DataBuffers.wrap(src, true).position(offset));
   }
 
   protected ByteDenseNdArray(ByteDataBuffer buffer, Shape shape) {

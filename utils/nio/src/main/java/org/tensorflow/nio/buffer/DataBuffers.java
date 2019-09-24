@@ -23,17 +23,21 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
 import java.util.Arrays;
+import org.tensorflow.nio.buffer.BooleanDataBuffer.BooleanMapper;
 import org.tensorflow.nio.buffer.DataBuffer.ValueMapper;
 import org.tensorflow.nio.buffer.DoubleDataBuffer.DoubleMapper;
 import org.tensorflow.nio.buffer.FloatDataBuffer.FloatMapper;
 import org.tensorflow.nio.buffer.IntDataBuffer.IntMapper;
 import org.tensorflow.nio.buffer.LongDataBuffer.LongMapper;
+import org.tensorflow.nio.buffer.impl.large.BooleanLargeDataBuffer;
+import org.tensorflow.nio.buffer.impl.logical.BooleanLogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.logical.DoubleLogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.logical.FloatLogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.logical.IntLogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.logical.LogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.logical.LongLogicalDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.ArrayDataBuffer;
+import org.tensorflow.nio.buffer.impl.single.BitSetDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.ByteJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.DoubleJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.FloatJdkDataBuffer;
@@ -244,6 +248,24 @@ public final class DataBuffers {
    */
   public static FloatDataBuffer wrap(FloatBuffer buf) {
     return FloatJdkDataBuffer.wrap(buf);
+  }
+
+  /**
+   * Creates a buffer of booleans that can store up to `capacity` values
+   *
+   * @param capacity capacity of the buffer to allocate
+   * @return a new buffer
+   */
+  public static BooleanDataBuffer ofBooleans(long capacity) {
+    if (capacity > BitSetDataBuffer.MAX_CAPACITY) {
+      return BooleanLargeDataBuffer.allocate(capacity);
+    }
+    return BitSetDataBuffer.allocate(capacity);
+  }
+
+  public static BooleanDataBuffer ofBooleans(long capacity, BooleanMapper mapper) {
+    ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
+    return BooleanLogicalDataBuffer.map(physicalBuffer, mapper);
   }
 
   /**

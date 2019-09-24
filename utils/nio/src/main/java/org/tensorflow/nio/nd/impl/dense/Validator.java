@@ -16,13 +16,41 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 
-class Validator {
+final class Validator {
 
-  public static void denseShape(Shape shape) {
+  static void denseShape(Shape shape) {
     if (shape.hasUnknownDimension()) {
       throw new IllegalArgumentException("Dense arrays cannot have unknown dimension(s)");
     }
   }
+
+  static void getArrayArgs(NdArray<?> ndArray, int arrayLength, int arrayOffset) {
+    copyArrayArgs(arrayLength, arrayOffset);
+    if (arrayLength - arrayOffset < ndArray.size()) {
+      throw new BufferOverflowException();
+    }
+  }
+
+  static void putArrayArgs(NdArray<?> ndArray, int arrayLength, int arrayOffset) {
+    copyArrayArgs(arrayLength, arrayOffset);
+    if (arrayLength - arrayOffset < ndArray.size()) {
+      throw new BufferUnderflowException();
+    }
+  }
+
+  private static void copyArrayArgs(int arrayLength, int arrayOffset) {
+    if (arrayOffset < 0) {
+      throw new IndexOutOfBoundsException("Offset must be non-negative");
+    }
+    if (arrayOffset > arrayLength) {
+      throw new IndexOutOfBoundsException("Offset must be no larger than array length");
+    }
+  }
+
+  private Validator() {}
 }

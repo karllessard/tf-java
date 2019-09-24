@@ -21,12 +21,12 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.nd.index.Index;
 
 /**
- * An {@link NdArray} of integers.
+ * An {@link NdArray} of booleans.
  */
-public interface IntNdArray extends NdArray<Integer> {
+public interface BooleanNdArray extends NdArray<Boolean> {
 
   /**
-   * Reads the content of this N-dimensional array into the destination int array.
+   * Reads the content of this N-dimensional array into the destination boolean array.
    *
    * <p>The size of the destination array must be equal or greater to the {@link #size()} of this array,
    * or an exception is thrown. After the copy, content of the both arrays can be altered
@@ -36,27 +36,27 @@ public interface IntNdArray extends NdArray<Integer> {
    * @return this array
    * @throws java.nio.BufferOverflowException if the destination array cannot hold the content of this array
    */
-  default IntNdArray read(int[] dst) {
+  default BooleanNdArray read(boolean[] dst) {
     return read(dst, 0);
   }
 
   /**
-   * Reads the content of this N-dimensional array into the destination int array.
+   * Reads the content of this N-dimensional array into the destination boolean array.
    *
    * <p>{@code dst.length - offset} must be equal or greater to the {@link #size()} of this array,
    * or an exception is thrown. After the copy, content of the both arrays can be altered
    * independently, without affecting each other.
    *
    * @param dst the destination array
-   * @param offset the index of the first integer to write in the destination array
+   * @param offset the index of the first boolean to write in the destination array
    * @return this array
    * @throws java.nio.BufferOverflowException if the destination array cannot hold the content of this array
    * @throws IndexOutOfBoundsException if offset is greater than dst length or is negative
    */
-  IntNdArray read(int[] dst, int offset);
+  BooleanNdArray read(boolean[] dst, int offset);
 
   /**
-   * Writes the content of this N-dimensional array from the source int array.
+   * Writes the content of this N-dimensional array from the source boolean array.
    *
    * <p>The size of the source array must be equal or greater to the {@link #size()} of this array,
    * or an exception is thrown. After the copy, content of the both arrays can be altered
@@ -66,58 +66,58 @@ public interface IntNdArray extends NdArray<Integer> {
    * @return this array
    * @throws java.nio.BufferUnderflowException if the size of the source array is less than the size of this array
    */
-  default IntNdArray write(int[] src) {
+  default BooleanNdArray write(boolean[] src) {
     return write(src, 0);
   }
 
   /**
-   * Writes the content of this N-dimensional array from the source int array.
+   * Writes the content of this N-dimensional array from the source boolean array.
    *
    * <p>{@code src.length - offset} must be equal or greater to the {@link #size()} of this array,
    * or an exception is thrown. After the copy, content of the both arrays can be altered
    * independently, without affecting each other.
    *
    * @param src the source array
-   * @param offset the index of the first integer to read from the source array
+   * @param offset the index of the first boolean to read from the source array
    * @return this array
    * @throws java.nio.BufferUnderflowException if the size of the source array is less than the size of this array
    * @throws IndexOutOfBoundsException if offset is greater than src length or is negative
    */
-  IntNdArray write(int[] src, int offset);
+  BooleanNdArray write(boolean[] src, int offset);
 
   @Override
-  IntNdArray at(long... indices);
+  BooleanNdArray at(long... indices);
   
   @Override
-  IntNdArray slice(Index... indices);
+  BooleanNdArray slice(Index... indices);
 
   @Override
-  Iterable<IntNdArray> childElements();
+  Iterable<BooleanNdArray> childElements();
 
   @Override
-  IntNdArray set(Integer value, long... indices);
+  BooleanNdArray set(Boolean value, long... indices);
 
   @Override
-  IntNdArray copyTo(NdArray<Integer> dst);
+  BooleanNdArray copyTo(NdArray<Boolean> dst);
 
   @Override
-  IntNdArray copyFrom(NdArray<Integer> src);
+  BooleanNdArray copyFrom(NdArray<Boolean> src);
 
   @Override
-  IntNdArray read(DataBuffer<Integer> dst);
+  BooleanNdArray read(DataBuffer<Boolean> dst);
 
   @Override
-  IntNdArray write(DataBuffer<Integer> src);
+  BooleanNdArray write(DataBuffer<Boolean> src);
 
   @Override
-  IntNdArray read(Integer[] dst);
+  BooleanNdArray read(Boolean[] dst);
 
   @Override
-  IntNdArray read(Integer[] dst, int offset);
+  BooleanNdArray read(Boolean[] dst, int offset);
 
   @Override
-  IntNdArray write(Integer[] src);
+  BooleanNdArray write(Boolean[] src);
 
   @Override
-  IntNdArray write(Integer[] src, int offset);
+  BooleanNdArray write(Boolean[] src, int offset);
 }

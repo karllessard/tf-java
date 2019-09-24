@@ -51,7 +51,7 @@ public final class Shape {
    */
   public static Shape make(long... dimensionSizes) {
     if (dimensionSizes == null) {
-      return new Shape(new Dimension[0]);
+      return scalar();
     }
     Dimension[] dimensions = new Dimension[dimensionSizes.length];
 
@@ -65,6 +65,10 @@ public final class Shape {
       positionStep *= dimensions[i].numElements();
     }
     return new Shape(dimensions);
+  }
+
+  public static Shape scalar() {
+    return new Shape(new Dimension[0]);
   }
 
   public Shape mapTo(Index[] indices) {

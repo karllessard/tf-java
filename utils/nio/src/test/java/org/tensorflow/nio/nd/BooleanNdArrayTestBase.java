@@ -16,59 +16,53 @@
  */
 package org.tensorflow.nio.nd;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
-
 import org.junit.Test;
 
-public abstract class ByteNdArrayTestBase extends NdArrayTestBase<Byte> {
+public abstract class BooleanNdArrayTestBase extends NdArrayTestBase<Boolean> {
 
     @Override
-    protected abstract ByteNdArray allocate(Shape shape);
+    protected abstract BooleanNdArray allocate(Shape shape);
 
     @Override
-    protected Byte valueOf(Long val) {
-        return val.byteValue();
+    protected Boolean valueOf(Long val) {
+        return val > 0;
     }
 
     @Test
     public void writeAndReadWithPrimitiveArrays() {
-        byte[] values = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+        boolean[] values = new boolean[] { true, true, false, false, true, true, false, true, false, false, true, false, true, false, true, true };
 
-        ByteNdArray matrix = allocate(Shape.make(3, 4));
+        BooleanNdArray matrix = allocate(Shape.make(3, 4));
         matrix.write(values);
-        assertEquals(valueOf(0L), matrix.get(0, 0));
-        assertEquals(valueOf(3L), matrix.get(0, 3));
-        assertEquals(valueOf(4L), matrix.get(1, 0));
-        assertEquals(valueOf(11L), matrix.get(2, 3));
+        assertTrue(matrix.get(0, 0));
+        assertFalse(matrix.get(0, 3));
+        assertTrue(matrix.get(1, 0));
+        assertFalse(matrix.get(2, 3));
 
         matrix.write(values, 4);
-        assertEquals(valueOf(4L), matrix.get(0, 0));
-        assertEquals(valueOf(7L), matrix.get(0, 3));
-        assertEquals(valueOf(8L), matrix.get(1, 0));
-        assertEquals(valueOf(15L), matrix.get(2, 3));
+        assertTrue(matrix.get(0, 0));
+        assertTrue(matrix.get(0, 3));
+        assertFalse(matrix.get(1, 0));
+        assertTrue(matrix.get(2, 3));
 
-        matrix.set((byte)100, 1, 0);
+        matrix.set(true, 1, 0);
         matrix.read(values, 2);
-        assertEquals(4, values[2]);
-        assertEquals(7, values[5]);
-        assertEquals(100, values[6]);
-        assertEquals(15, values[13]);
-        assertEquals(15, values[15]);
+        assertTrue(values[2]);
+        assertTrue(values[5]);
 
         matrix.read(values);
-        assertEquals(4, values[0]);
-        assertEquals(7, values[3]);
-        assertEquals(100, values[4]);
-        assertEquals(15, values[11]);
-        assertEquals(15, values[13]);
-        assertEquals(15, values[15]);
+        assertTrue(values[0]);
+        assertTrue(values[3]);
 
         try {
-            matrix.write(new byte[] { 1, 2, 3, 4 });
+            matrix.write(new boolean[] { true, true, true, true });
             fail();
         } catch (BufferUnderflowException e) {
             // as expected
@@ -92,7 +86,7 @@ public abstract class ByteNdArrayTestBase extends NdArrayTestBase<Byte> {
             // as expected
         }
         try {
-            matrix.read(new byte[4]);
+            matrix.read(new boolean[4]);
             fail();
         } catch (BufferOverflowException e) {
             // as expected

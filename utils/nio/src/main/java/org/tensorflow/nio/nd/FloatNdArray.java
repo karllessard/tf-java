@@ -37,7 +37,7 @@ public interface FloatNdArray extends NdArray<Float> {
    * @throws java.nio.BufferOverflowException if the destination array cannot hold the content of this array
    */
   default FloatNdArray read(float[] dst) {
-    return read(DataBuffers.wrap(dst, false));
+    return read(dst, 0);
   }
 
   /**
@@ -51,11 +51,9 @@ public interface FloatNdArray extends NdArray<Float> {
    * @param offset the index of the first float to write in the destination array
    * @return this array
    * @throws java.nio.BufferOverflowException if the destination array cannot hold the content of this array
-   * @throws IllegalArgumentException if offset is greater than dst length or is negative
+   * @throws IndexOutOfBoundsException if offset is greater than dst length or is negative
    */
-  default FloatNdArray read(float[] dst, int offset) {
-    return read(DataBuffers.wrap(dst, false).position(offset));
-  }
+  FloatNdArray read(float[] dst, int offset);
 
   /**
    * Writes the content of this N-dimensional array from the source float array.
@@ -69,7 +67,7 @@ public interface FloatNdArray extends NdArray<Float> {
    * @throws java.nio.BufferUnderflowException if the size of the source array is less than the size of this array
    */
   default FloatNdArray write(float[] src) {
-    return write(DataBuffers.wrap(src, false));
+    return write(src, 0);
   }
 
   /**
@@ -83,11 +81,9 @@ public interface FloatNdArray extends NdArray<Float> {
    * @param offset the index of the first float to read from the source array
    * @return this array
    * @throws java.nio.BufferUnderflowException if the size of the source array is less than the size of this array
-   * @throws IllegalArgumentException if offset is greater than src length or is negative
+   * @throws IndexOutOfBoundsException if offset is greater than src length or is negative
    */
-  default FloatNdArray write(float[] src, int offset) {
-    return write(DataBuffers.wrap(src, false).position(offset));
-  }
+  FloatNdArray write(float[] src, int offset);
 
   @Override
   FloatNdArray at(long... indices);

@@ -79,7 +79,9 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
       throw new BufferOverflowException();
     }
     if (isBulkCopyAvailable()) {
-      BulkDataTransfer.create(this).execute((buffer, size) -> dst.put(buffer.limit(size)));
+      BulkDataTransfer.create(this).execute((t, e) ->
+          dst.put(e.buffer().withLimit(t.bulkCopySize()))
+      );
     } else {
       slowRead(dst);
     }
@@ -92,7 +94,9 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
       throw new BufferUnderflowException();
     }
     if (isBulkCopyAvailable()) {
-      BulkDataTransfer.create(this).execute((buffer, size) -> buffer.put(src.limit(src.position() + size)));
+      BulkDataTransfer.create(this).execute((t, e) ->
+          e.buffer().put(src.limit(src.position() + t.bulkCopySize())).rewind()
+      );
     } else {
       slowWrite(src);
     }
@@ -106,6 +110,16 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
   protected abstract DataBuffer<T> buffer();
 
   protected abstract U allocateSlice(long position, Shape shape);
+
+  /**
+   * Check if we copy this array data in bulk. Bulk copy is only possible for array of 1-dimension or more and that
+   * the last dimension is not segmented (therefore linear in memory).
+   *
+   * @return true if bulk copy is possible
+   */
+  protected boolean isBulkCopyAvailable() {
+    return shape().numDimensions() > 0 && !shape().dimension(shape().numDimensions() - 1).isSegmented();
+  }
 
   private long position(long[] indices, boolean scalar) {
     if (indices.length > shape().numDimensions()) {
@@ -123,15 +137,5 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
       throw new IllegalRankException("Not a scalar value");
     }
     return position;
-  }
-
-  /**
-   * Check if we copy this array data in bulk. Bulk copy is only possible for array of 1-dimension or more and that
-   * the last dimension is not segmented (therefore linear in memory).
-   *
-   * @return true if bulk copy is possible
-   */
-  private boolean isBulkCopyAvailable() {
-    return shape().numDimensions() > 0 && !shape().dimension(shape().numDimensions() - 1).isSegmented();
   }
 }

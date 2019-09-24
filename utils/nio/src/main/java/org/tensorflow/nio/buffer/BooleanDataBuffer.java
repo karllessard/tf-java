@@ -19,43 +19,35 @@ package org.tensorflow.nio.buffer;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
-import java.util.stream.LongStream;
-
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.tensorflow.nio.buffer.impl.view.LongDataBufferView;
+import org.tensorflow.nio.buffer.impl.view.BooleanDataBufferView;
+import org.tensorflow.nio.buffer.impl.view.IntDataBufferView;
 
 /**
- * A {@link DataBuffer} of longs.
+ * A {@link DataBuffer} of booleans.
  */
-public interface LongDataBuffer extends DataBuffer<Long> {
+public interface BooleanDataBuffer extends DataBuffer<Boolean> {
 
-  interface LongMapper extends ValueMapper<Long> {
+  interface BooleanMapper extends ValueMapper<Boolean> {
 
-    void writeLong(ByteDataBuffer physicalBuffer, long value);
+    void writeBoolean(ByteDataBuffer physicalBuffer, boolean value);
 
-    long readLong(ByteDataBuffer physicalBuffer);
+    boolean readBoolean(ByteDataBuffer physicalBuffer);
 
     @Override
-    default void writeValue(ByteDataBuffer physicalBuffer, Long value) {
-      writeLong(physicalBuffer, value);
+    default void writeValue(ByteDataBuffer physicalBuffer, Boolean value) {
+      writeBoolean(physicalBuffer, value);
     }
 
     @Override
-    default Long readValue(ByteDataBuffer physicalBuffer) {
-      return readLong(physicalBuffer);
+    default Boolean readValue(ByteDataBuffer physicalBuffer) {
+      return readBoolean(physicalBuffer);
     }
   }
 
   /**
-   * Retrieve values of this buffer as a stream of longs <i>(optional operation)</i>.
-   * 
-   * @return values, as a stream
-   * @throws UnsupportedOperationException if streaming is not supported by this buffer
-   */
-  LongStream longStream();
-  
-  /**
-   * Relative bulk <i>get</i> method, using long arrays.
+   * Relative bulk <i>get</i> method, using boolean arrays.
    * <p>
    * This method transfers values from this buffer into the given destination array. If there are 
    * fewer values remaining in the buffer than are required to satisfy the request, that is, if 
@@ -68,10 +60,10 @@ public interface LongDataBuffer extends DataBuffer<Long> {
    * @return this buffer
    * @throws BufferUnderflowException if there are fewer than length values remaining in this buffer
    */
-  default LongDataBuffer get(long[] dst) { return get(dst, 0, dst.length); }
+  default BooleanDataBuffer get(boolean[] dst) { return get(dst, 0, dst.length); }
   
   /**
-   * Relative bulk <i>get</i> method, using long arrays.
+   * Relative bulk <i>get</i> method, using boolean arrays.
    * <p>
    * This method transfers values from this buffer into the given destination array. If there are 
    * fewer values remaining in the buffer than are required to satisfy the request, that is, if 
@@ -87,10 +79,10 @@ public interface LongDataBuffer extends DataBuffer<Long> {
    * @throws BufferUnderflowException if there are fewer than length values remaining in this buffer
    * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do not hold
    */
-  LongDataBuffer get(long[] dst, int offset, int length);
+  BooleanDataBuffer get(boolean[] dst, int offset, int length);
 
   /**
-   * Relative bulk <i>put</i> method, using long arrays.
+   * Relative bulk <i>put</i> method, using boolean arrays.
    * <p>
    * This method transfers the values in the given source array into this buffer. If there are 
    * more values in the source array than in this buffer, that is, if {@code src.length > remaining()}, 
@@ -104,10 +96,10 @@ public interface LongDataBuffer extends DataBuffer<Long> {
    * @throws BufferOverflowException if there is insufficient space in this buffer for the remaining values in the source array
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
-  default LongDataBuffer put(long[] src) { return put(src, 0, src.length); }
+  default BooleanDataBuffer put(boolean[] src) { return put(src, 0, src.length); }
   
   /**
-   * Relative bulk <i>put</i> method, using long arrays.
+   * Relative bulk <i>put</i> method, using boolean arrays.
    * <p>
    * This method transfers the values in the given source array into this buffer. If there are 
    * more values in the source array than in this buffer, that is, if {@code length > remaining()}, 
@@ -125,46 +117,41 @@ public interface LongDataBuffer extends DataBuffer<Long> {
    * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do not hold
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
-  LongDataBuffer put(long[] src, int offset, int length);
+  BooleanDataBuffer put(boolean[] src, int offset, int length);
+  
+  @Override
+  BooleanDataBuffer limit(long newLimit);
 
   @Override
-  LongDataBuffer limit(long newLimit);
-
-  @Override
-  default LongDataBuffer withLimit(long limit) {
+  default BooleanDataBuffer withLimit(long limit) {
     return duplicate().limit(limit);
   }
 
   @Override
-  LongDataBuffer position(long newPosition);
+  BooleanDataBuffer position(long newPosition);
 
   @Override
-  default LongDataBuffer withPosition(long position) {
+  default BooleanDataBuffer withPosition(long position) {
     return duplicate().position(position);
   }
 
   @Override
-  LongDataBuffer rewind();
+  BooleanDataBuffer rewind();
 
   @Override
-  default Stream<Long> stream() {
-    return longStream().boxed();
-  }
+  BooleanDataBuffer put(Boolean value);
 
   @Override
-  LongDataBuffer put(Long value);
+  BooleanDataBuffer put(long index, Boolean value);
 
   @Override
-  LongDataBuffer put(long index, Long value);
-
-  @Override
-  LongDataBuffer put(DataBuffer<Long> src);
+  BooleanDataBuffer put(DataBuffer<Boolean> src);
   
   @Override
-  LongDataBuffer duplicate();
+  BooleanDataBuffer duplicate();
 
   @Override
-  default LongDataBuffer slice() {
-    return new LongDataBufferView(duplicate(), position(), limit());
+  default BooleanDataBuffer slice() {
+    return new BooleanDataBufferView(duplicate(), position(), limit());
   }
 }

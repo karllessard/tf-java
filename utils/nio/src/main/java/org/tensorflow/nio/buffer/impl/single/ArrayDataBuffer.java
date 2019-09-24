@@ -24,10 +24,9 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class ArrayDataBuffer<T> extends AbstractDataBuffer<T, DataBuffer<T>> {
+public class ArrayDataBuffer<T> extends AbstractSingleDataBuffer<T, DataBuffer<T>> {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
   
@@ -41,11 +40,11 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T, DataBuffer<T>> {
     }
     @SuppressWarnings("unchecked")
     T[] array = (T[])Array.newInstance(clazz, (int)capacity);
-    return new ArrayDataBuffer<T>(array, false);
+    return new ArrayDataBuffer<>(array, false);
   }
 
   public static <T> DataBuffer<T> wrap(T[] array, boolean readOnly) {
-    return new ArrayDataBuffer<T>(array, readOnly);
+    return new ArrayDataBuffer<>(array, readOnly);
   }
 
   @Override
@@ -54,59 +53,11 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T, DataBuffer<T>> {
   }
 
   @Override
-  public long limit() {
-    return limitIndex;
-  }
-
-  @Override
-  public DataBuffer<T> limit(long newLimit) {
-    Validator.newLimit(this, newLimit);
-    limitIndex = (int)newLimit;
-    if (positionIndex > limitIndex) {
-      positionIndex = limitIndex;
-    }
-    return this;
-  }
-
-  @Override
-  public boolean hasRemaining() {
-    return positionIndex < limitIndex;
-  }
-
-  @Override
-  public long remaining() {
-    return limitIndex - positionIndex;
-  }
-
-  @Override
-  public long position() {
-    return positionIndex;
-  }
-
-  @Override
-  public DataBuffer<T> position(long newPosition) {
-    Validator.newPosition(this, newPosition);
-    positionIndex = (int)newPosition;
-    return this;
-  }
-
-  @Override
-  public DataBuffer<T> rewind() {
-    positionIndex = 0;
-    return this;
-  }
-
-  @Override
-  public boolean isReadOnly() {
-    return readOnly;
-  }
-
-  @Override
   public T get() {
     if (!hasRemaining()) {
       throw new BufferUnderflowException();
     }
-    return values[positionIndex++];
+    return values[nextPosition()];
   }
 
   @Override
@@ -128,7 +79,7 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T, DataBuffer<T>> {
     if (isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
-    values[positionIndex++] = value;
+    values[nextPosition()] = value;
     return this;
   }
 
@@ -145,9 +96,9 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T, DataBuffer<T>> {
     if (src instanceof ArrayDataBuffer) {
       ArrayDataBuffer<T> srcArrayBuffer = (ArrayDataBuffer<T>)src;
       int length = (int)src.remaining();
-      System.arraycopy(srcArrayBuffer.values, srcArrayBuffer.positionIndex, values, positionIndex, length);
-      srcArrayBuffer.positionIndex += length;
-      positionIndex += length;
+      System.arraycopy(srcArrayBuffer.values, (int) srcArrayBuffer.position(), values, (int) position(), length);
+      srcArrayBuffer.movePosition(length);
+      movePosition(length);
       return this;
     }
     return super.put(src);
@@ -155,22 +106,17 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T, DataBuffer<T>> {
 
   @Override
   public DataBuffer<T> duplicate() {
-    return new ArrayDataBuffer<T>(values, readOnly, positionIndex, limitIndex);
+    return new ArrayDataBuffer<>(values, isReadOnly(), (int) position(), (int) limit());
   }
 
   private ArrayDataBuffer(T[] values, boolean readOnly) {
     this(values, readOnly, 0, values.length);
   }
 
-  private ArrayDataBuffer(T[] values, boolean readOnly, int positionIndex, int limitIndex) {
+  private ArrayDataBuffer(T[] values, boolean readOnly, long position, long limit) {
+    super(readOnly, position,  limit);
     this.values = values;  
-    this.readOnly = readOnly;
-    this.positionIndex = positionIndex;
-    this.limitIndex = limitIndex;
   }
  
   private final T[] values;
-  private final boolean readOnly;
-  private int positionIndex;
-  private int limitIndex;
 }

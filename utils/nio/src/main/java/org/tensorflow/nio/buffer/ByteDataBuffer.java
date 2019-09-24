@@ -95,7 +95,7 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
    * @param length the number of values to be read from the given array; must be non-negative and no larger than {@code src.length - offset}
    * @return this buffer
    * @throws BufferOverflowException if there is insufficient space in this buffer for the remaining values in the source array
-   * @throws IllegalArgumentException if the preconditions on the offset and length parameters do not hold
+   * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do not hold
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
   ByteDataBuffer put(byte[] src, int offset, int length);

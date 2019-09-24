@@ -16,17 +16,12 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
-import org.tensorflow.nio.buffer.DataBuffer;
+import java.util.function.BiConsumer;
 import org.tensorflow.nio.nd.impl.dimension.Dimension;
 
-class BulkDataTransfer<T> {
+class BulkDataTransfer<R extends AbstractDenseNdArray<?, ?>> {
 
-  @FunctionalInterface
-  interface BulkCopy<T> {
-    void invoke(DataBuffer<T> arrayBuffer, long bulkCopySize);
-  }
-  
-  static <T> BulkDataTransfer<T> create(AbstractDenseNdArray<T, ?> array) {
+  static <R extends AbstractDenseNdArray<?, ?>> BulkDataTransfer<R> create(R array) {
     int bulkCopyDimensionIdx = -1;
     long bulkCopySize = 1L;
 
@@ -46,25 +41,35 @@ class BulkDataTransfer<T> {
     return new BulkDataTransfer<>(array, bulkCopyDimensionIdx, bulkCopySize);
   }
   
-  void execute(BulkCopy<T> bulkCopy) {
+  void execute(BiConsumer<BulkDataTransfer<R>, R> bulkCopy) {
     execute(bulkCopy, array, 0);
   }
 
-  private final AbstractDenseNdArray<T, ?> array;  // The array we want to copy in bulk
+  long bulkCopySize() {
+    return bulkCopySize;
+  }
+
+  long totalCopied() {
+    return totalCopied;
+  }
+
+  private final R array;  // The array we want to copy in bulk
   private final int bulkCopyDimensionIdx;  // The first dimension of this array that can be copied in bulk
   private final long bulkCopySize;  // The number of values that can be copied in a single bulk copy
+  private long totalCopied = 0L; // The number of values copied to far
 
-  private BulkDataTransfer(AbstractDenseNdArray<T, ?> array, int bulkCopyDimensionIdx, long bulkCopySize) {
+  private BulkDataTransfer(R array, int bulkCopyDimensionIdx, long bulkCopySize) {
     this.array = array;
     this.bulkCopyDimensionIdx = bulkCopyDimensionIdx;
     this.bulkCopySize = bulkCopySize;
   }
 
-  private void execute(BulkCopy<T> bulkCopy, AbstractDenseNdArray<T, ?> element, int dimensionIdx) {
+  private void execute(BiConsumer<BulkDataTransfer<R>, R> bulkCopy, R element, int dimensionIdx) {
     if (dimensionIdx == bulkCopyDimensionIdx) {
-      bulkCopy.invoke(element.buffer().duplicate(), bulkCopySize);
+      bulkCopy.accept(this, element);
+      this.totalCopied += bulkCopySize;
     } else {
-      element.childElements().forEach(e -> execute(bulkCopy, (AbstractDenseNdArray<T, ?>)e, dimensionIdx + 1));
+      element.childElements().forEach(e -> execute(bulkCopy, (R) e, dimensionIdx + 1));
     }
   }
 }

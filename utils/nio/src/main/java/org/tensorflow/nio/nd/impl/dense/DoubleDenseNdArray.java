@@ -16,7 +16,9 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
+import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
+import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.Shape;
 
@@ -25,6 +27,18 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   public static DoubleNdArray wrap(DoubleDataBuffer buffer, Shape shape) {
     Validator.denseShape(shape);
     return new DoubleDenseNdArray(buffer, shape);
+  }
+
+  @Override
+  public DoubleNdArray read(double[] dst, int offset) {
+    Validator.getArrayArgs(this, dst.length, offset);
+    return read(DataBuffers.wrap(dst, false).position(offset));
+  }
+
+  @Override
+  public DoubleNdArray write(double[] src, int offset) {
+    Validator.putArrayArgs(this, src.length, offset);
+    return write(DataBuffers.wrap(src, true).position(offset));
   }
 
   @Override

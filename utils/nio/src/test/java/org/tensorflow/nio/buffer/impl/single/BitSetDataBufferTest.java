@@ -16,23 +16,25 @@
  */
 package org.tensorflow.nio.buffer.impl.single;
 
+import org.tensorflow.nio.buffer.BooleanDataBuffer;
+import org.tensorflow.nio.buffer.BooleanDataBufferTestBase;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBufferTestBase;
 
-public class BooleanArrayDataBufferTest extends DataBufferTestBase<Boolean> {
+public class BitSetDataBufferTest extends BooleanDataBufferTestBase {
 
   @Override
   protected long maxCapacity() {
-    return ArrayDataBuffer.MAX_CAPACITY;
+    return BitSetDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected DataBuffer<Boolean> allocate(long capacity) {
-    return ArrayDataBuffer.allocate(Boolean.class, capacity);
+  protected BooleanDataBuffer allocate(long capacity) {
+    return BitSetDataBuffer.allocate(capacity);
   }
 
   @Override
   protected Boolean valueOf(Long val) {
-    return val > 0 ? Boolean.TRUE : Boolean.FALSE;
+    return val != 0;
   }
 }

@@ -16,7 +16,9 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
+import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.IntDataBuffer;
+import org.tensorflow.nio.nd.FloatNdArray;
 import org.tensorflow.nio.nd.IntNdArray;
 import org.tensorflow.nio.nd.Shape;
 
@@ -25,6 +27,18 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray> i
   public static IntNdArray wrap(IntDataBuffer buffer, Shape shape) {
     Validator.denseShape(shape);
     return new IntDenseNdArray(buffer, shape);
+  }
+
+  @Override
+  public IntNdArray read(int[] dst, int offset) {
+    Validator.getArrayArgs(this, dst.length, offset);
+    return read(DataBuffers.wrap(dst, false).position(offset));
+  }
+
+  @Override
+  public IntNdArray write(int[] src, int offset) {
+    Validator.putArrayArgs(this, src.length, offset);
+    return write(DataBuffers.wrap(src, true).position(offset));
   }
 
   @Override

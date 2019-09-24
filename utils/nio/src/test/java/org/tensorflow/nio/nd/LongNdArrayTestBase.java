@@ -82,13 +82,13 @@ public abstract class LongNdArrayTestBase extends NdArrayTestBase<Long> {
         try {
             matrix.write(values, -1);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException e) {
             // as expected
         }
         try {
             matrix.write(values, values.length + 1);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException e) {
             // as expected
         }
         try {
@@ -106,13 +106,13 @@ public abstract class LongNdArrayTestBase extends NdArrayTestBase<Long> {
         try {
             matrix.read(values, -1);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException e) {
             // as expected
         }
         try {
             matrix.read(values, values.length + 1);
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException e) {
             // as expected
         }
     }
