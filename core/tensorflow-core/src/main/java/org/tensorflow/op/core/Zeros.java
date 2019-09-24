@@ -45,9 +45,9 @@ public class Zeros<T> implements Op, Operand<T> {
    * @return a constant tensor initialized with zeros
    * @throws IllegalArgumentException if the tensor type or shape cannot be initialized with zeros.
    */
-  public static <T, U extends Number> Zeros<T> create(Scope scope, Operand<U> dims, Class<T> type) {
+  public static <T, U extends Number> Zeros<T> create(Scope scope, Operand<U> dims, DataType<T> type) {
     Scope childScope = scope.withSubScope("Zeros"); // If scope had an op name set, it will prevail on "Zeros"
-    int zeroSize = DataType.fromClass(type).byteSize();
+    int zeroSize = type.byteSize();
     if (zeroSize < 0) {
       throw new IllegalArgumentException(type.getSimpleName() + " tensors cannot be initialized with zeros");
     }

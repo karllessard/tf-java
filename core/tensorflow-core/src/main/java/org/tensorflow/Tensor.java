@@ -255,6 +255,18 @@ public final class Tensor<T> implements AutoCloseable {
     return t;
   }
 
+  public static <T extends TType> Tensor<T> allocate(DataType<T> dtype, Shape shape) {
+    return allocate(dtype, shape, shape.size());
+  }
+
+  public static <T extends TType> Tensor<T> allocate(DataType<T> dtype, Shape shape, long capacity) {
+    Tensor<T> t = new Tensor<>(dtype);
+    t.shapeCopy = shape.asArray();
+    long nativeHandle = allocate(t.dtype.c(), t.shapeCopy, capacity);
+    t.nativeRef = new NativeReference(nativeHandle);
+    return t;
+  }
+
   /**
    * Returns this Tensor object with the type {@code Tensor<U>}. This method is useful when given a
    * value of type {@code Tensor<?>}.
@@ -534,7 +546,7 @@ public final class Tensor<T> implements AutoCloseable {
    */
   static Tensor<?> fromHandle(long handle) {
     @SuppressWarnings("rawtypes")
-    Tensor<?> t = new Tensor(DataType.fromC(dtype(handle)));
+    Tensor<?> t = new Tensor<>(DataTypeRegistry.INSTANCE.fromC(dtype(handle)));
     t.shapeCopy = shape(handle);
     t.nativeRef = new NativeReference(handle);
     return t;

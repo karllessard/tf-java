@@ -36,7 +36,7 @@ abstract class AbstractOperation implements Operation {
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public <T extends TType> Output<T> output(int idx) {
+  public <T> Output<T> output(int idx) {
     return new Output(this, idx);
   }
 
@@ -75,7 +75,7 @@ abstract class AbstractOperation implements Operation {
    * @param outputIdx index of the output of this operation
    * @return output tensor datatype
    */
-  abstract DataType dtype(int outputIdx);
+  abstract DataType<?> dtype(int outputIdx);
 
   /**
    * Returns the tensor of the {@code outputIdx}th output of this operation.

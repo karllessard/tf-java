@@ -55,10 +55,4 @@ public class DataType<T> {
   T mapTensor(Shape shape, ByteBuffer[] tensorBuffers) {
     return tensorDataMapper.mapTensor(tensorBuffers, shape);
   }
-
-  static DataType<?> fromC(int c) {
-    // TODO!!!!
-    throw new IllegalArgumentException(
-        "DataType " + c + " is not recognized in Java (version " + TensorFlow.version() + ")");
-  }
 }

@@ -88,7 +88,7 @@ class EagerOperation extends AbstractOperation {
   }
 
   @Override
-  public DataType dtype(int outputIndex) {
+  public DataType<?> dtype(int outputIndex) {
     // If the tensor of this output has already been resolved, return its datatype.
     // Otherwise, retrieve the tensor datatype from the native library.
     Tensor<?> tensor = outputTensors.get(outputIndex);
@@ -96,7 +96,7 @@ class EagerOperation extends AbstractOperation {
       return tensor.dataType();
     }
     long outputNativeHandle = getUnsafeNativeHandle(outputIndex);
-    return DataType.fromC(dataType(outputNativeHandle));
+    return DataTypeRegistry.INSTANCE.fromC(dataType(outputNativeHandle));
   }
 
   @Override

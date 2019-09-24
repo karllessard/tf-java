@@ -130,10 +130,10 @@ public final class GraphOperation extends AbstractOperation {
   }
 
   @Override
-  DataType dtype(int outputIdx) {
+  DataType<?> dtype(int outputIdx) {
     Graph.Reference r = graph.ref();
     try {
-      return DataType.fromC(dtype(r.nativeHandle(), getUnsafeNativeHandle(), outputIdx));
+      return DataTypeRegistry.INSTANCE.fromC(dtype(r.nativeHandle(), getUnsafeNativeHandle(), outputIdx));
     } finally {
       r.close();
     }

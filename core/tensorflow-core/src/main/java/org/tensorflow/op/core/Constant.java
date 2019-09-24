@@ -23,7 +23,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.charset.Charset;
-
 import org.tensorflow.DataType;
 import org.tensorflow.Operand;
 import org.tensorflow.Operation;
@@ -32,6 +31,13 @@ import org.tensorflow.Tensor;
 import org.tensorflow.op.PrimitiveOp;
 import org.tensorflow.op.Scope;
 import org.tensorflow.op.annotation.Operator;
+import org.tensorflow.types.TBool;
+import org.tensorflow.types.TDouble;
+import org.tensorflow.types.TFloat;
+import org.tensorflow.types.TInt32;
+import org.tensorflow.types.TInt64;
+import org.tensorflow.types.TString;
+import org.tensorflow.types.family.TType;
 
 /** An operator producing a constant value. */
 @Operator
@@ -44,8 +50,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The value to put into the new constant.
    * @return an integer constant
    */
-  public static Constant<Integer> create(Scope scope, int data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
@@ -55,8 +61,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Integer> create(Scope scope, int[] data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int[] data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
@@ -66,8 +72,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Integer> create(Scope scope, int[][] data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int[][] data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
@@ -77,8 +83,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Integer> create(Scope scope, int[][][] data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int[][][] data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
@@ -88,8 +94,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Integer> create(Scope scope, int[][][][] data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int[][][][] data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
@@ -99,8 +105,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Integer> create(Scope scope, int[][][][][] data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int[][][][][] data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
@@ -110,12 +116,12 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Integer> create(Scope scope, int[][][][][][] data) {
-    return create(scope, data, Integer.class);
+  public static Constant<TInt32> create(Scope scope, int[][][][][][] data) {
+    return create(scope, data, TInt32.DTYPE);
   }
 
   /**
-   * Create a {@link DataType#INT32} constant with data from the given buffer.
+   * Create a {@link TInt32} constant with data from the given buffer.
    *
    * <p>Creates a constant with the given shape by copying elements from the buffer (starting from
    * its current position) into the tensor. For example, if {@code shape = {2,3} } (which represents
@@ -128,8 +134,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @return an integer constant
    * @throws IllegalArgumentException If the tensor shape is not compatible with the buffer
    */
-  public static Constant<Integer> create(Scope scope, long[] shape, IntBuffer data) {
-    try (Tensor<Integer> value = Tensor.create(shape, data)) {
+  public static Constant<TInt32> create(Scope scope, long[] shape, IntBuffer data) {
+    try (Tensor<TInt32> value = Tensor.create(shape, data)) {
       return createWithTensor(scope, value);
     }
   }
@@ -141,8 +147,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The value to put into the new constant. 
    * @return a float constant
    */
-  public static Constant<Float> create(Scope scope, float data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
@@ -152,8 +158,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Float> create(Scope scope, float[] data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float[] data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
@@ -163,8 +169,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Float> create(Scope scope, float[][] data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float[][] data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
@@ -174,8 +180,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Float> create(Scope scope, float[][][] data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float[][][] data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
@@ -185,8 +191,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Float> create(Scope scope, float[][][][] data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float[][][][] data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
@@ -196,8 +202,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Float> create(Scope scope, float[][][][][] data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float[][][][][] data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
@@ -207,12 +213,12 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Float> create(Scope scope, float[][][][][][] data) {
-    return create(scope, data, Float.class);
+  public static Constant<TFloat> create(Scope scope, float[][][][][][] data) {
+    return create(scope, data, TFloat.DTYPE);
   }
 
   /**
-   * Create a {@link DataType#FLOAT} constant with data from the given buffer.
+   * Create a {@link TFloat} constant with data from the given buffer.
    *
    * <p>Creates a constant with the given shape by copying elements from the buffer (starting from
    * its current position) into the tensor. For example, if {@code shape = {2,3} } (which represents
@@ -225,8 +231,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @return a float constant
    * @throws IllegalArgumentException If the tensor shape is not compatible with the buffer
    */
-  public static Constant<Float> create(Scope scope, long[] shape, FloatBuffer data) {
-    try (Tensor<Float> value = Tensor.create(shape, data)) {
+  public static Constant<TFloat> create(Scope scope, long[] shape, FloatBuffer data) {
+    try (Tensor<TFloat> value = Tensor.create(shape, data)) {
       return createWithTensor(scope, value);
     }
   }
@@ -238,8 +244,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The value to put into the new constant.
    * @return a double constant
    */
-  public static Constant<Double> create(Scope scope, double data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
@@ -249,8 +255,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Double> create(Scope scope, double[] data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double[] data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
@@ -260,8 +266,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Double> create(Scope scope, double[][] data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double[][] data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
@@ -271,8 +277,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Double> create(Scope scope, double[][][] data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double[][][] data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
@@ -282,8 +288,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Double> create(Scope scope, double[][][][] data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double[][][][] data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
@@ -293,8 +299,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Double> create(Scope scope, double[][][][][] data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double[][][][][] data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
@@ -304,12 +310,12 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Double> create(Scope scope, double[][][][][][] data) {
-    return create(scope, data, Double.class);
+  public static Constant<TDouble> create(Scope scope, double[][][][][][] data) {
+    return create(scope, data, TDouble.DTYPE);
   }
 
   /**
-   * Create a {@link DataType#DOUBLE} constant with data from the given buffer.
+   * Create a {@link TDouble} constant with data from the given buffer.
    *
    * <p>Creates a constant with the given shape by copying elements from the buffer (starting from
    * its current position) into the tensor. For example, if {@code shape = {2,3} } (which represents
@@ -322,8 +328,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @return a double constant
    * @throws IllegalArgumentException If the tensor shape is not compatible with the buffer
    */
-  public static Constant<Double> create(Scope scope, long[] shape, DoubleBuffer data) {
-    try (Tensor<Double> value = Tensor.create(shape, data)) {
+  public static Constant<TDouble> create(Scope scope, long[] shape, DoubleBuffer data) {
+    try (Tensor<TDouble> value = Tensor.create(shape, data)) {
       return createWithTensor(scope, value);
     }
   }
@@ -335,8 +341,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The value to put into the new constant.
    * @return a long constant
    */
-  public static Constant<Long> create(Scope scope, long data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
@@ -346,8 +352,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Long> create(Scope scope, long[] data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long[] data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
@@ -357,8 +363,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Long> create(Scope scope, long[][] data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long[][] data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
@@ -368,8 +374,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Long> create(Scope scope, long[][][] data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long[][][] data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
@@ -379,8 +385,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Long> create(Scope scope, long[][][][] data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long[][][][] data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
@@ -390,8 +396,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Long> create(Scope scope, long[][][][][] data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long[][][][][] data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
@@ -401,12 +407,12 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Long> create(Scope scope, long[][][][][][] data) {
-    return create(scope, data, Long.class);
+  public static Constant<TInt64> create(Scope scope, long[][][][][][] data) {
+    return create(scope, data, TInt64.DTYPE);
   }
 
   /**
-   * Create a {@link DataType#INT64} constant with data from the given buffer.
+   * Create a {@link TInt64} constant with data from the given buffer.
    *
    * <p>Creates a constant with the given shape by copying elements from the buffer (starting from
    * its current position) into the tensor. For example, if {@code shape = {2,3} } (which represents
@@ -419,8 +425,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @return a long constant
    * @throws IllegalArgumentException If the tensor shape is not compatible with the buffer
    */
-  public static Constant<Long> create(Scope scope, long[] shape, LongBuffer data) {
-    try (Tensor<Long> value = Tensor.create(shape, data)) {
+  public static Constant<TInt64> create(Scope scope, long[] shape, LongBuffer data) {
+    try (Tensor<TInt64> value = Tensor.create(shape, data)) {
       return createWithTensor(scope, value);
     }
   }
@@ -432,8 +438,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The value to put into the new constant.
    * @return a boolean constant
    */
-  public static Constant<Boolean> create(Scope scope, boolean data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -443,8 +449,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Boolean> create(Scope scope, boolean[] data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean[] data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -454,8 +460,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Boolean> create(Scope scope, boolean[][] data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean[][] data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -465,8 +471,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Boolean> create(Scope scope, boolean[][][] data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean[][][] data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -476,8 +482,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Boolean> create(Scope scope, boolean[][][][] data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean[][][][] data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -487,8 +493,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Boolean> create(Scope scope, boolean[][][][][] data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean[][][][][] data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -498,8 +504,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. The dimensions of the
    *     new constant will match those of the array.
    */
-  public static Constant<Boolean> create(Scope scope, boolean[][][][][][] data) {
-    return create(scope, data, Boolean.class);
+  public static Constant<TBool> create(Scope scope, boolean[][][][][][] data) {
+    return create(scope, data, TBool.DTYPE);
   }
 
   /**
@@ -509,7 +515,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The string to put into the new constant.
    * @return a string constant
    */
-  public static Constant<String> create(Scope scope, String data) {
+  public static Constant<TString> create(Scope scope, String data) {
     return create(scope, data, UTF_8);
   }
 
@@ -521,8 +527,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data The string to put into the new constant.
    * @return a string constant
    */
-  public static Constant<String> create(Scope scope, String data, Charset charset) {
-    try (Tensor<String> value = Tensor.create(data.getBytes(charset), String.class)) {
+  public static Constant<TString> create(Scope scope, String data, Charset charset) {
+    try (Tensor<TString> value = Tensor.create(data.getBytes(charset), TString.DTYPE)) {
       return createWithTensor(scope, value);
     }
   }
@@ -534,8 +540,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. String elements are
    *     sequences of bytes from the last array dimension.
    */
-  public static Constant<String> create(Scope scope, byte[] data) {
-    return create(scope, data, String.class);
+  public static Constant<TString> create(Scope scope, byte[] data) {
+    return create(scope, data, TString.DTYPE);
   }
 
   /**
@@ -545,8 +551,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. String elements are
    *     sequences of bytes from the last array dimension.
    */
-  public static Constant<String> create(Scope scope, byte[][] data) {
-    return create(scope, data, String.class);
+  public static Constant<TString> create(Scope scope, byte[][] data) {
+    return create(scope, data, TString.DTYPE);
   }
 
   /**
@@ -556,8 +562,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. String elements are
    *     sequences of bytes from the last array dimension.
    */
-  public static Constant<String> create(Scope scope, byte[][][] data) {
-    return create(scope, data, String.class);
+  public static Constant<TString> create(Scope scope, byte[][][] data) {
+    return create(scope, data, TString.DTYPE);
   }
 
   /**
@@ -567,8 +573,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. String elements are
    *     sequences of bytes from the last array dimension.
    */
-  public static Constant<String> create(Scope scope, byte[][][][] data) {
-    return create(scope, data, String.class);
+  public static Constant<TString> create(Scope scope, byte[][][][] data) {
+    return create(scope, data, TString.DTYPE);
   }
 
   /**
@@ -578,8 +584,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. String elements are
    *     sequences of bytes from the last array dimension.
    */
-  public static Constant<String> create(Scope scope, byte[][][][][] data) {
-    return create(scope, data, String.class);
+  public static Constant<TString> create(Scope scope, byte[][][][][] data) {
+    return create(scope, data, TString.DTYPE);
   }
 
   /**
@@ -589,8 +595,8 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @param data An array containing the values to put into the new constant. String elements are
    *     sequences of bytes from the last array dimension.
    */
-  public static Constant<String> create(Scope scope, byte[][][][][][] data) {
-    return create(scope, data, String.class);
+  public static Constant<TString> create(Scope scope, byte[][][][][][] data) {
+    return create(scope, data, TString.DTYPE);
   }
 
   /**
@@ -609,7 +615,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @throws IllegalArgumentException If the tensor datatype or shape is not compatible with the
    *     buffer
    */
-  public static <T> Constant<T> create(Scope scope, Class<T> type, long[] shape, ByteBuffer data) {
+  public static <T extends TType> Constant<T> create(Scope scope, DataType<T> type, long[] shape, ByteBuffer data) {
     try (Tensor<T> value = Tensor.create(type, shape, data)) {
       return createWithTensor(scope, value);
     }
@@ -623,7 +629,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * provided. For example:
    *
    * <pre>{@code
-   * Constant.create(scope, new int[]{{1, 2}, {3, 4}}, Integer.class); // returns a 2x2 integer matrix
+   * Constant.create(scope, new int[]{{1, 2}, {3, 4}}, TInt32.DTYPE); // returns a 2x2 integer matrix
    * }</pre>
    *
    * @param scope is a scope used to add the underlying operation.
@@ -631,14 +637,14 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    * @return a constant of type `type`
    * @see org.tensorflow.Tensor#create(Object) Tensor.create
    */
-  public static <T> Constant<T> create(Scope scope, Object object, Class<T> type) {
+  public static <T extends TType> Constant<T> create(Scope scope, Object object, DataType<T> type) {
     try (Tensor<T> value = Tensor.create(object, type)) {
       return createWithTensor(scope, value);
     }
   }
 
   private static <T> Constant<T> createWithTensor(Scope scope, Tensor<T> value) {
-    return new Constant<T>(
+    return new Constant<>(
         scope
             .env()
             .opBuilder("Const", scope.makeOpName("Const"))
