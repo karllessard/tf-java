@@ -26,6 +26,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
+import org.tensorflow.EagerSession.NativeReference;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.types.TBool;
 import org.tensorflow.types.TDouble;
@@ -252,6 +253,18 @@ public final class Tensor<T> implements AutoCloseable {
     }
     Tensor<T> t = allocateForBuffer(dtype, shape, nremaining);
     t.buffer().put(data);
+    return t;
+  }
+
+  public static <T extends TType> Tensor<T> allocate(DataType<T> dtype, Shape shape) {
+    return allocate(dtype, shape, shape.size());
+  }
+
+  public static <T extends TType> Tensor<T> allocate(DataType<T> dtype, Shape shape, long capacity) {
+    Tensor<T> t = new Tensor<>(dtype);
+    t.shapeCopy = shape.asArray();
+    long nativeHandle = allocate(t.dtype.c(), t.shapeCopy, capacity);
+    t.nativeRef = new NativeReference(nativeHandle);
     return t;
   }
 
