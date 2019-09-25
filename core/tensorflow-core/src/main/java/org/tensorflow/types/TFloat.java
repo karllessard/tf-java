@@ -3,6 +3,9 @@ package org.tensorflow.types;
 import java.nio.ByteBuffer;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
+import org.tensorflow.nio.buffer.DoubleDataBuffer;
+import org.tensorflow.nio.buffer.FloatDataBuffer;
+import org.tensorflow.nio.buffer.impl.single.DoubleJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.FloatJdkDataBuffer;
 import org.tensorflow.nio.nd.FloatNdArray;
 import org.tensorflow.nio.nd.Shape;
@@ -11,7 +14,7 @@ import org.tensorflow.types.family.TDecimal;
 
 public interface TFloat extends FloatNdArray, TDecimal {
 
-  DataType<TFloat> DTYPE = new DataType<>(1, 4, TFloatImpl::new);
+  DataType<TFloat> DTYPE = new DataType<>(1, 4, TFloatImpl::mapTensor);
 
   static Tensor<TFloat> scalar(float value) {
     Tensor<TFloat> t = tensorOfShape(Shape.scalar());
@@ -32,8 +35,15 @@ public interface TFloat extends FloatNdArray, TDecimal {
 
 class TFloatImpl extends FloatDenseNdArray implements TFloat {
 
-  TFloatImpl(ByteBuffer[] tensorBuffers, Shape shape) {
-    super(BufferUtils.toFloatDataBuffer(tensorBuffers, b -> FloatJdkDataBuffer.wrap(b.asFloatBuffer())), shape);
+  static TFloat mapTensor(ByteBuffer[] tensorBuffers, Shape shape) {
+    FloatDataBuffer buffer = BufferUtils.toFloatDataBuffer(tensorBuffers, b ->
+        FloatJdkDataBuffer.wrap(b.asFloatBuffer())
+    );
+    return new TFloatImpl(buffer, shape);
+  }
+
+  private TFloatImpl(FloatDataBuffer buffer, Shape shape) {
+    super(buffer, shape);
   }
 }
 

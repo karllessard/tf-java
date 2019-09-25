@@ -3,6 +3,7 @@ package org.tensorflow.types;
 import java.nio.ByteBuffer;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
+import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.buffer.BooleanDataBuffer.BooleanMapper;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.impl.logical.BooleanLogicalDataBuffer;
@@ -14,7 +15,7 @@ import org.tensorflow.types.family.TType;
 
 public interface TBool extends BooleanNdArray, TType {
 
-  DataType<TBool> DTYPE = new DataType<>(10, 1, TBoolImpl::new);
+  DataType<TBool> DTYPE = new DataType<>(10, 1, TBoolImpl::mapTensor);
 
   static Tensor<TBool> scalar(boolean value) {
     Tensor<TBool> t = tensorOfShape(Shape.scalar());
@@ -35,6 +36,17 @@ public interface TBool extends BooleanNdArray, TType {
 
 class TBoolImpl extends BooleanDenseNdArray implements TBool {
 
+  static TBool mapTensor(ByteBuffer[] tensorBuffers, Shape shape) {
+    BooleanDataBuffer buffer = BufferUtils.toBooleanDataBuffer(tensorBuffers, b ->
+        BooleanLogicalDataBuffer.map(ByteJdkDataBuffer.wrap(b), BOOL_MAPPER)
+    );
+    return new TBoolImpl(buffer, shape);
+  }
+
+  private TBoolImpl(BooleanDataBuffer buffer, Shape shape) {
+    super(buffer, shape);
+  }
+
   private static BooleanMapper BOOL_MAPPER = new BooleanMapper() {
 
     @Override
@@ -52,8 +64,4 @@ class TBoolImpl extends BooleanDenseNdArray implements TBool {
       return TBool.DTYPE.byteSize();
     }
   };
-
-  TBoolImpl(ByteBuffer[] tensorBuffers, Shape shape) {
-    super(BufferUtils.toBooleanDataBuffer(tensorBuffers, b -> BooleanLogicalDataBuffer.map(ByteJdkDataBuffer.wrap(b), BOOL_MAPPER)), shape);
-  }
 }

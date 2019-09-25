@@ -3,6 +3,9 @@ package org.tensorflow.types;
 import java.nio.ByteBuffer;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
+import org.tensorflow.nio.buffer.IntDataBuffer;
+import org.tensorflow.nio.buffer.LongDataBuffer;
+import org.tensorflow.nio.buffer.impl.single.IntJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.LongJdkDataBuffer;
 import org.tensorflow.nio.nd.LongNdArray;
 import org.tensorflow.nio.nd.Shape;
@@ -11,7 +14,7 @@ import org.tensorflow.types.family.TNumber;
 
 public interface TInt64 extends LongNdArray, TNumber {
 
-  DataType<TInt64> DTYPE = new DataType<>(9, 8, TInt64Impl::new);
+  DataType<TInt64> DTYPE = new DataType<>(9, 8, TInt64Impl::mapTensor);
 
   static Tensor<TInt64> scalar(long value) {
     Tensor<TInt64> t = tensorOfShape(Shape.scalar());
@@ -32,7 +35,14 @@ public interface TInt64 extends LongNdArray, TNumber {
 
 class TInt64Impl extends LongDenseNdArray implements TInt64 {
 
-  TInt64Impl(ByteBuffer[] tensorBuffers, Shape shape) {
-    super(BufferUtils.toLongDataBuffer(tensorBuffers, b -> LongJdkDataBuffer.wrap(b.asLongBuffer())), shape);
+  static TInt64 mapTensor(ByteBuffer[] tensorBuffers, Shape shape) {
+    LongDataBuffer buffer = BufferUtils.toLongDataBuffer(tensorBuffers, b ->
+        LongJdkDataBuffer.wrap(b.asLongBuffer())
+    );
+    return new TInt64Impl(buffer, shape);
+  }
+
+  private TInt64Impl(LongDataBuffer buffer, Shape shape) {
+    super(buffer, shape);
   }
 }

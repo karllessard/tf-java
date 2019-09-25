@@ -5,9 +5,11 @@ import java.nio.BufferUnderflowException;
 import java.util.BitSet;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractBasicDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class BitSetDataBuffer extends AbstractSingleDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer  {
+public class BitSetDataBuffer extends
+    AbstractBasicDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer  {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
 
@@ -26,7 +28,7 @@ public class BitSetDataBuffer extends AbstractSingleDataBuffer<Boolean, BooleanD
   public BooleanDataBuffer get(boolean[] dst, int offset, int length) {
     Validator.getArrayArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
-      dst[i] = bitSet.get(nextPosition());
+      dst[i] = bitSet.get((int)nextPosition());
     }
     return this;
   }
@@ -35,7 +37,7 @@ public class BitSetDataBuffer extends AbstractSingleDataBuffer<Boolean, BooleanD
   public BooleanDataBuffer put(boolean[] src, int offset, int length) {
     Validator.putArrayArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
-      bitSet.set(nextPosition(), src[i]);
+      bitSet.set((int)nextPosition(), src[i]);
     }
     return this;
   }
@@ -50,7 +52,7 @@ public class BitSetDataBuffer extends AbstractSingleDataBuffer<Boolean, BooleanD
     if (position() >= capacity()) {
       throw new BufferUnderflowException();
     }
-    return bitSet.get(nextPosition());
+    return bitSet.get((int)nextPosition());
   }
 
   @Override
@@ -69,7 +71,7 @@ public class BitSetDataBuffer extends AbstractSingleDataBuffer<Boolean, BooleanD
     if (position() >= capacity()) {
       throw new BufferOverflowException();
     }
-    bitSet.set(nextPosition(), value);
+    bitSet.set((int)nextPosition(), value);
     return this;
   }
 

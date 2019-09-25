@@ -24,9 +24,10 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractBasicDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class ArrayDataBuffer<T> extends AbstractSingleDataBuffer<T, DataBuffer<T>> {
+public class ArrayDataBuffer<T> extends AbstractBasicDataBuffer<T, DataBuffer<T>> {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
   
@@ -57,7 +58,7 @@ public class ArrayDataBuffer<T> extends AbstractSingleDataBuffer<T, DataBuffer<T
     if (!hasRemaining()) {
       throw new BufferUnderflowException();
     }
-    return values[nextPosition()];
+    return values[(int)nextPosition()];
   }
 
   @Override
@@ -79,7 +80,7 @@ public class ArrayDataBuffer<T> extends AbstractSingleDataBuffer<T, DataBuffer<T
     if (isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
-    values[nextPosition()] = value;
+    values[(int)nextPosition()] = value;
     return this;
   }
 

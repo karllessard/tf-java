@@ -14,14 +14,14 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.buffer.impl.single;
+package org.tensorflow.nio.buffer.impl;
 
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.impl.AbstractDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
 @SuppressWarnings("unchecked")
-abstract class AbstractSingleDataBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T, B> {
+public abstract class AbstractBasicDataBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T, B> {
 
   @Override
   public long limit() {
@@ -71,17 +71,17 @@ abstract class AbstractSingleDataBuffer<T, B extends DataBuffer<T>> extends Abst
     return readOnly;
   }
 
-  AbstractSingleDataBuffer(boolean readOnly, long position, long limit) {
+  protected AbstractBasicDataBuffer(boolean readOnly, long position, long limit) {
     this.readOnly = readOnly;
     this.position = position;
     this.limit = limit;
   }
 
-  int nextPosition() {
-    return (int)(position++);
+  protected long nextPosition() {
+    return position++;
   }
 
-  void movePosition(long step) {
+  protected void movePosition(long step) {
     position += step;
   }
 

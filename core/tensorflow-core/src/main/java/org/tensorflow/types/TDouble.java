@@ -3,6 +3,7 @@ package org.tensorflow.types;
 import java.nio.ByteBuffer;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
+import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.buffer.impl.single.DoubleJdkDataBuffer;
 import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.Shape;
@@ -11,7 +12,7 @@ import org.tensorflow.types.family.TDecimal;
 
 public interface TDouble extends DoubleNdArray, TDecimal {
 
-  DataType<TDouble> DTYPE = new DataType<>(2, 8, TDoubleImpl::new);
+  DataType<TDouble> DTYPE = new DataType<>(2, 8, TDoubleImpl::mapTensor);
 
   static Tensor<TDouble> scalar(double value) {
     Tensor<TDouble> t = tensorOfShape(Shape.scalar());
@@ -32,7 +33,14 @@ public interface TDouble extends DoubleNdArray, TDecimal {
 
 class TDoubleImpl extends DoubleDenseNdArray implements TDouble {
 
-  TDoubleImpl(ByteBuffer[] tensorBuffers, Shape shape) {
-    super(BufferUtils.toDoubleDataBuffer(tensorBuffers, b -> DoubleJdkDataBuffer.wrap(b.asDoubleBuffer())), shape);
+  static TDouble mapTensor(ByteBuffer[] tensorBuffers, Shape shape) {
+    DoubleDataBuffer buffer = BufferUtils.toDoubleDataBuffer(tensorBuffers, b ->
+        DoubleJdkDataBuffer.wrap(b.asDoubleBuffer())
+    );
+    return new TDoubleImpl(buffer, shape);
+  }
+
+  private TDoubleImpl(DoubleDataBuffer buffer, Shape shape) {
+    super(buffer, shape);
   }
 }
