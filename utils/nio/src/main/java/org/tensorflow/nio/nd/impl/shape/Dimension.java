@@ -14,25 +14,15 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.nd.impl.dimension;
+package org.tensorflow.nio.nd.impl.shape;
 
-import org.tensorflow.nio.nd.index.Index;
-
-public final class Dimensions {
-
-  public static Dimension unknown() {
-    return new UnknownDimension();
-  }
-
-  public static Dimension axis(long numElements, long elementSize) {
-    return new Axis(numElements, elementSize);
-  }
+public interface Dimension {
   
-  public static Dimension coord(long index, Dimension originalDimension) {
-    return new Coordinate(index, (AbstractDimension)originalDimension);
-  }
+  long numElements();
   
-  public static Dimension indexed(Dimension originalDimension, Index index) {
-    return new IndexedDimension((AbstractDimension)originalDimension, index);
-  }
+  long positionOf(long coord);
+  
+  default long position() { return positionOf(0); }
+  
+  boolean isSegmented();
 }

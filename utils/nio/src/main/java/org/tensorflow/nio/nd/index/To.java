@@ -16,8 +16,7 @@
  */
 package org.tensorflow.nio.nd.index;
 
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
-import org.tensorflow.nio.nd.impl.dimension.Dimensions;
+import org.tensorflow.nio.nd.impl.shape.Dimension;
 
 /**
  * An index that returns only elements on a given dimension up to a

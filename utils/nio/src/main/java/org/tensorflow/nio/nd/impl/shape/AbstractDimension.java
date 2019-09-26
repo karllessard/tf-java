@@ -14,7 +14,7 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.nd.impl.dimension;
+package org.tensorflow.nio.nd.impl.shape;
 
 abstract class AbstractDimension implements Dimension {
   

@@ -17,7 +17,7 @@
 package org.tensorflow.nio.nd.impl.dense;
 
 import java.util.function.BiConsumer;
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
+import org.tensorflow.nio.nd.impl.shape.Dimension;
 
 class BulkDataTransfer<R extends AbstractDenseNdArray<?, ?>> {
 

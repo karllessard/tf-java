@@ -16,8 +16,8 @@
  */
 package org.tensorflow.nio.nd.index;
 
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
-import org.tensorflow.nio.nd.impl.dimension.Dimensions;
+import org.tensorflow.nio.nd.impl.shape.Dimension;
+import org.tensorflow.nio.nd.impl.shape.Shapes;
 
 /**
  * An index that selects a specific element on a given dimension.
@@ -43,7 +43,7 @@ class At implements Index {
 
   @Override
   public Dimension apply(Dimension dim) {
-    return Dimensions.coord(value, dim);
+    return Shapes.coordinate(value, dim);
   }
 
   At(long value) {

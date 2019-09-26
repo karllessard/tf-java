@@ -16,8 +16,8 @@
  */
 package org.tensorflow.nio.nd.index;
 
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
-import org.tensorflow.nio.nd.impl.dimension.Dimensions;
+import org.tensorflow.nio.nd.impl.shape.Dimension;
+import org.tensorflow.nio.nd.impl.shape.Shapes;
 
 /**
  * An index used for slicing a view out of an N-dimensional array.
@@ -65,6 +65,6 @@ public interface Index {
    * @return an indexed dimension
    */
   default Dimension apply(Dimension dim) {
-    return Dimensions.indexed(dim, this);
+    return Shapes.index(dim, this);
   }
 }

@@ -14,14 +14,9 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.nd.impl.dimension;
+package org.tensorflow.nio.nd.impl.shape;
 
 final class Axis extends AbstractDimension {
-  
-  Axis(long numElements, long stride) {
-    this.numElements = numElements;
-    this.stride = stride;
-  }
   
   @Override
   public long numElements() {
@@ -49,6 +44,11 @@ final class Axis extends AbstractDimension {
   @Override
   public String toString() {
     return String.valueOf(numElements);
+  }
+
+  Axis(long numElements, long stride) {
+    this.numElements = numElements;
+    this.stride = stride;
   }
 
   private final long numElements;
