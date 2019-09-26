@@ -21,7 +21,7 @@ import org.tensorflow.types.family.TType;
 
 public interface TString extends NdArray<String>, TType {
 
-  DataType<TString> DTYPE = new DataType<>(7, -1, TStringImpl::mapTensor);
+  DataType<TString> DTYPE = new DataType<>(7, -1, "STRING", TStringImpl::mapTensor);
 
   static Tensor<TString> scalar(String value) {
     return copyOf(NdArrays.of(String.class, Shape.scalar()).set(value));
@@ -49,7 +49,7 @@ class TStringImpl extends DenseNdArray<String> implements TString {
 
     // Allocate the tensor of the right capacity and init its data from source array
     Tensor<TString> tensor = Tensor.allocate(TString.DTYPE, src.shape(), capacity);
-    ((TStringBuffer)((TStringImpl)tensor.data()).buffer()).init(src.values());
+    ((TStringImpl)tensor.data()).buffer().init(src.values());
     return tensor;
   }
 
@@ -67,8 +67,12 @@ class TStringImpl extends DenseNdArray<String> implements TString {
     for (int i = 1; i < tensorBuffers.length; ++i) {
       dataBuffers[i] = DataBuffers.wrap(tensorBuffers[i]);
     }
-    ByteDataBuffer dataBuffer = dataBuffers.length > 1 ? ByteLargeDataBuffer.join(dataBuffers) : dataBuffers[0]; // TODO move this logic to DataBuffers
-    return new TStringImpl(new TStringBuffer(offsetBuffer, dataBuffer), shape);
+    return new TStringImpl(new TStringBuffer(offsetBuffer, DataBuffers.join(dataBuffers)), shape);
+  }
+
+  @Override
+  protected TStringBuffer buffer() {
+    return (TStringBuffer)super.buffer();
   }
 
   private TStringImpl(DataBuffer<String> buffer, Shape shape) {

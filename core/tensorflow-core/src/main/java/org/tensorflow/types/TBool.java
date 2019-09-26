@@ -15,7 +15,7 @@ import org.tensorflow.types.family.TType;
 
 public interface TBool extends BooleanNdArray, TType {
 
-  DataType<TBool> DTYPE = new DataType<>(10, 1, TBoolImpl::mapTensor);
+  DataType<TBool> DTYPE = new DataType<>(10, 1, "BOOL", TBoolImpl::mapTensor);
 
   static Tensor<TBool> scalar(boolean value) {
     Tensor<TBool> t = tensorOfShape(Shape.scalar());

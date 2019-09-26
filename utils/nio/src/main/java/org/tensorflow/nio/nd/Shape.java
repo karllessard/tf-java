@@ -28,6 +28,16 @@ public final class Shape {
 
   public static final long UNKNOWN_SIZE = -1L;
 
+  /** Create a Shape representing an unknown number of dimensions. */
+  public static Shape unknown() {
+    return new Shape(null);
+  }
+
+  /** Create a Shape representing a scalar value. */
+  public static Shape scalar() {
+    return new Shape(new Dimension[0]);
+  }
+
   /**
    * Create a Shape representing an N-dimensional value.
    *
@@ -67,12 +77,8 @@ public final class Shape {
     return new Shape(dimensions);
   }
 
-  public static Shape scalar() {
-    return new Shape(new Dimension[0]);
-  }
-
   public Shape mapTo(Index[] indices) {
-    if (indices.length > dimensions.length) {
+    if (dimensions == null || indices.length > dimensions.length) {
       throw new ArrayIndexOutOfBoundsException();
     }
     Dimension[] mappedDimensions = Arrays.copyOf(dimensions, dimensions.length);
@@ -82,6 +88,14 @@ public final class Shape {
     return new Shape(mappedDimensions);
   }
 
+  public long size() {
+    return size;
+  }
+
+  public long size(int i) {
+    return dimensions != null ? dimensions[i].numElements() : UNKNOWN_SIZE;
+  }
+
   /**
    * Number of dimensions represented by this shape.
    *
@@ -89,36 +103,28 @@ public final class Shape {
    *     vector, 2 for a matrix etc.
    */
   public int numDimensions() {
-    return dimensions.length;
+    return dimensions != null ? dimensions.length : -1;
   }
-  
-  public long numElements(int i) {
-    return dimensions[i].numElements();
-  }
-  
+
   public Dimension dimension(int i) {
-    return dimensions[i];
+    return dimensions != null ? dimensions[i] : null;
   }
 
   public boolean hasUnknownDimension() {
-    return Arrays.stream(dimensions).anyMatch(d -> d.numElements() == UNKNOWN_SIZE);
-  }
-  
-  public long size() {
-    return size;
+    return dimensions == null || Arrays.stream(dimensions).anyMatch(d -> d.numElements() == UNKNOWN_SIZE);
   }
 
   public Shape subshape(int dimensionStart) {
-    return new Shape(Arrays.copyOfRange(dimensions, dimensionStart, dimensions.length));
+    return dimensions != null ? new Shape(Arrays.copyOfRange(dimensions, dimensionStart, dimensions.length)) : null;
   }
 
   public long[] asArray() {
-    return Arrays.stream(dimensions).mapToLong(Dimension::numElements).toArray();
+    return dimensions != null ? Arrays.stream(dimensions).mapToLong(Dimension::numElements).toArray() : null;
   }
 
   @Override
   public int hashCode() {
-    return Arrays.hashCode(dimensions);
+    return dimensions != null ? Arrays.hashCode(dimensions) : super.hashCode();
   }
 
   @Override
@@ -129,6 +135,9 @@ public final class Shape {
     // Shapes are equivalent if all of their dimensions are equals
     if (obj instanceof Shape) {
       Shape otherShape = (Shape)obj;
+      if (dimensions == null) {
+        return false;  // All unknown shapes are different
+      }
       return Arrays.equals(dimensions, otherShape.dimensions);
     }
     return false;
@@ -137,12 +146,12 @@ public final class Shape {
   /** Succinct description of the shape meant for debugging. */
   @Override
   public String toString() {
-    return Arrays.toString(dimensions);
+    return dimensions != null ? Arrays.toString(dimensions) : "UNKNOWN";
   }
 
   private Shape(Dimension[] dimensions) {
     this.dimensions = dimensions;
-    this.size = computeShapeSize(dimensions);
+    this.size = dimensions != null ? computeShapeSize(dimensions) : UNKNOWN_SIZE;
   }
 
   private final Dimension[] dimensions;

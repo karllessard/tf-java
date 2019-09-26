@@ -90,6 +90,13 @@ public final class DataBuffers {
     return ByteJdkDataBuffer.wrap(buf);
   }
 
+  public static ByteDataBuffer join(ByteDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : ByteLargeDataBuffer.join(buffers);
+  }
+
   /**
    * Creates a buffer of longs that can store up to `capacity` values
    *
@@ -128,6 +135,13 @@ public final class DataBuffers {
    */
   public static LongDataBuffer wrap(LongBuffer buf) {
     return LongJdkDataBuffer.wrap(buf);
+  }
+
+  public static LongDataBuffer join(LongDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : LongLargeDataBuffer.join(buffers);
   }
 
   /**
@@ -170,6 +184,13 @@ public final class DataBuffers {
     return IntJdkDataBuffer.wrap(buf);
   }
 
+  public static IntDataBuffer join(IntDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : IntLargeDataBuffer.join(buffers);
+  }
+
   /**
    * Creates a buffer of doubles that can store up to `capacity` values
    *
@@ -208,6 +229,13 @@ public final class DataBuffers {
    */
   public static DoubleDataBuffer wrap(DoubleBuffer buf) {
     return DoubleJdkDataBuffer.wrap(buf);
+  }
+
+  public static DoubleDataBuffer join(DoubleDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : DoubleLargeDataBuffer.join(buffers);
   }
 
   /**
@@ -250,6 +278,13 @@ public final class DataBuffers {
     return FloatJdkDataBuffer.wrap(buf);
   }
 
+  public static FloatDataBuffer join(FloatDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : FloatLargeDataBuffer.join(buffers);
+  }
+
   /**
    * Creates a buffer of booleans that can store up to `capacity` values
    *
@@ -266,6 +301,13 @@ public final class DataBuffers {
   public static BooleanDataBuffer ofBooleans(long capacity, BooleanMapper mapper) {
     ByteDataBuffer physicalBuffer = ofBytes(capacity * mapper.sizeInBytes());
     return BooleanLogicalDataBuffer.map(physicalBuffer, mapper);
+  }
+
+  public static BooleanDataBuffer join(BooleanDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : BooleanLargeDataBuffer.join(buffers);
   }
 
   /**
@@ -295,5 +337,12 @@ public final class DataBuffers {
    */
   public static <T> DataBuffer<T> wrap(T[] array, boolean readOnly) {
     return ArrayDataBuffer.wrap(array, readOnly);
+  }
+
+  public static <T> DataBuffer<T> join(DataBuffer<T>... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : LargeDataBuffer.join(buffers);
   }
 }

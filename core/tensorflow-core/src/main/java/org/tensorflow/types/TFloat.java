@@ -14,7 +14,7 @@ import org.tensorflow.types.family.TDecimal;
 
 public interface TFloat extends FloatNdArray, TDecimal {
 
-  DataType<TFloat> DTYPE = new DataType<>(1, 4, TFloatImpl::mapTensor);
+  DataType<TFloat> DTYPE = new DataType<>(1, 4, "FLOAT", TFloatImpl::mapTensor);
 
   static Tensor<TFloat> scalar(float value) {
     Tensor<TFloat> t = tensorOfShape(Shape.scalar());

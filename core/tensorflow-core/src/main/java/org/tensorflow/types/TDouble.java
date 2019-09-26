@@ -12,7 +12,7 @@ import org.tensorflow.types.family.TDecimal;
 
 public interface TDouble extends DoubleNdArray, TDecimal {
 
-  DataType<TDouble> DTYPE = new DataType<>(2, 8, TDoubleImpl::mapTensor);
+  DataType<TDouble> DTYPE = new DataType<>(2, 8, "DOUBLE", TDoubleImpl::mapTensor);
 
   static Tensor<TDouble> scalar(double value) {
     Tensor<TDouble> t = tensorOfShape(Shape.scalar());

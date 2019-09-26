@@ -114,12 +114,12 @@ public abstract class NdArrayTestBase<T> {
     long val = 0;
     for (NdArray<T> matrix: matrix3d.childElements()) {
       assertEquals(2L, matrix.shape().numDimensions());
-      assertEquals(4L, matrix.shape().numElements(0));
-      assertEquals(5L, matrix.shape().numElements(1));
+      assertEquals(4L, matrix.shape().size(0));
+      assertEquals(5L, matrix.shape().size(1));
 
       for (NdArray<T> vector: matrix.childElements()) {
         assertEquals(1L, vector.shape().numDimensions()) ;
-        assertEquals(5L, vector.shape().numElements(0));
+        assertEquals(5L, vector.shape().size(0));
 
         for (NdArray<T> scalar: vector.childElements()) {
           assertEquals(0L, scalar.shape().numDimensions()) ;

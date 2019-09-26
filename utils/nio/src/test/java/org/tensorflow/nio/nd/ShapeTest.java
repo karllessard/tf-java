@@ -31,19 +31,19 @@ public class ShapeTest {
     public void allKnownDimensions() {
         Shape shape = Shape.make(5, 4, 5);
         assertEquals(3, shape.numDimensions());
-        assertEquals(5, shape.numElements(0));
-        assertEquals(4, shape.numElements(1));
-        assertEquals(5, shape.numElements(2));
+        assertEquals(5, shape.size(0));
+        assertEquals(4, shape.size(1));
+        assertEquals(5, shape.size(2));
         assertEquals(100, shape.size());
         assertArrayEquals(new long[] {5, 4, 5}, shape.asArray());
         try {
-            shape.numElements(3);
+            shape.size(3);
             fail();
         } catch (IndexOutOfBoundsException e) {
             // as expected
         }
         try {
-            shape.numElements(-1);
+            shape.size(-1);
             fail();
         } catch (IndexOutOfBoundsException e) {
             // as expected
@@ -65,12 +65,12 @@ public class ShapeTest {
         }
         Shape subshape = shape.subshape(1);
         assertEquals(2, subshape.numDimensions());
-        assertEquals(4, subshape.numElements(0));
-        assertEquals(5, subshape.numElements(1));
+        assertEquals(4, subshape.size(0));
+        assertEquals(5, subshape.size(1));
         assertArrayEquals(new long[] {4, 5}, subshape.asArray());
         assertEquals(20, subshape.size());
         try {
-            subshape.numElements(2);
+            subshape.size(2);
             fail();
         } catch (IndexOutOfBoundsException e) {
             //as expected

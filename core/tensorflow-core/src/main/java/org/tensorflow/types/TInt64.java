@@ -14,7 +14,7 @@ import org.tensorflow.types.family.TNumber;
 
 public interface TInt64 extends LongNdArray, TNumber {
 
-  DataType<TInt64> DTYPE = new DataType<>(9, 8, TInt64Impl::mapTensor);
+  DataType<TInt64> DTYPE = new DataType<>(9, 8, "INT64", TInt64Impl::mapTensor);
 
   static Tensor<TInt64> scalar(long value) {
     Tensor<TInt64> t = tensorOfShape(Shape.scalar());

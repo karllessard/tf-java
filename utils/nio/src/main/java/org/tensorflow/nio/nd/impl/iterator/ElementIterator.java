@@ -25,7 +25,7 @@ class ElementIterator<T> implements Iterator<NdArray<T>> {
   
   @Override
   public boolean hasNext() {
-    return currentIdx < array.shape().numElements(0);
+    return currentIdx < array.shape().size(0);
   }
 
   @Override

@@ -26,25 +26,15 @@ public class DataType<T> {
     T mapTensor(ByteBuffer[] tensorBuffer, Shape shape);
   }
 
-  private final int value;
-  private final int byteSize;
-  private final TensorDataMapper<T> tensorDataMapper;
-
-  /**
-   * @param value must match the corresponding TF_* value in the TensorFlow C API.
-   * @param byteSize size of an element of this type, in bytes, -1 if unknown
-   */
-  public DataType(int value, int byteSize, TensorDataMapper<T> tensorDataMapper) {
-    this.value = value;
-    this.byteSize = byteSize;
-    this.tensorDataMapper = tensorDataMapper;
-  }
-
   /**
    * Returns the size of an element of this type, in bytes, or -1 if element size is variable.
    */
   public int byteSize() {
     return byteSize;
+  }
+
+  public String name() {
+    return name;
   }
 
   /** Corresponding value of the TF_DataType enum in the TensorFlow C API. */
@@ -54,5 +44,21 @@ public class DataType<T> {
 
   T mapTensor(Shape shape, ByteBuffer[] tensorBuffers) {
     return tensorDataMapper.mapTensor(tensorBuffers, shape);
+  }
+
+  private final int value;
+  private final int byteSize;
+  private final String name;
+  private final TensorDataMapper<T> tensorDataMapper;
+
+  /**
+   * @param value must match the corresponding TF_* value in the TensorFlow C API.
+   * @param byteSize size of an element of this type, in bytes, -1 if unknown
+   */
+  public DataType(int value, int byteSize, String name, TensorDataMapper<T> tensorDataMapper) {
+    this.value = value;
+    this.byteSize = byteSize;
+    this.name = name;
+    this.tensorDataMapper = tensorDataMapper;
   }
 }

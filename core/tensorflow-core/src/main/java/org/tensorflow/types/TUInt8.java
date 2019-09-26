@@ -14,7 +14,7 @@ import org.tensorflow.types.family.TNumber;
 
 public interface TUInt8 extends ByteNdArray, TNumber {
 
-  DataType<TUInt8> DTYPE = new DataType<>(4, 1, TUInt8Impl::mapTensor);
+  DataType<TUInt8> DTYPE = new DataType<>(4, 1, "UINT8", TUInt8Impl::mapTensor);
 
   static Tensor<TUInt8> scalar(byte value) {
     Tensor<TUInt8> t = tensorOfShape(Shape.scalar());

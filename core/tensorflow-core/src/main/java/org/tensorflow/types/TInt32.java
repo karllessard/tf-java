@@ -14,7 +14,7 @@ import org.tensorflow.types.family.TNumber;
 
 public interface TInt32 extends IntNdArray, TNumber {
 
-  DataType<TInt32> DTYPE = new DataType<>(3, 4, TInt32Impl::mapTensor);
+  DataType<TInt32> DTYPE = new DataType<>(3, 4, "INT32", TInt32Impl::mapTensor);
 
   static Tensor<TInt32> scalar(int value) {
     Tensor<TInt32> t = tensorOfShape(Shape.scalar());
