@@ -30,10 +30,7 @@ public final class Shapes {
     return new KnownShape(new Dimension[0]);
   }
 
-  public static Shape make(long... dimensionSizes) {
-    if (dimensionSizes == null) {
-      return scalar();
-    }
+  public static Shape make(long[] dimensionSizes) {
     Dimension[] dimensions = new Dimension[dimensionSizes.length];
 
     // Start from the last dimension, where all elements are continuous

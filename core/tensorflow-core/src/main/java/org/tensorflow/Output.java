@@ -41,7 +41,8 @@ public final class Output<T> implements Operand<T> {
 
   /** Returns the (possibly partially known) shape of the tensor referred to by this Output. */
   public Shape shape() {
-    return Shape.make(operation.shape(index));
+    long[] shape = operation.shape(index);
+    return shape == null ? Shape.unknown() : Shape.make(shape);
   }
 
   /** Returns the DataType of the tensor referred to by this Output. */

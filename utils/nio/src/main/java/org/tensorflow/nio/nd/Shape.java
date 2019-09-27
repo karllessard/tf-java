@@ -58,6 +58,9 @@ public interface Shape {
    * }</pre>
    */
   static Shape make(long... dimensionSizes) {
+    if (dimensionSizes == null) {
+      return Shapes.scalar();
+    }
     return Shapes.make(dimensionSizes);
   }
 
