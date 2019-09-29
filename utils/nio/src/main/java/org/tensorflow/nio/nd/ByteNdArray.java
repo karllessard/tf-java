@@ -91,7 +91,7 @@ public interface ByteNdArray extends NdArray<Byte> {
   ByteNdArray slice(Index... indices);
 
   @Override
-  Iterable<ByteNdArray> childElements();
+  Iterable<ByteNdArray> elements();
 
   @Override
   ByteNdArray set(Byte value, long... indices);

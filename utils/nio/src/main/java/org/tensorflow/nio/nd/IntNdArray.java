@@ -92,7 +92,7 @@ public interface IntNdArray extends NdArray<Integer> {
   IntNdArray slice(Index... indices);
 
   @Override
-  Iterable<IntNdArray> childElements();
+  Iterable<IntNdArray> elements();
 
   @Override
   IntNdArray set(Integer value, long... indices);

@@ -92,7 +92,7 @@ public interface FloatNdArray extends NdArray<Float> {
   FloatNdArray slice(Index... indices);
 
   @Override
-  Iterable<FloatNdArray> childElements();
+  Iterable<FloatNdArray> elements();
 
   @Override
   FloatNdArray set(Float value, long... indices);

@@ -92,7 +92,7 @@ public interface DoubleNdArray extends NdArray<Double> {
   DoubleNdArray slice(Index... indices);
 
   @Override
-  Iterable<DoubleNdArray> childElements();
+  Iterable<DoubleNdArray> elements();
 
   @Override
   DoubleNdArray set(Double value, long... indices);

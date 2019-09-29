@@ -69,7 +69,7 @@ class BulkDataTransfer<R extends AbstractDenseNdArray<?, ?>> {
       bulkCopy.accept(this, element);
       this.totalCopied += bulkCopySize;
     } else {
-      element.childElements().forEach(e -> execute(bulkCopy, (R) e, dimensionIdx + 1));
+      element.elements().forEach(e -> execute(bulkCopy, (R) e, dimensionIdx + 1));
     }
   }
 }

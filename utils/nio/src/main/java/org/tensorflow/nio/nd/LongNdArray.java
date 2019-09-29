@@ -92,7 +92,7 @@ public interface LongNdArray extends NdArray<Long> {
   LongNdArray slice(Index... indices);
 
   @Override
-  Iterable<LongNdArray> childElements();
+  Iterable<LongNdArray> elements();
 
   @Override
   LongNdArray set(Long value, long... indices);

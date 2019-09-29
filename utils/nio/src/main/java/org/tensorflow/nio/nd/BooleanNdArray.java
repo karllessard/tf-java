@@ -92,7 +92,7 @@ public interface BooleanNdArray extends NdArray<Boolean> {
   BooleanNdArray slice(Index... indices);
 
   @Override
-  Iterable<BooleanNdArray> childElements();
+  Iterable<BooleanNdArray> elements();
 
   @Override
   BooleanNdArray set(Boolean value, long... indices);

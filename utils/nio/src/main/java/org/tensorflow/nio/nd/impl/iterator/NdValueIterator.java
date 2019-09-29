@@ -39,7 +39,7 @@ class NdValueIterator<T> implements ValueIterator<T> {
   }
   
   NdValueIterator(NdArray<T> array) {
-    elementIterator = array.childElements().iterator();
+    elementIterator = array.elements().iterator();
     currentElementValueIterator = elementIterator.next().values().iterator();
   }
   

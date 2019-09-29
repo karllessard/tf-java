@@ -43,7 +43,7 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
   }
 
   @Override
-  public Iterable<U> childElements() {
+  public Iterable<U> elements() {
     return (Iterable)(() -> Iterators.elementsOf(this));
   }
 
