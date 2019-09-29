@@ -45,4 +45,8 @@ public interface Operand<T> {
    * @see OperationBuilder#addInput(Output)
    */
   Output<T> asOutput();
+
+  default T data() {
+    return asOutput().tensor().data();
+  }
 }

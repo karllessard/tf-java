@@ -136,7 +136,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static Constant<TInt32> create(Scope scope, long[] shape, IntBuffer data) {
     try (Tensor<TInt32> value = Tensor.create(shape, data)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
@@ -233,7 +233,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static Constant<TFloat> create(Scope scope, long[] shape, FloatBuffer data) {
     try (Tensor<TFloat> value = Tensor.create(shape, data)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
@@ -330,7 +330,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static Constant<TDouble> create(Scope scope, long[] shape, DoubleBuffer data) {
     try (Tensor<TDouble> value = Tensor.create(shape, data)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
@@ -427,7 +427,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static Constant<TInt64> create(Scope scope, long[] shape, LongBuffer data) {
     try (Tensor<TInt64> value = Tensor.create(shape, data)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
@@ -529,7 +529,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static Constant<TString> create(Scope scope, String data, Charset charset) {
     try (Tensor<TString> value = Tensor.create(data.getBytes(charset), TString.DTYPE)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
@@ -617,7 +617,7 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static <T extends TType> Constant<T> create(Scope scope, DataType<T> type, long[] shape, ByteBuffer data) {
     try (Tensor<T> value = Tensor.create(type, shape, data)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
@@ -639,11 +639,11 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
    */
   public static <T extends TType> Constant<T> create(Scope scope, Object object, DataType<T> type) {
     try (Tensor<T> value = Tensor.create(object, type)) {
-      return createWithTensor(scope, value);
+      return create(scope, value);
     }
   }
 
-  private static <T> Constant<T> createWithTensor(Scope scope, Tensor<T> value) {
+  public static <T> Constant<T> create(Scope scope, Tensor<T> value) {
     return new Constant<>(
         scope
             .env()
