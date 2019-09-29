@@ -19,7 +19,7 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.nd.BooleanNdArray;
 import org.tensorflow.nio.nd.Shape;
-import org.tensorflow.nio.nd.impl.iterator.ValueIterator;
+import org.tensorflow.nio.nd.ValueIterator;
 
 public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNdArray> implements BooleanNdArray {
 

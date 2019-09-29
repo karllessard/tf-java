@@ -17,6 +17,7 @@
 package org.tensorflow.nio.nd.impl.iterator;
 
 import org.tensorflow.nio.nd.NdArray;
+import org.tensorflow.nio.nd.ValueIterator;
 
 class VectorValueIterator<T> implements ValueIterator<T> {
 

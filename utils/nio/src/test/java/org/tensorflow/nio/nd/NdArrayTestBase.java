@@ -26,7 +26,6 @@ import java.util.stream.LongStream;
 
 import org.junit.Test;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.nd.impl.iterator.ValueIterator;
 
 public abstract class NdArrayTestBase<T> {
 

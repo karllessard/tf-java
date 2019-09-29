@@ -14,7 +14,7 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.nd.impl.iterator;
+package org.tensorflow.nio.nd;
 
 import java.util.Iterator;
 

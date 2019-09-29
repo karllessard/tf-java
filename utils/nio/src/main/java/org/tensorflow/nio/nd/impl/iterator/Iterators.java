@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.tensorflow.nio.nd.IllegalRankException;
 import org.tensorflow.nio.nd.NdArray;
+import org.tensorflow.nio.nd.ValueIterable;
 
 public final class Iterators {
   
