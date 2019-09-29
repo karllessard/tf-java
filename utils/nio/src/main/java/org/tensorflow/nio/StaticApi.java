@@ -93,7 +93,7 @@ public interface StaticApi {
   }
 
   static IntNdArray ndArrayOfInts(Shape shape) {
-    return NdArrays.ofIntegers(shape);
+    return NdArrays.ofInts(shape);
   }
 
   static IntNdArray ndArrayOf(int[] values, Shape shape) {

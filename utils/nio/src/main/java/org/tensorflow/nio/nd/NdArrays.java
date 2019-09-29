@@ -58,7 +58,7 @@ public final class NdArrays {
     return LongDenseNdArray.wrap(buffer, shape);
   }
 
-  public static IntNdArray ofIntegers(Shape shape) {
+  public static IntNdArray ofInts(Shape shape) {
     return wrap(DataBuffers.ofIntegers(shape.size()), shape);
   }
 

@@ -26,7 +26,7 @@ import org.tensorflow.nio.nd.Shape;
 public class IntDenseNdArrayTest extends IntNdArrayTestBase {
 
   @Override protected IntNdArray allocate(Shape shape) {
-    return NdArrays.ofIntegers(shape);
+    return NdArrays.ofInts(shape);
   }
 
   @Override protected DataBuffer<Integer> allocateBuffer(long capacity) {
