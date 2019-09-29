@@ -643,13 +643,20 @@ public final class Constant<T> extends PrimitiveOp implements Operand<T> {
     }
   }
 
-  public static <T> Constant<T> create(Scope scope, Tensor<T> value) {
+  /**
+   * Create a constant from a Tensor.
+   *
+   * @param scope is a scope used to add the underlying operation.
+   * @param tensor a Tensor holding the constant value
+   * @return a constant of the same data type as `tensor`
+   */
+  public static <T> Constant<T> create(Scope scope, Tensor<T> tensor) {
     return new Constant<>(
         scope
             .env()
             .opBuilder("Const", scope.makeOpName("Const"))
-            .setAttr("value", value)
-            .setAttr("dtype", value.dataType())
+            .setAttr("value", tensor)
+            .setAttr("dtype", tensor.dataType())
             .build());
   }
 
