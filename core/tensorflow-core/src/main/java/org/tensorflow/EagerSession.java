@@ -453,7 +453,6 @@ public final class EagerSession implements ExecutionEnvironment, AutoCloseable {
           nativeRef.delete();
           ++deletedCount;
         }
-        System.out.println("Resources cleared by session close: " + deletedCount);
         nativeRefs.clear();
       }
     }
@@ -487,7 +486,6 @@ public final class EagerSession implements ExecutionEnvironment, AutoCloseable {
                 } catch (InterruptedException e) {
                   // exit
                 }
-                System.out.println("Resources cleared by garbage collection: " + deletedCount);
               }
             });
       } catch (Exception e) {
