@@ -257,7 +257,7 @@ public final class Tensor<T> implements AutoCloseable {
   }
 
   public static <T extends TType> Tensor<T> allocate(DataType<T> dtype, Shape shape) {
-    return allocate(dtype, shape, shape.size());
+    return allocate(dtype, shape, shape.size() * dtype.byteSize());
   }
 
   public static <T extends TType> Tensor<T> allocate(DataType<T> dtype, Shape shape, long capacity) {

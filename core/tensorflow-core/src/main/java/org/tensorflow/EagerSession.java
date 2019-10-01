@@ -321,18 +321,11 @@ public final class EagerSession implements ExecutionEnvironment, AutoCloseable {
   }
 
   @Override
-  public synchronized void close() {
+  public void close() {
     if (this == defaultSession) {
       throw new IllegalStateException("Default eager session cannot be closed");
     }
-    if (nativeHandle != 0L) {
-      if (resourceCleanupStrategy == ResourceCleanupStrategy.IN_BACKGROUND) {
-        nativeResources.stopCleanupThread();
-      }
-      nativeResources.deleteAll();
-      delete(nativeHandle);
-      nativeHandle = 0L;
-    }
+    doClose();
   }
 
   @Override
@@ -448,10 +441,8 @@ public final class EagerSession implements ExecutionEnvironment, AutoCloseable {
 
     void deleteAll() {
       synchronized (nativeRefs) {
-        long deletedCount = 0L;
         for (NativeReference nativeRef : nativeRefs.keySet()) {
           nativeRef.delete();
-          ++deletedCount;
         }
         nativeRefs.clear();
       }
@@ -476,12 +467,10 @@ public final class EagerSession implements ExecutionEnvironment, AutoCloseable {
             new Runnable() {
               @Override
               public void run() {
-                long deletedCount = 0;
                 try {
                   while (cleanupInBackground) {
                     NativeReference nativeRef = (NativeReference) garbageQueue.remove();
                     delete(nativeRef);
-                    ++deletedCount;
                   }
                 } catch (InterruptedException e) {
                   // exit
@@ -524,6 +513,17 @@ public final class EagerSession implements ExecutionEnvironment, AutoCloseable {
   private void checkSession() {
     if (nativeHandle == 0L) {
       throw new IllegalStateException("Eager session has been closed");
+    }
+  }
+
+  private synchronized void doClose() {
+    if (nativeHandle != 0L) {
+      if (resourceCleanupStrategy == ResourceCleanupStrategy.IN_BACKGROUND) {
+        nativeResources.stopCleanupThread();
+      }
+      nativeResources.deleteAll();
+      delete(nativeHandle);
+      nativeHandle = 0L;
     }
   }
 
