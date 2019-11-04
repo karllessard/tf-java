@@ -22,10 +22,11 @@ import java.nio.ReadOnlyBufferException;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractBasicDataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractBoundDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class BooleanArrayDataBuffer extends AbstractBasicDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer {
+public class BooleanArrayDataBuffer extends
+    AbstractBoundDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer {
 
   public static BooleanDataBuffer wrap(boolean[] array, boolean readOnly) {
     return new BooleanArrayDataBuffer(array, readOnly);

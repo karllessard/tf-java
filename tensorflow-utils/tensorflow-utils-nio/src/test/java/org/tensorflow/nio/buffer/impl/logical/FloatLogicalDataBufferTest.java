@@ -10,16 +10,11 @@ import org.tensorflow.nio.buffer.impl.large.ByteLargeDataBuffer;
 public class FloatLogicalDataBufferTest extends FloatDataBufferTestBase {
 
   @Override
-  protected FloatDataBuffer allocate(long capacity) {
-    return DataBuffers.ofFloats(capacity, new TestFloatMapper());
-  }
-
-  @Override
   protected long maxCapacity() {
     return ByteLargeDataBuffer.MAX_CAPACITY / 2;
   }
 
-  private static class TestFloatMapper implements FloatDataConverter {
+  private static class TestFloat16Mapper implements FloatDataConverter {
 
     @Override
     public void writeFloat(ByteDataBuffer buffer, float value) {
@@ -39,5 +34,9 @@ public class FloatLogicalDataBufferTest extends FloatDataBufferTestBase {
     public int sizeInBytes() {
       return 2;
     }
+  }
+
+  public FloatDataBuffer allocate(long capacity) {
+    return DataBuffers.ofFloats(capacity, new TestFloat16Mapper());
   }
 }

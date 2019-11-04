@@ -19,7 +19,7 @@ package org.tensorflow.nio.buffer.impl;
 import org.tensorflow.nio.buffer.DataBuffer;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractBasicDataBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T, B> {
+public abstract class AbstractBoundDataBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T, B> {
 
   @Override
   public long limit() {
@@ -69,7 +69,7 @@ public abstract class AbstractBasicDataBuffer<T, B extends DataBuffer<T>> extend
     return readOnly;
   }
 
-  protected AbstractBasicDataBuffer(boolean readOnly, long position, long limit) {
+  protected AbstractBoundDataBuffer(boolean readOnly, long position, long limit) {
     this.readOnly = readOnly;
     this.position = position;
     this.limit = limit;

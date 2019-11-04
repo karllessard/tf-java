@@ -5,11 +5,11 @@ import java.nio.BufferUnderflowException;
 import java.util.BitSet;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractBasicDataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractBoundDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
 public class BitSetDataBuffer extends
-    AbstractBasicDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer  {
+    AbstractBoundDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer  {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
 

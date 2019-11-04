@@ -41,12 +41,24 @@ public class Validator {
     }
   }
 
+  public static <T> void get(DataBuffer<T> buffer) {
+    if (!buffer.hasRemaining()) {
+      throw new BufferUnderflowException();
+    }
+  }
+
   public static <T> void getArgs(DataBuffer<T> buffer, long index) {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
     }
     if (index >= buffer.limit()) {
       throw new IndexOutOfBoundsException("Index must be smaller than the buffer limit");
+    }
+  }
+
+  public static <T> void put(DataBuffer<T> buffer) {
+    if (!buffer.hasRemaining()) {
+      throw new BufferOverflowException();
     }
   }
 

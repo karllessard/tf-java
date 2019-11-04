@@ -23,10 +23,10 @@ import java.nio.ReadOnlyBufferException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractBasicDataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractBoundDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class ArrayDataBuffer<T> extends AbstractBasicDataBuffer<T, DataBuffer<T>> {
+public class ArrayDataBuffer<T> extends AbstractBoundDataBuffer<T, DataBuffer<T>> {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
   
