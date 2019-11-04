@@ -26,6 +26,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
+import org.tensorflow.c_api.TF_Tensor;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.types.TBool;
 import org.tensorflow.types.TDouble;
@@ -557,10 +558,20 @@ public final class Tensor<T> implements AutoCloseable {
     return nativeRef.tensorHandle;
   }
 
+  TF_Tensor getNative() {
+    TF_Tensor nativeTensor = new TF_Tensor();
+    nativeTensor.temporaryHackToSetAddressFromHandle(nativeRef.tensorHandle);
+    return nativeTensor;
+  }
+
   ByteBuffer[] buffers() {
     // TODO change the C API so it can return more than one buffer in case the size of the tensor
     //      exceeds the maximum capacity of a single buffer (which is around Integer.MAX_VALUE)
     return new ByteBuffer[] { buffer(getNativeHandle()).order(ByteOrder.nativeOrder()) };
+  }
+
+  long[] bufferInfo() {
+    return bufferInfo(nativeRef.tensorHandle);
   }
 
   private NativeReference nativeRef = null;
@@ -821,6 +832,8 @@ public final class Tensor<T> implements AutoCloseable {
   private static native void delete(long handle);
 
   private static native ByteBuffer buffer(long handle);
+
+  private static native long[] bufferInfo(long handle);
 
   private static native int dtype(long handle);
 

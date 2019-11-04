@@ -15,23 +15,23 @@ limitations under the License.
 
 package org.tensorflow;
 
-import java.nio.ByteBuffer;
+import org.tensorflow.c_api.TF_Tensor;
 import org.tensorflow.nio.nd.Shape;
 
 /** Represents a type of elements in a {@link Tensor} */
 public final class DataType<T> {
 
   @FunctionalInterface
-  public interface MemoryMapper<T> {
+  public interface TensorMapper<T> {
 
     /**
-     * Maps the memory of a tensor to a data structure for manipulating elements of this type.
+     * Maps tensor memory to a data structure for manipulating elements of this type.
      *
-     * @param tensorBuffers tensor memory, split in one or more byte buffers
+     * @param nativeTensor pointer to the native tensor
      * @param shape the shape of the tensor
      * @return data structure of elements of this type
      */
-    T apply(ByteBuffer[] tensorBuffers, Shape shape);
+    T apply(TF_Tensor nativeTensor, Shape shape);
   }
 
   /**
@@ -40,10 +40,10 @@ public final class DataType<T> {
    * @param name readable-name for this type
    * @param value must match the corresponding TF_* value in the TensorFlow C API.
    * @param byteSize size of an element of this type, in bytes, -1 if unknown
-   * @param memoryMapper method for mapping tensor memory to elements of this type
+   * @param tensorMapper method for mapping tensor memory to elements of this type
    */
-  public static <T> DataType<T> create(String name, int value, int byteSize, MemoryMapper<T> memoryMapper) {
-    return new DataType<>(name, value, byteSize, memoryMapper);
+  public static <T> DataType<T> create(String name, int value, int byteSize, TensorMapper<T> tensorMapper) {
+    return new DataType<>(name, value, byteSize, tensorMapper);
   }
 
   /**
@@ -74,18 +74,18 @@ public final class DataType<T> {
    * @return data structure of elements of this type
    */
   T map(Tensor tensor) {
-    return memoryMapper.apply(tensor.buffers(), tensor.shape());
+    return tensorMapper.apply(tensor.getNative(), tensor.shape());
   }
 
   private final int nativeCode;
   private final int byteSize;
   private final String name;
-  private final MemoryMapper<T> memoryMapper;
+  private final TensorMapper<T> tensorMapper;
 
-  private DataType(String name, int nativeCode, int byteSize, MemoryMapper<T> memoryMapper) {
+  private DataType(String name, int nativeCode, int byteSize, TensorMapper<T> tensorMapper) {
     this.name = name;
     this.nativeCode = nativeCode;
     this.byteSize = byteSize;
-    this.memoryMapper = memoryMapper;
+    this.tensorMapper = tensorMapper;
   }
 }

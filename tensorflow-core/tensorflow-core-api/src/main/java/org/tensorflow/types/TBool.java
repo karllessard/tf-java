@@ -1,8 +1,10 @@
 package org.tensorflow.types;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.nio.ByteBuffer;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
+import org.tensorflow.c_api.TF_Tensor;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
@@ -12,10 +14,12 @@ import org.tensorflow.nio.nd.BooleanNdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.BooleanDenseNdArray;
 import org.tensorflow.types.family.TType;
+import org.tensorflow.types.impl.buffer.ByteTensorBuffer;
+import org.tensorflow.types.impl.buffer.DoubleTensorBuffer;
 
 public interface TBool extends BooleanNdArray, TType {
 
-  DataType<TBool> DTYPE = DataType.create("BOOL", 10, 1, TBoolImpl::map);
+  DataType<TBool> DTYPE = DataType.create("BOOL", 10, 1, TBoolImpl::mapTensor);
 
   static Tensor<TBool> scalar(boolean value) {
     Tensor<TBool> t = tensorOfShape();
@@ -36,12 +40,9 @@ public interface TBool extends BooleanNdArray, TType {
 
 class TBoolImpl extends BooleanDenseNdArray implements TBool {
 
-  static TBool map(ByteBuffer[] tensorBuffers, Shape shape) {
-    BooleanDataBuffer[] buffers = new BooleanDataBuffer[tensorBuffers.length];
-    for (int i = 0; i < tensorBuffers.length; ++i) {
-      buffers[i] = BooleanLogicalDataBuffer.map(DataBuffers.wrap(tensorBuffers[i]), BOOL_MAPPER);
-    }
-    return new TBoolImpl(DataBuffers.join(buffers), shape);
+  static TBool mapTensor(TF_Tensor nativeTensor, Shape shape) {
+    ByteDataBuffer tensorBuffer = ByteTensorBuffer.map(nativeTensor);
+    return new TBoolImpl(BooleanLogicalDataBuffer.map(tensorBuffer, BOOL_MAPPER), shape);
   }
 
   private TBoolImpl(BooleanDataBuffer buffer, Shape shape) {
