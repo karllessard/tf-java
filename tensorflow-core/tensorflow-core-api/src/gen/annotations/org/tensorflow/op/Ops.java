@@ -401,6 +401,18 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link StringUpper} operation
+   *
+   * @param input 
+   * @param options carries optional attributes values
+   * @return a new instance of StringUpper
+   * @see org.tensorflow.op.core.StringUpper
+   */
+  public StringUpper stringUpper(Operand<TString> input, StringUpper.Options... options) {
+    return StringUpper.create(scope, input, options);
+  }
+
+  /**
    * Builds an {@link DrawBoundingBoxesV2} operation
    *
    * @param images 4-D with shape `[batch, height, width, depth]`. A batch of images.
@@ -412,18 +424,6 @@ public final class Ops {
   public <T extends TNumber> DrawBoundingBoxesV2<T> drawBoundingBoxesV2(Operand<T> images,
       Operand<TFloat> boxes, Operand<TFloat> colors) {
     return DrawBoundingBoxesV2.create(scope, images, boxes, colors);
-  }
-
-  /**
-   * Builds an {@link StringUpper} operation
-   *
-   * @param input 
-   * @param options carries optional attributes values
-   * @return a new instance of StringUpper
-   * @see org.tensorflow.op.core.StringUpper
-   */
-  public StringUpper stringUpper(Operand<TString> input, StringUpper.Options... options) {
-    return StringUpper.create(scope, input, options);
   }
 
   /**
@@ -509,6 +509,20 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link All} operation
+   *
+   * @param input The tensor to reduce.
+   * @param axis The dimensions to reduce. Must be in the range
+   * @param options carries optional attributes values
+   * @return a new instance of All
+   * @see org.tensorflow.op.core.All
+   */
+  public <T extends TNumber> All all(Operand<TBool> input, Operand<T> axis,
+      All.Options... options) {
+    return All.create(scope, input, axis, options);
+  }
+
+  /**
    * Builds an {@link FusedBatchNormGradV3} operation
    *
    * @param yBackprop A 4D Tensor for the gradient with respect to y.
@@ -525,20 +539,6 @@ public final class Ops {
       Operand<T> yBackprop, Operand<T> x, Operand<TFloat> scale, Operand<U> reserveSpace1,
       Operand<U> reserveSpace2, Operand<U> reserveSpace3, FusedBatchNormGradV3.Options... options) {
     return FusedBatchNormGradV3.create(scope, yBackprop, x, scale, reserveSpace1, reserveSpace2, reserveSpace3, options);
-  }
-
-  /**
-   * Builds an {@link All} operation
-   *
-   * @param input The tensor to reduce.
-   * @param axis The dimensions to reduce. Must be in the range
-   * @param options carries optional attributes values
-   * @return a new instance of All
-   * @see org.tensorflow.op.core.All
-   */
-  public <T extends TNumber> All all(Operand<TBool> input, Operand<T> axis,
-      All.Options... options) {
-    return All.create(scope, input, axis, options);
   }
 
   /**
@@ -593,18 +593,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link StageClear} operation
-   *
-   * @param dtypes 
-   * @param options carries optional attributes values
-   * @return a new instance of StageClear
-   * @see org.tensorflow.op.core.StageClear
-   */
-  public StageClear stageClear(List<DataType<?>> dtypes, StageClear.Options... options) {
-    return StageClear.create(scope, dtypes, options);
-  }
-
-  /**
    * Builds an {@link Gather} operation
    *
    * @param params The tensor from which to gather values. Must be at least rank
@@ -620,13 +608,15 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link Constant} operation
+   * Builds an {@link StageClear} operation
    *
-   * @param data An array containing the values to put into the new constant. The dimensions of the
-   * @see org.tensorflow.op.core.Constant
+   * @param dtypes 
+   * @param options carries optional attributes values
+   * @return a new instance of StageClear
+   * @see org.tensorflow.op.core.StageClear
    */
-  public Constant<TFloat> constant(float[][][] data) {
-    return Constant.create(scope, data);
+  public StageClear stageClear(List<DataType<?>> dtypes, StageClear.Options... options) {
+    return StageClear.create(scope, dtypes, options);
   }
 
   /**
@@ -645,6 +635,16 @@ public final class Ops {
       Operand<?> ref, Operand<T> begin, Operand<T> end, Operand<T> strides, Operand<U> value,
       ResourceStridedSliceAssign.Options... options) {
     return ResourceStridedSliceAssign.create(scope, ref, begin, end, strides, value, options);
+  }
+
+  /**
+   * Builds an {@link Constant} operation
+   *
+   * @param data An array containing the values to put into the new constant. The dimensions of the
+   * @see org.tensorflow.op.core.Constant
+   */
+  public Constant<TFloat> constant(float[][][] data) {
+    return Constant.create(scope, data);
   }
 
   /**
@@ -700,17 +700,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link BarrierIncompleteSize} operation
-   *
-   * @param handle The handle to a barrier.
-   * @return a new instance of BarrierIncompleteSize
-   * @see org.tensorflow.op.core.BarrierIncompleteSize
-   */
-  public BarrierIncompleteSize barrierIncompleteSize(Operand<TString> handle) {
-    return BarrierIncompleteSize.create(scope, handle);
-  }
-
-  /**
    * Builds an {@link MatrixDiagPartV2} operation
    *
    * @param input Rank `r` tensor where `r >= 2`.
@@ -722,6 +711,17 @@ public final class Ops {
   public <T> MatrixDiagPartV2<T> matrixDiagPartV2(Operand<T> input, Operand<TInt32> k,
       Operand<T> paddingValue) {
     return MatrixDiagPartV2.create(scope, input, k, paddingValue);
+  }
+
+  /**
+   * Builds an {@link BarrierIncompleteSize} operation
+   *
+   * @param handle The handle to a barrier.
+   * @return a new instance of BarrierIncompleteSize
+   * @see org.tensorflow.op.core.BarrierIncompleteSize
+   */
+  public BarrierIncompleteSize barrierIncompleteSize(Operand<TString> handle) {
+    return BarrierIncompleteSize.create(scope, handle);
   }
 
   /**
@@ -1013,6 +1013,21 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link DecodePaddedRaw} operation
+   *
+   * @param inputBytes Tensor of string to be decoded.
+   * @param fixedLength Length in bytes for each element of the decoded output. Must be a multiple
+   * @param outType 
+   * @param options carries optional attributes values
+   * @return a new instance of DecodePaddedRaw
+   * @see org.tensorflow.op.core.DecodePaddedRaw
+   */
+  public <T extends TNumber> DecodePaddedRaw<T> decodePaddedRaw(Operand<TString> inputBytes,
+      Operand<TInt32> fixedLength, DataType<T> outType, DecodePaddedRaw.Options... options) {
+    return DecodePaddedRaw.create(scope, inputBytes, fixedLength, outType, options);
+  }
+
+  /**
    * Builds an {@link Constant} operation
    *
    * @param data An array containing the values to put into the new constant. The dimensions of the
@@ -1033,21 +1048,6 @@ public final class Ops {
   public <T, U extends TNumber> UniqueWithCounts<T, TInt32> uniqueWithCounts(Operand<T> x,
       Operand<U> axis) {
     return UniqueWithCounts.create(scope, x, axis);
-  }
-
-  /**
-   * Builds an {@link DecodePaddedRaw} operation
-   *
-   * @param inputBytes Tensor of string to be decoded.
-   * @param fixedLength Length in bytes for each element of the decoded output. Must be a multiple
-   * @param outType 
-   * @param options carries optional attributes values
-   * @return a new instance of DecodePaddedRaw
-   * @see org.tensorflow.op.core.DecodePaddedRaw
-   */
-  public <T extends TNumber> DecodePaddedRaw<T> decodePaddedRaw(Operand<TString> inputBytes,
-      Operand<TInt32> fixedLength, DataType<T> outType, DecodePaddedRaw.Options... options) {
-    return DecodePaddedRaw.create(scope, inputBytes, fixedLength, outType, options);
   }
 
   /**
@@ -1083,17 +1083,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link IsVariableInitialized} operation
-   *
-   * @param ref Should be from a `Variable` node. May be uninitialized.
-   * @return a new instance of IsVariableInitialized
-   * @see org.tensorflow.op.core.IsVariableInitialized
-   */
-  public <T> IsVariableInitialized isVariableInitialized(Operand<T> ref) {
-    return IsVariableInitialized.create(scope, ref);
-  }
-
-  /**
    * Builds an {@link TensorListGather} operation
    *
    * @param inputHandle 
@@ -1120,6 +1109,17 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link IsVariableInitialized} operation
+   *
+   * @param ref Should be from a `Variable` node. May be uninitialized.
+   * @return a new instance of IsVariableInitialized
+   * @see org.tensorflow.op.core.IsVariableInitialized
+   */
+  public <T> IsVariableInitialized isVariableInitialized(Operand<T> ref) {
+    return IsVariableInitialized.create(scope, ref);
+  }
+
+  /**
    * Builds an {@link Unstage} operation
    *
    * @param dtypes 
@@ -1129,6 +1129,22 @@ public final class Ops {
    */
   public Unstage unstage(List<DataType<?>> dtypes, Unstage.Options... options) {
     return Unstage.create(scope, dtypes, options);
+  }
+
+  /**
+   * Builds an {@link TensorArrayGather} operation
+   *
+   * @param handle The handle to a TensorArray.
+   * @param indices The locations in the TensorArray from which to read tensor elements.
+   * @param flowIn A float scalar that enforces proper chaining of operations.
+   * @param dtype The type of the elem that is returned.
+   * @param options carries optional attributes values
+   * @return a new instance of TensorArrayGather
+   * @see org.tensorflow.op.core.TensorArrayGather
+   */
+  public <T> TensorArrayGather<T> tensorArrayGather(Operand<?> handle, Operand<TInt32> indices,
+      Operand<TFloat> flowIn, DataType<T> dtype, TensorArrayGather.Options... options) {
+    return TensorArrayGather.create(scope, handle, indices, flowIn, dtype, options);
   }
 
   /**
@@ -1152,37 +1168,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link TensorArrayGather} operation
-   *
-   * @param handle The handle to a TensorArray.
-   * @param indices The locations in the TensorArray from which to read tensor elements.
-   * @param flowIn A float scalar that enforces proper chaining of operations.
-   * @param dtype The type of the elem that is returned.
-   * @param options carries optional attributes values
-   * @return a new instance of TensorArrayGather
-   * @see org.tensorflow.op.core.TensorArrayGather
-   */
-  public <T> TensorArrayGather<T> tensorArrayGather(Operand<?> handle, Operand<TInt32> indices,
-      Operand<TFloat> flowIn, DataType<T> dtype, TensorArrayGather.Options... options) {
-    return TensorArrayGather.create(scope, handle, indices, flowIn, dtype, options);
-  }
-
-  /**
-   * Builds an {@link TensorListScatterV2} operation
-   *
-   * @param tensor 
-   * @param indices 
-   * @param elementShape 
-   * @param numElements 
-   * @return a new instance of TensorListScatterV2
-   * @see org.tensorflow.op.core.TensorListScatterV2
-   */
-  public <T, U extends TNumber> TensorListScatterV2 tensorListScatterV2(Operand<T> tensor,
-      Operand<TInt32> indices, Operand<U> elementShape, Operand<TInt32> numElements) {
-    return TensorListScatterV2.create(scope, tensor, indices, elementShape, numElements);
-  }
-
-  /**
    * Builds an {@link Constant} operation
    *
    * @param data An array containing the values to put into the new constant. The dimensions of the
@@ -1200,6 +1185,21 @@ public final class Ops {
    */
   public Constant<TBool> constant(boolean[][] data) {
     return Constant.create(scope, data);
+  }
+
+  /**
+   * Builds an {@link TensorListScatterV2} operation
+   *
+   * @param tensor 
+   * @param indices 
+   * @param elementShape 
+   * @param numElements 
+   * @return a new instance of TensorListScatterV2
+   * @see org.tensorflow.op.core.TensorListScatterV2
+   */
+  public <T, U extends TNumber> TensorListScatterV2 tensorListScatterV2(Operand<T> tensor,
+      Operand<TInt32> indices, Operand<U> elementShape, Operand<TInt32> numElements) {
+    return TensorListScatterV2.create(scope, tensor, indices, elementShape, numElements);
   }
 
   /**
@@ -1243,17 +1243,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link OnesLike} operation
-   *
-   * @param x a tensor of type T.
-   * @return a new instance of OnesLike
-   * @see org.tensorflow.op.core.OnesLike
-   */
-  public <T> OnesLike<T> onesLike(Operand<T> x) {
-    return OnesLike.create(scope, x);
-  }
-
-  /**
    * Builds an {@link RefSwitch} operation
    *
    * @param data The ref tensor to be forwarded to the appropriate output.
@@ -1263,6 +1252,17 @@ public final class Ops {
    */
   public <T> RefSwitch<T> refSwitch(Operand<T> data, Operand<TBool> pred) {
     return RefSwitch.create(scope, data, pred);
+  }
+
+  /**
+   * Builds an {@link OnesLike} operation
+   *
+   * @param x a tensor of type T.
+   * @return a new instance of OnesLike
+   * @see org.tensorflow.op.core.OnesLike
+   */
+  public <T> OnesLike<T> onesLike(Operand<T> x) {
+    return OnesLike.create(scope, x);
   }
 
   /**
@@ -1338,20 +1338,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link TensorScatterUpdate} operation
-   *
-   * @param tensor Tensor to copy/update.
-   * @param indices Index tensor.
-   * @param updates Updates to scatter into output.
-   * @return a new instance of TensorScatterUpdate
-   * @see org.tensorflow.op.core.TensorScatterUpdate
-   */
-  public <T, U extends TNumber> TensorScatterUpdate<T> tensorScatterUpdate(Operand<T> tensor,
-      Operand<U> indices, Operand<T> updates) {
-    return TensorScatterUpdate.create(scope, tensor, indices, updates);
-  }
-
-  /**
    * Builds an {@link Constant} operation
    *
    * @param data The value to put into the new constant.
@@ -1370,6 +1356,20 @@ public final class Ops {
    */
   public Constant<TInt64> constant(long[][][] data) {
     return Constant.create(scope, data);
+  }
+
+  /**
+   * Builds an {@link TensorScatterUpdate} operation
+   *
+   * @param tensor Tensor to copy/update.
+   * @param indices Index tensor.
+   * @param updates Updates to scatter into output.
+   * @return a new instance of TensorScatterUpdate
+   * @see org.tensorflow.op.core.TensorScatterUpdate
+   */
+  public <T, U extends TNumber> TensorScatterUpdate<T> tensorScatterUpdate(Operand<T> tensor,
+      Operand<U> indices, Operand<T> updates) {
+    return TensorScatterUpdate.create(scope, tensor, indices, updates);
   }
 
   /**
@@ -1501,6 +1501,16 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link Timestamp} operation
+   *
+   * @return a new instance of Timestamp
+   * @see org.tensorflow.op.core.Timestamp
+   */
+  public Timestamp timestamp() {
+    return Timestamp.create(scope);
+  }
+
+  /**
    * Builds an {@link StatefulStandardNormalV2} operation
    *
    * @param resource The handle of the resource variable that stores the state of the RNG.
@@ -1512,16 +1522,6 @@ public final class Ops {
   public <T> StatefulStandardNormalV2<TFloat> statefulStandardNormalV2(Operand<?> resource,
       Operand<TInt64> algorithm, Operand<T> shape) {
     return StatefulStandardNormalV2.create(scope, resource, algorithm, shape);
-  }
-
-  /**
-   * Builds an {@link Timestamp} operation
-   *
-   * @return a new instance of Timestamp
-   * @see org.tensorflow.op.core.Timestamp
-   */
-  public Timestamp timestamp() {
-    return Timestamp.create(scope);
   }
 
   /**
@@ -1589,6 +1589,22 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link UnbatchGrad} operation
+   *
+   * @param originalInput 
+   * @param batchIndex 
+   * @param grad 
+   * @param id 
+   * @param options carries optional attributes values
+   * @return a new instance of UnbatchGrad
+   * @see org.tensorflow.op.core.UnbatchGrad
+   */
+  public <T> UnbatchGrad<T> unbatchGrad(Operand<T> originalInput, Operand<TInt64> batchIndex,
+      Operand<T> grad, Operand<TInt64> id, UnbatchGrad.Options... options) {
+    return UnbatchGrad.create(scope, originalInput, batchIndex, grad, id, options);
+  }
+
+  /**
    * Builds an {@link Constant} operation
    *
    * @param data An array containing the values to put into the new constant. The dimensions of the
@@ -1606,22 +1622,6 @@ public final class Ops {
    */
   public Constant<TString> constant(byte[] data) {
     return Constant.create(scope, data);
-  }
-
-  /**
-   * Builds an {@link UnbatchGrad} operation
-   *
-   * @param originalInput 
-   * @param batchIndex 
-   * @param grad 
-   * @param id 
-   * @param options carries optional attributes values
-   * @return a new instance of UnbatchGrad
-   * @see org.tensorflow.op.core.UnbatchGrad
-   */
-  public <T> UnbatchGrad<T> unbatchGrad(Operand<T> originalInput, Operand<TInt64> batchIndex,
-      Operand<T> grad, Operand<TInt64> id, UnbatchGrad.Options... options) {
-    return UnbatchGrad.create(scope, originalInput, batchIndex, grad, id, options);
   }
 
   /**
@@ -1749,16 +1749,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link Constant} operation
-   *
-   * @param data An array containing the values to put into the new constant. The dimensions of the
-   * @see org.tensorflow.op.core.Constant
-   */
-  public Constant<TBool> constant(boolean[][][] data) {
-    return Constant.create(scope, data);
-  }
-
-  /**
    * Builds an {@link TensorScatterAdd} operation
    *
    * @param tensor Tensor to copy/update.
@@ -1770,6 +1760,16 @@ public final class Ops {
   public <T, U extends TNumber> TensorScatterAdd<T> tensorScatterAdd(Operand<T> tensor,
       Operand<U> indices, Operand<T> updates) {
     return TensorScatterAdd.create(scope, tensor, indices, updates);
+  }
+
+  /**
+   * Builds an {@link Constant} operation
+   *
+   * @param data An array containing the values to put into the new constant. The dimensions of the
+   * @see org.tensorflow.op.core.Constant
+   */
+  public Constant<TBool> constant(boolean[][][] data) {
+    return Constant.create(scope, data);
   }
 
   /**
@@ -1914,21 +1914,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link ScatterMin} operation
-   *
-   * @param ref Should be from a `Variable` node.
-   * @param indices A tensor of indices into the first dimension of `ref`.
-   * @param updates A tensor of updated values to reduce into `ref`.
-   * @param options carries optional attributes values
-   * @return a new instance of ScatterMin
-   * @see org.tensorflow.op.core.ScatterMin
-   */
-  public <T extends TNumber, U extends TNumber> ScatterMin<T> scatterMin(Operand<T> ref,
-      Operand<U> indices, Operand<T> updates, ScatterMin.Options... options) {
-    return ScatterMin.create(scope, ref, indices, updates, options);
-  }
-
-  /**
    * Builds an {@link MapPeek} operation
    *
    * @param key 
@@ -1941,6 +1926,21 @@ public final class Ops {
   public MapPeek mapPeek(Operand<TInt64> key, Operand<TInt32> indices, List<DataType<?>> dtypes,
       MapPeek.Options... options) {
     return MapPeek.create(scope, key, indices, dtypes, options);
+  }
+
+  /**
+   * Builds an {@link ScatterMin} operation
+   *
+   * @param ref Should be from a `Variable` node.
+   * @param indices A tensor of indices into the first dimension of `ref`.
+   * @param updates A tensor of updated values to reduce into `ref`.
+   * @param options carries optional attributes values
+   * @return a new instance of ScatterMin
+   * @see org.tensorflow.op.core.ScatterMin
+   */
+  public <T extends TNumber, U extends TNumber> ScatterMin<T> scatterMin(Operand<T> ref,
+      Operand<U> indices, Operand<T> updates, ScatterMin.Options... options) {
+    return ScatterMin.create(scope, ref, indices, updates, options);
   }
 
   /**
@@ -2170,6 +2170,21 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link ScatterNdSub} operation
+   *
+   * @param ref A mutable Tensor. Should be from a Variable node.
+   * @param indices A Tensor. Must be one of the following types: int32, int64.
+   * @param updates A Tensor. Must have the same type as ref. A tensor of updated values
+   * @param options carries optional attributes values
+   * @return a new instance of ScatterNdSub
+   * @see org.tensorflow.op.core.ScatterNdSub
+   */
+  public <T, U extends TNumber> ScatterNdSub<T> scatterNdSub(Operand<T> ref, Operand<U> indices,
+      Operand<T> updates, ScatterNdSub.Options... options) {
+    return ScatterNdSub.create(scope, ref, indices, updates, options);
+  }
+
+  /**
    * Builds an {@link ResourceApplyKerasMomentum} operation
    *
    * @param var Should be from a Variable().
@@ -2185,21 +2200,6 @@ public final class Ops {
       Operand<T> lr, Operand<T> grad, Operand<T> momentum,
       ResourceApplyKerasMomentum.Options... options) {
     return ResourceApplyKerasMomentum.create(scope, var, accum, lr, grad, momentum, options);
-  }
-
-  /**
-   * Builds an {@link ScatterNdSub} operation
-   *
-   * @param ref A mutable Tensor. Should be from a Variable node.
-   * @param indices A Tensor. Must be one of the following types: int32, int64.
-   * @param updates A Tensor. Must have the same type as ref. A tensor of updated values
-   * @param options carries optional attributes values
-   * @return a new instance of ScatterNdSub
-   * @see org.tensorflow.op.core.ScatterNdSub
-   */
-  public <T, U extends TNumber> ScatterNdSub<T> scatterNdSub(Operand<T> ref, Operand<U> indices,
-      Operand<T> updates, ScatterNdSub.Options... options) {
-    return ScatterNdSub.create(scope, ref, indices, updates, options);
   }
 
   /**
@@ -2420,19 +2420,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link ParallelDynamicStitch} operation
-   *
-   * @param indices 
-   * @param data 
-   * @return a new instance of ParallelDynamicStitch
-   * @see org.tensorflow.op.core.ParallelDynamicStitch
-   */
-  public <T> ParallelDynamicStitch<T> parallelDynamicStitch(Iterable<Operand<TInt32>> indices,
-      Iterable<Operand<T>> data) {
-    return ParallelDynamicStitch.create(scope, indices, data);
-  }
-
-  /**
    * Builds an {@link ResourceScatterSub} operation
    *
    * @param resource Should be from a `Variable` node.
@@ -2444,6 +2431,19 @@ public final class Ops {
   public <T extends TNumber, U> ResourceScatterSub resourceScatterSub(Operand<?> resource,
       Operand<T> indices, Operand<U> updates) {
     return ResourceScatterSub.create(scope, resource, indices, updates);
+  }
+
+  /**
+   * Builds an {@link ParallelDynamicStitch} operation
+   *
+   * @param indices 
+   * @param data 
+   * @return a new instance of ParallelDynamicStitch
+   * @see org.tensorflow.op.core.ParallelDynamicStitch
+   */
+  public <T> ParallelDynamicStitch<T> parallelDynamicStitch(Iterable<Operand<TInt32>> indices,
+      Iterable<Operand<T>> data) {
+    return ParallelDynamicStitch.create(scope, indices, data);
   }
 
   /**
@@ -2483,6 +2483,17 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link Mutex} operation
+   *
+   * @param options carries optional attributes values
+   * @return a new instance of Mutex
+   * @see org.tensorflow.op.core.Mutex
+   */
+  public Mutex mutex(Mutex.Options... options) {
+    return Mutex.create(scope, options);
+  }
+
+  /**
    * Builds an {@link StatefulRandomBinomial} operation
    *
    * @param resource 
@@ -2497,17 +2508,6 @@ public final class Ops {
       Operand<?> resource, Operand<TInt64> algorithm, Operand<T> shape, Operand<U> counts,
       Operand<U> probs) {
     return StatefulRandomBinomial.create(scope, resource, algorithm, shape, counts, probs);
-  }
-
-  /**
-   * Builds an {@link Mutex} operation
-   *
-   * @param options carries optional attributes values
-   * @return a new instance of Mutex
-   * @see org.tensorflow.op.core.Mutex
-   */
-  public Mutex mutex(Mutex.Options... options) {
-    return Mutex.create(scope, options);
   }
 
   /**
@@ -2782,6 +2782,21 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link Rpc} operation
+   *
+   * @param address `0-D` or `1-D`.  The address (i.e. host_name:port) of the RPC server.
+   * @param method `0-D` or `1-D`.  The method address on the RPC server.
+   * @param request `0-D` or `1-D`.  Serialized proto strings: the rpc request argument.
+   * @param options carries optional attributes values
+   * @return a new instance of Rpc
+   * @see org.tensorflow.op.core.Rpc
+   */
+  public Rpc rpc(Operand<TString> address, Operand<TString> method, Operand<TString> request,
+      Rpc.Options... options) {
+    return Rpc.create(scope, address, method, request, options);
+  }
+
+  /**
    * Builds an {@link Roll} operation
    *
    * @param input 
@@ -2807,21 +2822,6 @@ public final class Ops {
   public <T, U> LookupTableImport lookupTableImport(Operand<?> tableHandle, Operand<T> keys,
       Operand<U> values) {
     return LookupTableImport.create(scope, tableHandle, keys, values);
-  }
-
-  /**
-   * Builds an {@link Rpc} operation
-   *
-   * @param address `0-D` or `1-D`.  The address (i.e. host_name:port) of the RPC server.
-   * @param method `0-D` or `1-D`.  The method address on the RPC server.
-   * @param request `0-D` or `1-D`.  Serialized proto strings: the rpc request argument.
-   * @param options carries optional attributes values
-   * @return a new instance of Rpc
-   * @see org.tensorflow.op.core.Rpc
-   */
-  public Rpc rpc(Operand<TString> address, Operand<TString> method, Operand<TString> request,
-      Rpc.Options... options) {
-    return Rpc.create(scope, address, method, request, options);
   }
 
   /**
@@ -2934,17 +2934,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link ConsumeMutexLock} operation
-   *
-   * @param mutexLock A tensor returned by `MutexLock`.
-   * @return a new instance of ConsumeMutexLock
-   * @see org.tensorflow.op.core.ConsumeMutexLock
-   */
-  public ConsumeMutexLock consumeMutexLock(Operand<?> mutexLock) {
-    return ConsumeMutexLock.create(scope, mutexLock);
-  }
-
-  /**
    * Builds an {@link TensorArrayWrite} operation
    *
    * @param handle The handle to a TensorArray.
@@ -2972,6 +2961,17 @@ public final class Ops {
   public <T, U extends TNumber> SplitV<T> splitV(Operand<T> value, Operand<U> sizeSplits,
       Operand<TInt32> axis, Long numSplit) {
     return SplitV.create(scope, value, sizeSplits, axis, numSplit);
+  }
+
+  /**
+   * Builds an {@link ConsumeMutexLock} operation
+   *
+   * @param mutexLock A tensor returned by `MutexLock`.
+   * @return a new instance of ConsumeMutexLock
+   * @see org.tensorflow.op.core.ConsumeMutexLock
+   */
+  public ConsumeMutexLock consumeMutexLock(Operand<?> mutexLock) {
+    return ConsumeMutexLock.create(scope, mutexLock);
   }
 
   /**
@@ -3294,6 +3294,19 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link TensorListElementShape} operation
+   *
+   * @param inputHandle 
+   * @param shapeType 
+   * @return a new instance of TensorListElementShape
+   * @see org.tensorflow.op.core.TensorListElementShape
+   */
+  public <T extends TNumber> TensorListElementShape<T> tensorListElementShape(
+      Operand<?> inputHandle, DataType<T> shapeType) {
+    return TensorListElementShape.create(scope, inputHandle, shapeType);
+  }
+
+  /**
    * Builds an {@link VarIsInitializedOp} operation
    *
    * @param resource the input resource handle.
@@ -3315,19 +3328,6 @@ public final class Ops {
   public OrderedMapIncompleteSize orderedMapIncompleteSize(List<DataType<?>> dtypes,
       OrderedMapIncompleteSize.Options... options) {
     return OrderedMapIncompleteSize.create(scope, dtypes, options);
-  }
-
-  /**
-   * Builds an {@link TensorListElementShape} operation
-   *
-   * @param inputHandle 
-   * @param shapeType 
-   * @return a new instance of TensorListElementShape
-   * @see org.tensorflow.op.core.TensorListElementShape
-   */
-  public <T extends TNumber> TensorListElementShape<T> tensorListElementShape(
-      Operand<?> inputHandle, DataType<T> shapeType) {
-    return TensorListElementShape.create(scope, inputHandle, shapeType);
   }
 
   /**
@@ -3386,6 +3386,18 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link ReadVariableOp} operation
+   *
+   * @param resource handle to the resource in which to store the variable.
+   * @param dtype the dtype of the value.
+   * @return a new instance of ReadVariableOp
+   * @see org.tensorflow.op.core.ReadVariableOp
+   */
+  public <T> ReadVariableOp<T> readVariableOp(Operand<?> resource, DataType<T> dtype) {
+    return ReadVariableOp.create(scope, resource, dtype);
+  }
+
+  /**
    * Builds an {@link ReduceMax} operation
    *
    * @param input The tensor to reduce.
@@ -3397,18 +3409,6 @@ public final class Ops {
   public <T, U extends TNumber> ReduceMax<T> reduceMax(Operand<T> input, Operand<U> axis,
       ReduceMax.Options... options) {
     return ReduceMax.create(scope, input, axis, options);
-  }
-
-  /**
-   * Builds an {@link ReadVariableOp} operation
-   *
-   * @param resource handle to the resource in which to store the variable.
-   * @param dtype the dtype of the value.
-   * @return a new instance of ReadVariableOp
-   * @see org.tensorflow.op.core.ReadVariableOp
-   */
-  public <T> ReadVariableOp<T> readVariableOp(Operand<?> resource, DataType<T> dtype) {
-    return ReadVariableOp.create(scope, resource, dtype);
   }
 
   /**
@@ -3565,6 +3565,17 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link Where} operation
+   *
+   * @param condition 
+   * @return a new instance of Where
+   * @see org.tensorflow.op.core.Where
+   */
+  public <T> Where where(Operand<T> condition) {
+    return Where.create(scope, condition);
+  }
+
+  /**
    * Builds an {@link OneHot} operation
    *
    * @param indices A tensor of indices.
@@ -3578,17 +3589,6 @@ public final class Ops {
   public <U, T extends TNumber> OneHot<U> oneHot(Operand<T> indices, Operand<TInt32> depth,
       Operand<U> onValue, Operand<U> offValue, OneHot.Options... options) {
     return OneHot.create(scope, indices, depth, onValue, offValue, options);
-  }
-
-  /**
-   * Builds an {@link Where} operation
-   *
-   * @param condition 
-   * @return a new instance of Where
-   * @see org.tensorflow.op.core.Where
-   */
-  public <T> Where where(Operand<T> condition) {
-    return Where.create(scope, condition);
   }
 
   /**
@@ -3692,6 +3692,18 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link VariableShape} operation
+   *
+   * @param input 
+   * @param outType 
+   * @return a new instance of VariableShape
+   * @see org.tensorflow.op.core.VariableShape
+   */
+  public <T extends TNumber> VariableShape<T> variableShape(Operand<?> input, DataType<T> outType) {
+    return VariableShape.create(scope, input, outType);
+  }
+
+  /**
    * Builds an {@link MapUnstage} operation
    *
    * @param key 
@@ -3704,18 +3716,6 @@ public final class Ops {
   public MapUnstage mapUnstage(Operand<TInt64> key, Operand<TInt32> indices,
       List<DataType<?>> dtypes, MapUnstage.Options... options) {
     return MapUnstage.create(scope, key, indices, dtypes, options);
-  }
-
-  /**
-   * Builds an {@link VariableShape} operation
-   *
-   * @param input 
-   * @param outType 
-   * @return a new instance of VariableShape
-   * @see org.tensorflow.op.core.VariableShape
-   */
-  public <T extends TNumber> VariableShape<T> variableShape(Operand<?> input, DataType<T> outType) {
-    return VariableShape.create(scope, input, outType);
   }
 
   /**
@@ -3743,6 +3743,17 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link IdentityN} operation
+   *
+   * @param input 
+   * @return a new instance of IdentityN
+   * @see org.tensorflow.op.core.IdentityN
+   */
+  public IdentityN identityN(Iterable<Operand<?>> input) {
+    return IdentityN.create(scope, input);
+  }
+
+  /**
    * Builds an {@link Constant} operation
    *
    * @param type the tensor datatype.
@@ -3754,17 +3765,6 @@ public final class Ops {
    */
   public <T extends TType> Constant<T> constant(DataType<T> type, long[] shape, ByteBuffer data) {
     return Constant.create(scope, type, shape, data);
-  }
-
-  /**
-   * Builds an {@link IdentityN} operation
-   *
-   * @param input 
-   * @return a new instance of IdentityN
-   * @see org.tensorflow.op.core.IdentityN
-   */
-  public IdentityN identityN(Iterable<Operand<?>> input) {
-    return IdentityN.create(scope, input);
   }
 
   /**
@@ -3938,6 +3938,25 @@ public final class Ops {
   }
 
   /**
+   * Builds an {@link ResourceSparseApplyKerasMomentum} operation
+   *
+   * @param var Should be from a Variable().
+   * @param accum Should be from a Variable().
+   * @param lr Learning rate. Must be a scalar.
+   * @param grad The gradient.
+   * @param indices A vector of indices into the first dimension of var and accum.
+   * @param momentum Momentum. Must be a scalar.
+   * @param options carries optional attributes values
+   * @return a new instance of ResourceSparseApplyKerasMomentum
+   * @see org.tensorflow.op.core.ResourceSparseApplyKerasMomentum
+   */
+  public <T, U extends TNumber> ResourceSparseApplyKerasMomentum resourceSparseApplyKerasMomentum(
+      Operand<?> var, Operand<?> accum, Operand<T> lr, Operand<T> grad, Operand<U> indices,
+      Operand<T> momentum, ResourceSparseApplyKerasMomentum.Options... options) {
+    return ResourceSparseApplyKerasMomentum.create(scope, var, accum, lr, grad, indices, momentum, options);
+  }
+
+  /**
    * Builds an {@link Constant} operation
    *
    * @param data An array containing the values to put into the new constant. The dimensions of the
@@ -3958,25 +3977,6 @@ public final class Ops {
    */
   public <T> SelectV2<T> selectV2(Operand<TBool> condition, Operand<T> t, Operand<T> e) {
     return SelectV2.create(scope, condition, t, e);
-  }
-
-  /**
-   * Builds an {@link ResourceSparseApplyKerasMomentum} operation
-   *
-   * @param var Should be from a Variable().
-   * @param accum Should be from a Variable().
-   * @param lr Learning rate. Must be a scalar.
-   * @param grad The gradient.
-   * @param indices A vector of indices into the first dimension of var and accum.
-   * @param momentum Momentum. Must be a scalar.
-   * @param options carries optional attributes values
-   * @return a new instance of ResourceSparseApplyKerasMomentum
-   * @see org.tensorflow.op.core.ResourceSparseApplyKerasMomentum
-   */
-  public <T, U extends TNumber> ResourceSparseApplyKerasMomentum resourceSparseApplyKerasMomentum(
-      Operand<?> var, Operand<?> accum, Operand<T> lr, Operand<T> grad, Operand<U> indices,
-      Operand<T> momentum, ResourceSparseApplyKerasMomentum.Options... options) {
-    return ResourceSparseApplyKerasMomentum.create(scope, var, accum, lr, grad, indices, momentum, options);
   }
 
   /**
@@ -4144,18 +4144,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link SetDiff1d} operation
-   *
-   * @param x 1-D. Values to keep.
-   * @param y 1-D. Values to remove.
-   * @return a new instance of SetDiff1d
-   * @see org.tensorflow.op.core.SetDiff1d
-   */
-  public <T> SetDiff1d<T, TInt32> setDiff1d(Operand<T> x, Operand<T> y) {
-    return SetDiff1d.create(scope, x, y);
-  }
-
-  /**
    * Builds an {@link ScatterNd} operation
    *
    * @param indices Index tensor.
@@ -4167,6 +4155,18 @@ public final class Ops {
   public <U, T extends TNumber> ScatterNd<U> scatterNd(Operand<T> indices, Operand<U> updates,
       Operand<T> shape) {
     return ScatterNd.create(scope, indices, updates, shape);
+  }
+
+  /**
+   * Builds an {@link SetDiff1d} operation
+   *
+   * @param x 1-D. Values to keep.
+   * @param y 1-D. Values to remove.
+   * @return a new instance of SetDiff1d
+   * @see org.tensorflow.op.core.SetDiff1d
+   */
+  public <T> SetDiff1d<T, TInt32> setDiff1d(Operand<T> x, Operand<T> y) {
+    return SetDiff1d.create(scope, x, y);
   }
 
   /**
@@ -4260,16 +4260,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link Constant} operation
-   *
-   * @param data An array containing the values to put into the new constant. The dimensions of the
-   * @see org.tensorflow.op.core.Constant
-   */
-  public Constant<TFloat> constant(float[][][][] data) {
-    return Constant.create(scope, data);
-  }
-
-  /**
    * Builds an {@link MapClear} operation
    *
    * @param dtypes 
@@ -4279,6 +4269,16 @@ public final class Ops {
    */
   public MapClear mapClear(List<DataType<?>> dtypes, MapClear.Options... options) {
     return MapClear.create(scope, dtypes, options);
+  }
+
+  /**
+   * Builds an {@link Constant} operation
+   *
+   * @param data An array containing the values to put into the new constant. The dimensions of the
+   * @see org.tensorflow.op.core.Constant
+   */
+  public Constant<TFloat> constant(float[][][][] data) {
+    return Constant.create(scope, data);
   }
 
   /**
@@ -4293,17 +4293,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link Snapshot} operation
-   *
-   * @param input 
-   * @return a new instance of Snapshot
-   * @see org.tensorflow.op.core.Snapshot
-   */
-  public <T> Snapshot<T> snapshot(Operand<T> input) {
-    return Snapshot.create(scope, input);
-  }
-
-  /**
    * Builds an {@link ReduceAny} operation
    *
    * @param input The tensor to reduce.
@@ -4315,6 +4304,17 @@ public final class Ops {
   public <T extends TNumber> ReduceAny reduceAny(Operand<TBool> input, Operand<T> axis,
       ReduceAny.Options... options) {
     return ReduceAny.create(scope, input, axis, options);
+  }
+
+  /**
+   * Builds an {@link Snapshot} operation
+   *
+   * @param input 
+   * @return a new instance of Snapshot
+   * @see org.tensorflow.op.core.Snapshot
+   */
+  public <T> Snapshot<T> snapshot(Operand<T> input) {
+    return Snapshot.create(scope, input);
   }
 
   /**
@@ -4399,17 +4399,6 @@ public final class Ops {
   }
 
   /**
-   * Builds an {@link Constant} operation
-   *
-   * @param tensor a Tensor holding the constant value
-   * @return a constant of the same data type as `tensor`
-   * @see org.tensorflow.op.core.Constant
-   */
-  public <T> Constant<T> constant(Tensor<T> tensor) {
-    return Constant.create(scope, tensor);
-  }
-
-  /**
    * Builds an {@link LoopCond} operation
    *
    * @param input A boolean scalar, representing the branch predicate of the Switch op.
@@ -4418,6 +4407,17 @@ public final class Ops {
    */
   public LoopCond loopCond(Operand<TBool> input) {
     return LoopCond.create(scope, input);
+  }
+
+  /**
+   * Builds an {@link Constant} operation
+   *
+   * @param tensor a Tensor holding the constant value
+   * @return a constant of the same data type as `tensor`
+   * @see org.tensorflow.op.core.Constant
+   */
+  public <T> Constant<T> constant(Tensor<T> tensor) {
+    return Constant.create(scope, tensor);
   }
 
   /**

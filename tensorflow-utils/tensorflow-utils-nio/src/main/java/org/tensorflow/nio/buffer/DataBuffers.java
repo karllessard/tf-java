@@ -21,17 +21,20 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 import org.tensorflow.nio.buffer.adapter.BooleanDataAdapter;
 import org.tensorflow.nio.buffer.adapter.DataAdapter;
 import org.tensorflow.nio.buffer.adapter.DoubleDataAdapter;
 import org.tensorflow.nio.buffer.adapter.FloatDataAdapter;
 import org.tensorflow.nio.buffer.adapter.IntDataAdapter;
 import org.tensorflow.nio.buffer.adapter.LongDataAdapter;
+import org.tensorflow.nio.buffer.adapter.ShortDataAdapter;
 import org.tensorflow.nio.buffer.impl.jdk.ByteJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.DoubleJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.FloatJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.IntJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.LongJdkDataBuffer;
+import org.tensorflow.nio.buffer.impl.jdk.ShortJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.join.BooleanJoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.join.ByteJoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.join.DoubleJoinDataBuffer;
@@ -39,6 +42,7 @@ import org.tensorflow.nio.buffer.impl.join.FloatJoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.join.IntJoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.join.JoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.join.LongJoinDataBuffer;
+import org.tensorflow.nio.buffer.impl.join.ShortJoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.misc.ArrayDataBuffer;
 import org.tensorflow.nio.buffer.impl.misc.BitSetDataBuffer;
 import org.tensorflow.nio.buffer.impl.misc.BooleanArrayDataBuffer;
@@ -47,6 +51,7 @@ import org.tensorflow.nio.buffer.impl.virtual.DoubleVirtualDataBuffer;
 import org.tensorflow.nio.buffer.impl.virtual.FloatVirtualDataBuffer;
 import org.tensorflow.nio.buffer.impl.virtual.IntVirtualDataBuffer;
 import org.tensorflow.nio.buffer.impl.virtual.LongVirtualDataBuffer;
+import org.tensorflow.nio.buffer.impl.virtual.ShortVirtualDataBuffer;
 import org.tensorflow.nio.buffer.impl.virtual.VirtualDataBuffer;
 
 /**
@@ -252,6 +257,81 @@ public final class DataBuffers {
       return null;
     }
     return (buffers.length == 1) ? buffers[0] : IntJoinDataBuffer.join(buffers);
+  }
+
+  /**
+   * Creates a buffer of shorts that can store up to {@code capacity} values
+   *
+   * @param capacity capacity of the buffer to allocate
+   * @return a new buffer
+   */
+  public static ShortDataBuffer ofShorts(long capacity) {
+    if (capacity > ShortJdkDataBuffer.MAX_CAPACITY) {
+      return ShortJoinDataBuffer.allocate(capacity);
+    }
+    return ShortJdkDataBuffer.allocate(capacity);
+  }
+
+  /**
+   * Creates a virtual buffer of shorts that can store up to {@code capacity} values.
+   *
+   * <p>The provided adapter is used to create the short values to/from bytes, allowing custom
+   * representation of a short.
+   *
+   * @param capacity capacity of the buffer to allocate
+   * @return a new buffer
+   */
+  public static ShortDataBuffer ofShorts(long capacity, ShortDataAdapter adapter) {
+    return toShorts(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  }
+
+  /**
+   * Adapt a physical buffer to a virtual buffer of shorts.
+   *
+   * <p>The provided adapter is used to create the short values to/from bytes, allowing custom
+   * representation of a short.
+   *
+   * @param buffer the buffer to adapt
+   * @param adapter an object converting buffer data to shorts
+   * @return a new buffer
+   */
+  public static ShortDataBuffer toShorts(ByteDataBuffer buffer, ShortDataAdapter adapter) {
+    return ShortVirtualDataBuffer.create(buffer, adapter);
+  }
+
+  /**
+   * Wraps an array of shorts into a data buffer.
+   *
+   * @param array array to wrap
+   * @param readOnly true if the buffer created must be read-only
+   * @return a new buffer
+   */
+  public static ShortDataBuffer wrap(short[] array, boolean readOnly) {
+    ShortBuffer buf = ShortBuffer.wrap(array);
+    return ShortJdkDataBuffer.wrap(readOnly ? buf.asReadOnlyBuffer() : buf);
+  }
+
+  /**
+   * Wraps a JDK short buffer into a data buffer.
+   *
+   * @param buf buffer to wrap
+   * @return a new buffer
+   */
+  public static ShortDataBuffer wrap(ShortBuffer buf) {
+    return ShortJdkDataBuffer.wrap(buf);
+  }
+
+  /**
+   * Join multiple short buffers together to create a large buffer indexable with 64-bits values.
+   *
+   * @param buffers buffers to join
+   * @return a potentially large buffer
+   */
+  public static ShortDataBuffer join(ShortDataBuffer... buffers) {
+    if (buffers == null) {
+      return null;
+    }
+    return (buffers.length == 1) ? buffers[0] : ShortJoinDataBuffer.join(buffers);
   }
 
   /**

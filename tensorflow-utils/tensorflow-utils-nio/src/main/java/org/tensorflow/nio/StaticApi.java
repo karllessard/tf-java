@@ -8,6 +8,7 @@ import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.buffer.LongDataBuffer;
+import org.tensorflow.nio.buffer.ShortDataBuffer;
 import org.tensorflow.nio.nd.BooleanNdArray;
 import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.DoubleNdArray;
@@ -17,6 +18,7 @@ import org.tensorflow.nio.nd.LongNdArray;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.NdArrays;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.ShortNdArray;
 import org.tensorflow.nio.nd.index.Index;
 import org.tensorflow.nio.nd.index.Indices;
 
@@ -44,6 +46,16 @@ public interface StaticApi {
    */
   static ByteDataBuffer bufferOfBytes(long capacity) {
     return DataBuffers.ofBytes(capacity);
+  }
+
+  /**
+   * Creates a buffer of shorts that can store up to {@code capacity} values
+   *
+   * @param capacity capacity of the buffer to allocate
+   * @return a new buffer
+   */
+  static ShortDataBuffer bufferOfShorts(long capacity) {
+    return DataBuffers.ofShorts(capacity);
   }
 
   /**
@@ -119,6 +131,17 @@ public interface StaticApi {
   }
 
   /**
+   * Wraps an array of shorts into a data buffer.
+   *
+   * @param array array to wrap
+   * @param readOnly true if the buffer created must be read-only
+   * @return a new short buffer
+   */
+  static ShortDataBuffer bufferOf(short[] array, boolean readOnly) {
+    return DataBuffers.wrap(array, readOnly);
+  }
+
+  /**
    * Wraps an array of ints into a data buffer.
    *
    * @param array array to wrap
@@ -187,6 +210,19 @@ public interface StaticApi {
    */
   static ByteNdArray ndArrayOfBytes(Shape shape) {
     return NdArrays.ofBytes(shape);
+  }
+
+  /**
+   * Creates a short N-dimensional array of the given shape.
+   *
+   * <p>All values are initialized to zeros.
+   *
+   * @param shape shape of the array
+   * @return new short N-dimensional array
+   * @throws IllegalArgumentException if shape is null or has unknown dimensions
+   */
+  static ShortNdArray ndArrayOfShorts(Shape shape) {
+    return NdArrays.ofShorts(shape);
   }
 
   /**
@@ -281,6 +317,19 @@ public interface StaticApi {
   }
 
   /**
+   * Wraps a short buffer in an N-dimensional array of a given shape.
+   *
+   * @param buffer buffer to wrap
+   * @param shape shape of the array
+   * @return new short N-dimensional array
+   * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
+   *                                  in the buffer capacity
+   */
+  static ShortNdArray ndArrayOf(ShortDataBuffer buffer, Shape shape) {
+    return NdArrays.wrap(buffer, shape);
+  }
+
+  /**
    * Wraps an int buffer in an N-dimensional array of a given shape.
    *
    * @param buffer buffer to wrap
@@ -366,6 +415,16 @@ public interface StaticApi {
   }
 
   /**
+   * Creates short scalar (rank 0) initialized with the given value.
+   *
+   * @param value scalar value
+   * @return new short scalar
+   */
+  static ShortNdArray scalar(short value) {
+    return NdArrays.scalar(value);
+  }
+
+  /**
    * Creates int scalar (rank 0) initialized with the given value.
    *
    * @param value scalar value
@@ -434,6 +493,17 @@ public interface StaticApi {
    * @throws IllegalArgumentException if values is null
    */
   static ByteNdArray vector(byte... values) {
+    return NdArrays.vector(values);
+  }
+
+  /**
+   * Creates a short vector (rank 1) initialized with the given values.
+   *
+   * @param values vector values
+   * @return new short vector
+   * @throws IllegalArgumentException if values is null
+   */
+  static ShortNdArray vector(short... values) {
     return NdArrays.vector(values);
   }
 

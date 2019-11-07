@@ -24,6 +24,7 @@ import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.buffer.LongDataBuffer;
+import org.tensorflow.nio.buffer.ShortDataBuffer;
 import org.tensorflow.nio.nd.impl.dense.BooleanDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.ByteDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.DenseNdArray;
@@ -31,6 +32,7 @@ import org.tensorflow.nio.nd.impl.dense.DoubleDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.FloatDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.IntDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.LongDenseNdArray;
+import org.tensorflow.nio.nd.impl.dense.ShortDenseNdArray;
 
 /**
  * Helper class for instantiating {@link NdArray} objects.
@@ -194,6 +196,58 @@ public final class NdArrays {
    */
   public static IntNdArray wrap(IntDataBuffer buffer, Shape shape) {
     return IntDenseNdArray.create(buffer, shape);
+  }
+
+  // SHORT ARRAYS
+
+  /**
+   * Creates short scalar (rank 0) initialized with the given value.
+   *
+   * @param value scalar value
+   * @return new short scalar
+   */
+  public static ShortNdArray scalar(short value) {
+    return ofShorts(Shape.scalar()).setShort(value);
+  }
+
+  /**
+   * Creates a short vector (rank 1) initialized with the given values.
+   *
+   * @param values vector values
+   * @return new short vector
+   * @throws IllegalArgumentException if values is null
+   */
+  public static ShortNdArray vector(short... values) {
+    if (values == null) {
+      throw new IllegalArgumentException();
+    }
+    return ofShorts(Shape.make(values.length)).write(values);
+  }
+
+  /**
+   * Creates an N-dimensional array of shorts of the given shape.
+   *
+   * <p>All values are initialized to zeros.
+   *
+   * @param shape shape of the array
+   * @return new short N-dimensional array
+   * @throws IllegalArgumentException if shape is null or has unknown dimensions
+   */
+  public static ShortNdArray ofShorts(Shape shape) {
+    return wrap(DataBuffers.ofShorts(shape.size()), shape);
+  }
+
+  /**
+   * Wraps a buffer in a short N-dimensional array of a given shape.
+   *
+   * @param buffer buffer to wrap
+   * @param shape shape of the array
+   * @return new short N-dimensional array
+   * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
+   *                                  in the buffer capacity
+   */
+  public static ShortNdArray wrap(ShortDataBuffer buffer, Shape shape) {
+    return ShortDenseNdArray.create(buffer, shape);
   }
 
   // FLOAT ARRAYS
