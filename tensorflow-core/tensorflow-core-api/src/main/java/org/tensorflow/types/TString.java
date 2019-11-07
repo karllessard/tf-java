@@ -4,14 +4,14 @@ import com.google.common.base.Charsets;
 import java.util.concurrent.atomic.AtomicLong;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.c_api.TF_Tensor;
+import org.tensorflow.impl.c_api.TF_Tensor;
+import org.tensorflow.impl.buffer.StringTensorBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.NdArrays;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.DenseNdArray;
 import org.tensorflow.types.family.TType;
-import org.tensorflow.types.impl.buffer.StringTensorBuffer;
 
 public interface TString extends NdArray<String>, TType {
 

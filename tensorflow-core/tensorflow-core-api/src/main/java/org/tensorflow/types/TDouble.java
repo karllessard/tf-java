@@ -2,13 +2,13 @@ package org.tensorflow.types;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.c_api.TF_Tensor;
+import org.tensorflow.impl.c_api.TF_Tensor;
+import org.tensorflow.impl.buffer.DoubleTensorBuffer;
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.DoubleDenseNdArray;
 import org.tensorflow.types.family.TDecimal;
-import org.tensorflow.types.impl.buffer.DoubleTensorBuffer;
 
 public interface TDouble extends DoubleNdArray, TDecimal {
 
@@ -24,6 +24,10 @@ public interface TDouble extends DoubleNdArray, TDecimal {
     Tensor<TDouble> t = tensorOfShape(values.length);
     t.data().write(values);
     return t;
+  }
+
+  static Tensor<TDouble> tensor(Shape shape) {
+    return Tensor.allocate(DTYPE, shape);
   }
 
   static Tensor<TDouble> tensorOfShape(long... dimensionSizes) {

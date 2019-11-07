@@ -2,13 +2,13 @@ package org.tensorflow.types;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.c_api.TF_Tensor;
+import org.tensorflow.impl.c_api.TF_Tensor;
+import org.tensorflow.impl.buffer.ByteTensorBuffer;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.ByteDenseNdArray;
 import org.tensorflow.types.family.TNumber;
-import org.tensorflow.types.impl.buffer.ByteTensorBuffer;
 
 public interface TUInt8 extends ByteNdArray, TNumber {
 
@@ -24,6 +24,10 @@ public interface TUInt8 extends ByteNdArray, TNumber {
     Tensor<TUInt8> t = tensorOfShape(values.length);
     t.data().write(values);
     return t;
+  }
+
+  static Tensor<TUInt8> tensor(Shape shape) {
+    return Tensor.allocate(DTYPE, shape);
   }
 
   static Tensor<TUInt8> tensorOfShape(long... dimensionSizes) {

@@ -2,13 +2,13 @@ package org.tensorflow.types;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.c_api.TF_Tensor;
+import org.tensorflow.impl.c_api.TF_Tensor;
+import org.tensorflow.impl.buffer.LongTensorBuffer;
 import org.tensorflow.nio.buffer.LongDataBuffer;
 import org.tensorflow.nio.nd.LongNdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.LongDenseNdArray;
 import org.tensorflow.types.family.TNumber;
-import org.tensorflow.types.impl.buffer.LongTensorBuffer;
 
 public interface TInt64 extends LongNdArray, TNumber {
 
@@ -24,6 +24,10 @@ public interface TInt64 extends LongNdArray, TNumber {
     Tensor<TInt64> t = tensorOfShape(values.length);
     t.data().write(values);
     return t;
+  }
+
+  static Tensor<TInt64> tensor(Shape shape) {
+    return Tensor.allocate(DTYPE, shape);
   }
 
   static Tensor<TInt64> tensorOfShape(long... dimensionSizes) {

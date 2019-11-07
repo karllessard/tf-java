@@ -26,7 +26,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
-import org.tensorflow.c_api.TF_Tensor;
+import org.tensorflow.impl.c_api.TF_Tensor;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.types.TBool;
 import org.tensorflow.types.TDouble;
