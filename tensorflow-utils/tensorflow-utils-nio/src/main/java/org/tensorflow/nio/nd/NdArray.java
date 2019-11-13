@@ -95,7 +95,7 @@ public interface NdArray<T> {
    * </pre>
    *
    * <p>The returned cursor is used to visit each elements, either by calling
-   * {@link ElementCursor#forEach(Consumer)} or {@link ElementCursor#forEachIdx(BiConsumer)}.
+   * {@link NdArraySequence#forEach(Consumer)} or {@link NdArraySequence#forEachIdx(BiConsumer)}.
    * <pre>{@code
    *    // Iterate matrix for initializing each of its vectors
    *    matrixOfFloats.elements(0).forEach(v -> {
@@ -110,7 +110,7 @@ public interface NdArray<T> {
    *
    * @return a new cursor to visit all elements at the requested dimension
    */
-  ElementCursor<? extends NdArray<T>> elements(int dimensionIdx);
+  NdArraySequence<? extends NdArray<T>> elements(int dimensionIdx);
 
   /**
    * Visit all scalars of this array.
@@ -119,7 +119,7 @@ public interface NdArray<T> {
    *
    * @return a new cursor to visit all scalars of this array
    */
-  ElementCursor<? extends NdArray<T>> scalars();
+  NdArraySequence<? extends NdArray<T>> scalars();
 
   /**
    * Creates a multi-dimensional view (or slice) of this array by mapping one or more dimensions
@@ -274,7 +274,7 @@ public interface NdArray<T> {
    * @param dst the destination buffer
    * @return this array
    * @throws java.nio.BufferOverflowException if the buffer cannot hold the content of this array
-   * @see DataBuffer#remaining()
+   * @see DataBuffer#capacity()
    */
   NdArray<T> read(DataBuffer<T> dst);
 
@@ -289,7 +289,7 @@ public interface NdArray<T> {
    * @return this array
    * @throws java.nio.BufferUnderflowException if the buffer has not enough remaining data to write
    * into this array
-   * @see DataBuffer#remaining()
+   * @see DataBuffer#capacity()
    */
   NdArray<T> write(DataBuffer<T> src);
 

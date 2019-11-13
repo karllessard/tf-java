@@ -78,7 +78,7 @@ abstract class AbstractVirtualDataBuffer<T, B extends DataBuffer<T>> extends
 
   @Override
   public B put(long index, T value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     // FIXME this duplicates the physical buffer on each call
     adapter.writeValue(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return (B) this;

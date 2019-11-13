@@ -26,7 +26,7 @@ public class BooleanVirtualDataBuffer extends AbstractVirtualDataBuffer<Boolean,
 
   @Override
   public BooleanDataBuffer get(boolean[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       dst[i] = adapter.readBoolean(physicalBuffer());
     }
@@ -41,14 +41,14 @@ public class BooleanVirtualDataBuffer extends AbstractVirtualDataBuffer<Boolean,
 
   @Override
   public BooleanDataBuffer putBoolean(long index, boolean value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     adapter.writeBoolean(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return this;
   }
 
   @Override
   public BooleanDataBuffer put(boolean[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       adapter.writeBoolean(physicalBuffer(), src[i]);
     }

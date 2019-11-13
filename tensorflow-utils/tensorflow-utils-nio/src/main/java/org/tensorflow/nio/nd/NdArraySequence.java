@@ -8,7 +8,7 @@ import java.util.function.Consumer;
  *
  * @param <T> data type of the array being iterated
  */
-public interface ElementCursor<T extends NdArray<?>> {
+public interface NdArraySequence<T extends NdArray<?>> {
 
   /**
    * Visit each elements of this iteration.

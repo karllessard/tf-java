@@ -3,7 +3,7 @@ package org.tensorflow.nio.buffer.slice;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 
-public class FloatDataBufferSliceTest extends DataBufferSliceTestBase<Float> {
+public class FloatMutableDataBufferTest extends MutableDataBufferTestBase<Float> {
 
   @Override
   protected Float valueOf(Long val) {

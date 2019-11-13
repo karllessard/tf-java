@@ -1,15 +1,13 @@
 package org.tensorflow.nio.buffer.impl.misc;
 
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 import java.util.BitSet;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractBoundDataBuffer;
+import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class BitSetDataBuffer extends
-    AbstractBoundDataBuffer<Boolean, BooleanDataBuffer> implements BooleanDataBuffer  {
+public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements BooleanDataBuffer  {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
 
@@ -21,44 +19,17 @@ public class BitSetDataBuffer extends
       throw new IllegalArgumentException("Size for an bit-set data buffer cannot exceeds " + MAX_CAPACITY +
           " elements, use a JoinDataBuffer instead");
     }
-    return new BitSetDataBuffer(new BitSet((int)capacity), capacity, false);
-  }
-
-  @Override
-  public BooleanDataBuffer get(boolean[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      dst[i] = bitSet.get((int)nextPosition());
-    }
-    return this;
-  }
-
-  @Override
-  public BooleanDataBuffer put(boolean[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      bitSet.set((int)nextPosition(), src[i]);
-    }
-    return this;
+    return new BitSetDataBuffer(new BitSet((int)capacity), false);
   }
 
   @Override
   public long capacity() {
-    return capacity;
+    return length;
   }
 
   @Override
-  public boolean getBoolean() {
-    if (position() >= capacity()) {
-      throw new BufferUnderflowException();
-    }
-    return bitSet.get((int)nextPosition());
-  }
-
-  @Override
-  public boolean getBoolean(long index) {
-    Validator.getArgs(this, index);
-    return bitSet.get((int)index);
+  public boolean isReadOnly() {
+    return readOnly;
   }
 
   @Override
@@ -67,36 +38,68 @@ public class BitSetDataBuffer extends
   }
 
   @Override
-  public BooleanDataBuffer putBoolean(boolean value) {
-    if (position() >= capacity()) {
-      throw new BufferOverflowException();
-    }
-    bitSet.set((int)nextPosition(), value);
-    return this;
+  public boolean getBoolean(long index) {
+    Validator.getArgs(this, index);
+    return bitSet.get((int)index + offset);
   }
 
   @Override
   public BooleanDataBuffer putBoolean(long index, boolean value) {
     Validator.putArgs(this, index);
-    bitSet.set((int)index, value);
+    bitSet.set((int)index + offset, value);
     return this;
   }
 
   @Override
-  public BooleanDataBuffer duplicate() {
-    return new BitSetDataBuffer(bitSet, capacity, isReadOnly(), position(), limit());
+  public BooleanDataBuffer copyTo(DataBuffer<Boolean> dst) {
+    Validator.copyToArgs(this, dst);
+    slowCopyTo(dst);
+    return this;
   }
 
-  private BitSetDataBuffer(BitSet bitSet, long capacity, boolean readOnly) {
-    this(bitSet, capacity, readOnly, 0, capacity);
+  @Override
+  public BooleanDataBuffer read(boolean[] dst, int offset, int length) {
+    Validator.readArgs(this, dst.length, offset, length);
+    for (int idx = 0; idx < length; ++idx) {
+      dst[idx + offset] = bitSet.get(idx + this.offset);
+    }
+    return this;
   }
 
-  private BitSetDataBuffer(BitSet bitSet, long capacity, boolean readOnly, long position, long limit) {
-    super(readOnly, position, limit);
-    this.capacity = capacity;
+  @Override
+  public BooleanDataBuffer write(boolean[] src, int offset, int length) {
+    Validator.readArgs(this, src.length, offset, length);
+    for (int idx = 0; idx < length; ++idx) {
+      bitSet.set(idx + this.offset, src[idx + offset]);
+    }
+    return this;
+  }
+
+  @Override
+  public BooleanDataBuffer offset(long index) {
+    Validator.offsetArgs(this, index);
+    return new BitSetDataBuffer(bitSet, readOnly, (int)index + offset, length);
+  }
+
+  @Override
+  public BooleanDataBuffer narrow(long capacity) {
+    Validator.narrowArgs(this, capacity);
+    return new BitSetDataBuffer(bitSet, readOnly, offset, (int)capacity);
+  }
+
+  private BitSetDataBuffer(BitSet bitSet, boolean readOnly) {
+    this(bitSet, readOnly, 0, bitSet.length());
+  }
+
+  private BitSetDataBuffer(BitSet bitSet, boolean readOnly, int offset, int length) {
     this.bitSet = bitSet;
+    this.readOnly = readOnly;
+    this.offset = offset;
+    this.length = length;
   }
 
   private final BitSet bitSet;
-  private final long capacity;
+  private final boolean readOnly;
+  private final int offset;
+  private final int length;
 }

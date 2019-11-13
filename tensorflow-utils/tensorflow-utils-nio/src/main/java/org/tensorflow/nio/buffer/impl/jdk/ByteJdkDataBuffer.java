@@ -18,139 +18,110 @@
 package org.tensorflow.nio.buffer.impl.jdk;
 
 import java.nio.ByteBuffer;
-import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.impl.Validator;
 
 /**
  * A buffer of bytes using a JDK {@link ByteBuffer} for storage.
  * <p>
- * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot exceed
- * 2<sup>32</sup> - 1 (see {@link ByteJdkDataBuffer.MAX_CAPACITY} for the real maximum value supported).
+ * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot
+ * exceed 2<sup>32</sup> - 1 (see {@link ByteJdkDataBuffer#MAX_CAPACITY} for the real maximum
+ * value supported).
  */
-public final class ByteJdkDataBuffer extends AbstractJdkDataBuffer<Byte, ByteDataBuffer> implements ByteDataBuffer {
-  
+public final class ByteJdkDataBuffer extends AbstractJdkDataBuffer<Byte>
+    implements ByteDataBuffer {
+
   /**
    * The maximum capacity for a buffer of this type, i.e. the maximum number of bytes it can store.
    * <p>
-   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this property returns
-   * a value that is safe for most of them.
+   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this
+   * property returns a value that is safe for most of them.
    */
   public static long MAX_CAPACITY = AbstractJdkDataBuffer.MAX_CAPACITY;
-  
+
   /**
-   * Allocates a new byte buffer.
-   * <p>
-   * The new buffer's position will be zero, its limit will be its capacity, and each of its elements will be initialized to zero. 
-   * 
+   * Allocates a new byte buffer, initialized with zeroes.
+   *
    * @param capacity the new buffer's capacity, in bytes
-   * @return the new byte buffer 
-   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds {@link MAX_CAPACITY}.
+   * @return the new byte buffer
+   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds
+   *                                  {@link #MAX_CAPACITY}.
    */
   public static ByteDataBuffer allocate(long capacity) {
     if (capacity > MAX_CAPACITY) {
-      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds " + MAX_CAPACITY + 
-          " bytes, use ByteJoinDataBuffer instead");
+      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds "
+          + MAX_CAPACITY + " bytes, use ByteJoinDataBuffer instead");
     }
     return new ByteJdkDataBuffer(ByteBuffer.allocate((int)capacity));
   }
 
   /**
-   * Allocates a new direct byte buffer.
-   * <p>
-   * The new buffer's position will be zero, its limit will be its capacity, and each of its elements will be initialized to zero. 
-   * 
-   * @param capacity the new buffer's capacity, in bytes
-   * @return the new byte buffer 
-   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds {@link MAX_CAPACITY}.
-   */
-  public static ByteDataBuffer allocateDirect(long capacity) {
-    if (capacity > MAX_CAPACITY) {
-      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds " + MAX_CAPACITY + 
-          " bytes, use ByteJoinDataBuffer instead");
-    }
-    return new ByteJdkDataBuffer(ByteBuffer.allocateDirect((int)capacity));
-  }
-
-  /**
    * Wraps a JDK {@link ByteBuffer} into a {@code ByteDataBuffer}.
-   * 
-   * The new buffer's position, limit and capacity will be the one of the buf passed in parameter, and each of its elements will 
-   * preserver their values.
-   * 
+   *
    * @param buffer buffer to wrap
    * @return the new byte buffer
    */
   public static ByteDataBuffer wrap(ByteBuffer buffer) {
     return new ByteJdkDataBuffer(buffer);
   }
-  
-  @Override
-  public byte getByte() {
-    return buf.get();
-  }
 
   @Override
   public byte getByte(long index) {
+    Validator.getArgs(this, index);
     return buf.get((int)index);
   }
 
   @Override
-  public ByteDataBuffer get(byte[] dst, int offset, int length) {
-    buf.get(dst, offset, length);
-    return this;
-  }
-
-  @Override
-  public Stream<Byte> stream() {
-    throw new UnsupportedOperationException("ByteDataBuffer does not support value streaming at the moment");
-  }
-
-  @Override
-  public ByteDataBuffer putByte(byte value) {
-    buf.put(value);
-    return this;
-  }
-
-  @Override
   public ByteDataBuffer putByte(long index, byte value) {
+    Validator.putArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
 
   @Override
-  public ByteDataBuffer put(byte[] src, int offset, int length) {
+  public ByteDataBuffer read(byte[] dst, int offset, int length) {
+    buf.get(dst, offset, length);
+    return this;
+  }
+
+  @Override
+  public ByteDataBuffer write(byte[] src, int offset, int length) {
     buf.put(src, offset, length);
     return this;
   }
 
   @Override
-  public ByteDataBuffer put(DataBuffer<Byte> src) {
-    if (src instanceof ByteJdkDataBuffer) {
-      buf.put(((ByteJdkDataBuffer)src).buf);
-      return this;
+  public ByteDataBuffer copyTo(DataBuffer<Byte> dst) {
+    Validator.copyToArgs(this, dst);
+    if (dst instanceof ByteJdkDataBuffer) {
+      ((ByteJdkDataBuffer)dst).buf.duplicate().put(buf.duplicate());
+    } else {
+      slowCopyTo(dst);
     }
-    return super.put(src);
+    return this;
   }
 
   @Override
-  public ByteDataBuffer duplicate() {
-    return new ByteJdkDataBuffer(buf.duplicate());
+  public ByteDataBuffer offset(long index) {
+    Validator.offsetArgs(this, index);
+    return new ByteJdkDataBuffer(((ByteBuffer)buf.duplicate().position((int)index)).slice());
   }
 
   @Override
-  public ByteDataBuffer slice() {
-    return new ByteJdkDataBuffer(buf.slice());
+  public ByteDataBuffer narrow(long capacity) {
+    Validator.narrowArgs(this, capacity);
+    return new ByteJdkDataBuffer(((ByteBuffer)buf.duplicate().limit((int)capacity)).slice());
   }
 
   @Override
-  protected ByteBuffer buf() {
+  ByteBuffer buf() {
     return buf;
   }
 
   private ByteJdkDataBuffer(ByteBuffer buf) {
     this.buf = buf;
   }
-  
+
   private ByteBuffer buf;
 }

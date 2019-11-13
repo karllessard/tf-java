@@ -16,19 +16,21 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
-import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
+import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.ByteMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
     implements ByteNdArray {
 
   public static ByteNdArray create(ByteDataBuffer buffer, Shape shape) {
     Validator.denseShape(buffer, shape);
-    return new ByteDenseNdArray(buffer, DimensionalSpace.create(shape));
+    return new ByteDenseNdArray(buffer, shape);
   }
 
   @Override
@@ -45,13 +47,20 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
   @Override
   public ByteNdArray read(byte[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public ByteNdArray write(byte[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Byte, ByteNdArray> cursor(int dimensionIdx) {
+    ByteDataBuffer mutableBuffer = ByteMutableDataBuffer.create(buffer());
+    ByteDenseNdArray mutableElement = new ByteDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected ByteDenseNdArray(ByteDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected ByteDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   ByteDenseNdArray allocate(DataBuffer<Byte> buffer, DimensionalSpace dimensions) {
     return new ByteDenseNdArray((ByteDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected ByteDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final ByteDataBuffer buffer;
+
   private ByteDenseNdArray(ByteDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }

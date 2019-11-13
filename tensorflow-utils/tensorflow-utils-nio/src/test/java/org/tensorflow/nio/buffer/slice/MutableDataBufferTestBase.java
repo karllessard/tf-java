@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.tensorflow.nio.buffer.DataBufferTestBase;
 
-abstract class DataBufferSliceTestBase<T> extends DataBufferTestBase<T> {
+abstract class MutableDataBufferTestBase<T> extends DataBufferTestBase<T> {
 
   @Override
   protected long maxCapacity() {

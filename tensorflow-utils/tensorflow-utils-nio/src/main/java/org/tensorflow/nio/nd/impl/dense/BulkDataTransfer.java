@@ -16,54 +16,63 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
-import java.util.function.BiConsumer;
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
+import java.util.concurrent.atomic.AtomicLong;
+import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.nd.NdArray;
 
-class BulkDataTransfer<R extends AbstractDenseNdArray<?, ?>> {
+final class BulkDataTransfer {
 
-  static <R extends AbstractDenseNdArray<?, ?>> BulkDataTransfer<R> create(R array) {
-    int bulkCopyDimensionIdx = -1;
-    long bulkCopySize = 1L;
+  static <T> boolean execute(AbstractDenseNdArray<T, ?> src, DataBuffer<T> dst) {
+    if (src.dimensions().isSegmented()) {
+      return executeBySegment(src, (b, c, off) -> b.copyTo(dst.offset(off)));
+    }
+    src.buffer().copyTo(dst);
+    return true;
+  }
 
-    // Find what are the biggest chunk of data that we can copy in bulk by starting from the last dimension of this array and
-    // iterating backward until we hit a dimension that is segmented (if any)
-    for (int i = array.shape().numDimensions() - 1; i >= 0; --i) {
-      Dimension dim = array.dimensions().get(i);
-      if (dim.isSegmented()) {
-        break;
+  static <T> boolean execute(DataBuffer<T> src, NdArray<T> d) {
+    if (!(d instanceof AbstractDenseNdArray)) {
+      return false;
+    }
+    AbstractDenseNdArray<T, ?> dst = (AbstractDenseNdArray<T, ?>)d;
+    if (dst.dimensions().isSegmented()) {
+      return executeBySegment(dst, (b, c, off) -> src.offset(off).copyTo(b));
+    }
+    src.copyTo(dst.buffer());
+    return true;
+}
+
+  static <T> boolean execute(AbstractDenseNdArray<T, ?> src, NdArray<T> d) {
+    if (!(d instanceof AbstractDenseNdArray)) {
+      return false;
+    }
+    AbstractDenseNdArray<T, ?> dst = (AbstractDenseNdArray<T, ?>)d;
+    if (src.dimensions().isSegmented() || dst.dimensions().isSegmented()) {
+      // Execute bulk copy on the smallest continuous segment available in any of the arrays
+      if (src.dimensions().getLastSegmentedDimensionIdx() > dst.dimensions().getLastSegmentedDimensionIdx()) {
+        return executeBySegment(src, (b, c, off) -> b.copyTo(((AbstractDenseNdArray<T, ?>)dst.get(c)).buffer()));
       }
-      bulkCopyDimensionIdx = i;
-      bulkCopySize *= dim.numElements();
+      return executeBySegment(dst, (b, c, off) -> ((AbstractDenseNdArray<T, ?>)src.get(c)).buffer().copyTo(b));
     }
-    if (bulkCopyDimensionIdx < 0) {
-      throw new IllegalArgumentException("This array cannot be copied by bulk, since its last dimension is segmented");
+    src.buffer().copyTo(dst.buffer());
+    return true;
+  }
+
+  @FunctionalInterface
+  private interface BulkCopy<T> {
+    void accept(DataBuffer<T> elementBuffer, long[] elementCoords, long valuesCopied);
+  }
+
+  private static <T> boolean executeBySegment(AbstractDenseNdArray<T, ?> array, BulkCopy<T> bulkCopy) {
+    int dimensionIdx = array.dimensions().getLastSegmentedDimensionIdx() + 1;
+    if (dimensionIdx == array.dimensions().size()) {
+      return false;  // bulk copy not possible, last dimension is segmented
     }
-    return new BulkDataTransfer<>(array, bulkCopyDimensionIdx, bulkCopySize);
-  }
-  
-  void execute(BiConsumer<BulkDataTransfer<R>, R> bulkCopy) {
-    execute(bulkCopy, array, 0);
-  }
-
-  long bulkCopySize() {
-    return bulkCopySize;
-  }
-
-  private final R array;  // The array we want to copy in bulk
-  private final int bulkCopyDimensionIdx;  // The first dimension of this array that can be copied in bulk
-  private final long bulkCopySize;  // The number of values that can be copied in a single bulk copy
-
-  private BulkDataTransfer(R array, int bulkCopyDimensionIdx, long bulkCopySize) {
-    this.array = array;
-    this.bulkCopyDimensionIdx = bulkCopyDimensionIdx;
-    this.bulkCopySize = bulkCopySize;
-  }
-
-  private void execute(BiConsumer<BulkDataTransfer<R>, R> bulkCopy, R element, int dimensionIdx) {
-    if (dimensionIdx == bulkCopyDimensionIdx) {
-      bulkCopy.accept(this, element);
-    } else {
-      element.elements(0).forEach(e -> execute(bulkCopy, (R) e, dimensionIdx + 1));
-    }
+    long bulkCopySize = array.dimensions().get(dimensionIdx).stride();
+    AtomicLong copyCounter = new AtomicLong();
+    array.elements(dimensionIdx).forEachIdx((coords, e) ->
+      bulkCopy.accept(((AbstractDenseNdArray<T, ?>)e).buffer(), coords, copyCounter.getAndIncrement() * bulkCopySize)
+    );
+    return true;
   }
 }

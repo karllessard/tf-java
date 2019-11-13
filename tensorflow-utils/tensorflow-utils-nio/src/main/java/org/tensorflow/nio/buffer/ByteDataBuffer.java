@@ -19,7 +19,6 @@ package org.tensorflow.nio.buffer;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
-import org.tensorflow.nio.buffer.slice.ByteDataBufferSlice;
 
 /**
  * A {@link DataBuffer} of bytes.
@@ -27,156 +26,115 @@ import org.tensorflow.nio.buffer.slice.ByteDataBufferSlice;
 public interface ByteDataBuffer extends DataBuffer<Byte> {
 
   /**
-   * Relative <i>get</i> method.
-   *
-   * Reads the byte at this buffer's current position, and then increments the position.
-   *
-   * @return the byte at the buffer's current position
-   * @throws BufferUnderflowException if the buffer's current position is not smaller than its limit
-   */
-  byte getByte();
-
-  /**
-   * Absolute <i>get</i> method.
-   *
    * Reads the byte at the given index.
    *
    * @param index the index from which the float will be read
    * @return the byte at the given index
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer's limit
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
    */
   byte getByte(long index);
 
   /**
-   * Relative bulk <i>get</i> method, using byte arrays.
-   * <p>
-   * This method transfers values from this buffer into the given destination array. If there are 
-   * fewer values remaining in the buffer than are required to satisfy the request, that is, if 
-   * {@code dst.length > remaining()}, then no values are transferred and a BufferUnderflowException is thrown.
-   * <p>
-   * Otherwise, this method copies {@code n = dst.length} values from this buffer into the given array, starting at the current 
-   * position of this buffer. The position of this buffer is then incremented by {@code n}. 
-   * 
-   * @param dst the array into which values are to be written
-   * @return this buffer
-   * @throws BufferUnderflowException if there are fewer than length values remaining in this buffer
-   */
-  default ByteDataBuffer get(byte[] dst) { return get(dst, 0, dst.length); }
-  
-  /**
-   * Relative bulk <i>get</i> method, using byte arrays.
-   * <p>
-   * This method transfers values from this buffer into the given destination array. If there are 
-   * fewer values remaining in the buffer than are required to satisfy the request, that is, if 
-   * {@code length > remaining()}, then no values are transferred and a BufferUnderflowException is thrown.
-   * <p>
-   * Otherwise, this method copies {@code n = length} values from this buffer into the given array, starting at the current 
-   * position of this buffer and at the given offset in the array. The position of this buffer is then incremented by {@code n}. 
-   * 
-   * @param dst the array into which values are to be written
-   * @param offset the offset within the array of the first value to be written; must be non-negative and no larger than {@code dst.length}
-   * @param length the maximum number of values to be written to the given array; must be non-negative and no larger than {@code dst.length - offset}
-   * @return this buffer
-   * @throws BufferUnderflowException if there are fewer than length values remaining in this buffer
-   * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do not hold
-   */
-  ByteDataBuffer get(byte[] dst, int offset, int length);
-
-  /**
-   * Relative <i>put</i> method.
-   *
-   * Writes the given byte into this buffer at the current position, and then increments the position.
-
-   * @param value byte to be written
-   * @return this buffer
-   * @throws BufferOverflowException if this buffer's current position is not smaller than its limit
-   * @throws ReadOnlyBufferException if this buffer is read-only
-   */
-  ByteDataBuffer putByte(byte value);
-
-  /**
-   * Absolute <i>put</i> method.
-   *
    * Writes the given byte into this buffer at the given index.
    *
    * @param index the index at which the value will be written
    * @param value the byte to be written
    * @return this buffer
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer's limit
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
   ByteDataBuffer putByte(long index, byte value);
 
   /**
-   * Relative bulk <i>put</i> method, using byte arrays.
+   * Bulk <i>get</i> method, using byte arrays.
    * <p>
-   * This method transfers the values in the given source array into this buffer. If there are 
-   * more values in the source array than in this buffer, that is, if {@code src.length > remaining()}, 
-   * then no values are transferred and a BufferOverflowException is thrown.
+   * This method transfers values from this buffer into the given destination array. If there are
+   * fewer values in the buffer than are required to satisfy the request, that is, if
+   * {@code dst.length > capacity()}, then no values are transferred and a
+   * BufferUnderflowException is thrown.
    * <p>
-   * Otherwise, this method copies {@code n = src.length} values from the given array into this buffer, 
-   * starting at this buffer current position. The position of this buffer is then incremented by {@code n}.
-   * 
-   * @param src the source array from which values are to be read
+   * Otherwise, this method copies {@code n = dst.length} values from this buffer into the given
+   * array.
+   *
+   * @param dst the array into which values are to be written
    * @return this buffer
-   * @throws BufferOverflowException if there is insufficient space in this buffer for the remaining values in the source array
-   * @throws ReadOnlyBufferException if this buffer is read-only
+   * @throws BufferUnderflowException if there are not enough values to copy from this buffer
    */
-  default ByteDataBuffer put(byte[] src) { return put(src, 0, src.length); }
-  
+  default ByteDataBuffer read(byte[] dst) {
+    return read(dst, 0, dst.length);
+  }
+
   /**
-   * Relative bulk <i>put</i> method, using byte arrays.
+   * Bulk <i>get</i> method, using byte arrays.
    * <p>
-   * This method transfers the values in the given source array into this buffer. If there are 
-   * more values in the source array than in this buffer, that is, if {@code length > remaining()}, 
-   * then no values are transferred and a BufferOverflowException is thrown.
+   * This method transfers values from this buffer into the given destination array. If there are
+   * fewer values in the buffer than are required to satisfy the request, that is, if
+   * {@code length > capacity()}, then no values are transferred and a
+   * BufferUnderflowException is thrown.
    * <p>
-   * Otherwise, this method copies {@code n = length} values from the given array into this buffer, 
-   * starting at the given offset in the array and at this buffer current position. The position of this buffer 
-   * is then incremented by {@code n}.
-   * 
-   * @param src the source array from which values are to be read
-   * @param offset the offset within the array of the first value to be read; must be non-negative and no larger than {@code src.length}
-   * @param length the number of values to be read from the given array; must be non-negative and no larger than {@code src.length - offset}
+   * Otherwise, this method copies {@code n = length} values from this buffer into the given array
+   * starting at the given offset.
+   *
+   * @param dst the array into which values are to be written
+   * @param offset the offset within the array of the first value to be written; must be
+   *               non-negative and no larger than {@code dst.length}
+   * @param length the maximum number of values to be written to the given array; must be
+   *               non-negative and no larger than {@code dst.length - offset}
    * @return this buffer
-   * @throws BufferOverflowException if there is insufficient space in this buffer for the remaining values in the source array
-   * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do not hold
+   * @throws BufferUnderflowException if there are fewer than length values remaining in this buffer
+   * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do
+   *                                   not hold
+   */
+  ByteDataBuffer read(byte[] dst, int offset, int length);
+
+  /**
+   * Bulk <i>put</i> method, using byte arrays.
+   * <p>
+   * This method transfers the values in the given source array into this buffer. If there are
+   * more values in the source array than in this buffer, that is, if
+   * {@code src.length > capacity()}, then no values are transferred and a
+   * BufferOverflowException is thrown.
+   * <p>
+   * Otherwise, this method copies {@code n = src.length} values from the given array.
+   *
+   * @param src the source array from which values are to be read
+   * @return this buffer
+   * @throws BufferOverflowException if there is insufficient space in this buffer for the values in
+   *                                 the source array
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
-  ByteDataBuffer put(byte[] src, int offset, int length);
-
-  @Override
-  ByteDataBuffer limit(long newLimit);
-
-  @Override
-  default ByteDataBuffer withLimit(long limit) {
-    return duplicate().limit(limit);
+  default ByteDataBuffer write(byte[] src) {
+    return write(src, 0, src.length);
   }
 
-  @Override
-  ByteDataBuffer position(long newPosition);
-
-  @Override
-  default ByteDataBuffer withPosition(long position) {
-    return duplicate().position(position);
-  }
-
-  @Override
-  ByteDataBuffer rewind();
-
-  @Override
-  default Byte get() {
-    return getByte();
-  }
+  /**
+   * Bulk <i>put</i> method, using byte arrays.
+   * <p>
+   * This method transfers the values in the given source array into this buffer. If there are
+   * more values in the source array than in this buffer, that is, if
+   * {@code length > capacity()}, then no values are transferred and a
+   * BufferOverflowException is thrown.
+   * <p>
+   * Otherwise, this method copies {@code n = length} values from the given array into this buffer,
+   * starting at the given offset.
+   *
+   * @param src the source array from which values are to be read
+   * @param offset the offset within the array of the first value to be read; must be non-negative
+   *               and no larger than {@code src.length}
+   * @param length the number of values to be read from the given array; must be non-negative and no
+   *               larger than {@code src.length - offset}
+   * @return this buffer
+   * @throws BufferOverflowException if there is insufficient space in this buffer for the values in
+   *                                 the source array
+   * @throws IndexOutOfBoundsException if the preconditions on the offset and length parameters do
+   *                                   not hold
+   * @throws ReadOnlyBufferException if this buffer is read-only
+   */
+  ByteDataBuffer write(byte[] src, int offset, int length);
 
   @Override
   default Byte get(long index) {
     return getByte(index);
-  }
-
-  @Override
-  default ByteDataBuffer put(Byte value) {
-    return putByte(value);
   }
 
   @Override
@@ -185,18 +143,8 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
   }
 
   @Override
-  ByteDataBuffer put(DataBuffer<Byte> src);
-  
-  @Override
-  ByteDataBuffer duplicate();
+  ByteDataBuffer offset(long index);
 
   @Override
-  default ByteDataBuffer slice() {
-    return mutableSlice();
-  }
-
-  @Override
-  default ByteDataBufferSlice mutableSlice() {
-    return ByteDataBufferSlice.create(this);
-  }
+  ByteDataBuffer narrow(long capacity);
 }

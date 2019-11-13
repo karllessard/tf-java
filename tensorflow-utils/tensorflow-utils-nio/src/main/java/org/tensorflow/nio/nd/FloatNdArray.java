@@ -139,10 +139,10 @@ public interface FloatNdArray extends NdArray<Float> {
   FloatNdArray setValue(Float value, long... indices);
 
   @Override
-  ElementCursor<FloatNdArray> elements(int dimensionIdx);
+  NdArraySequence<FloatNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<FloatNdArray> scalars();
+  NdArraySequence<FloatNdArray> scalars();
 
   @Override
   FloatNdArray copyTo(NdArray<Float> dst);

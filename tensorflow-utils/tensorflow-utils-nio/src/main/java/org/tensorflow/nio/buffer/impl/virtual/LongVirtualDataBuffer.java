@@ -31,7 +31,7 @@ public class LongVirtualDataBuffer extends AbstractVirtualDataBuffer<Long, LongD
 
   @Override
   public LongDataBuffer get(long[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       dst[i] = adapter.readLong(physicalBuffer());
     }
@@ -46,14 +46,14 @@ public class LongVirtualDataBuffer extends AbstractVirtualDataBuffer<Long, LongD
 
   @Override
   public LongDataBuffer putLong(long index, long value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     adapter.writeLong(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return this;
   }
 
   @Override
   public LongDataBuffer put(long[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       adapter.writeLong(physicalBuffer(), src[i]);
     }

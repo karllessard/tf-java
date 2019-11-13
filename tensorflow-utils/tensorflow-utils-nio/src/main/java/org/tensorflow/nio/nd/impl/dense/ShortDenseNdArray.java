@@ -21,7 +21,9 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.ShortDataBuffer;
 import org.tensorflow.nio.nd.ShortNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.ShortMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
     implements ShortNdArray {
@@ -45,13 +47,20 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
   @Override
   public ShortNdArray read(short[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public ShortNdArray write(short[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Short, ShortNdArray> cursor(int dimensionIdx) {
+    ShortDataBuffer mutableBuffer = ShortMutableDataBuffer.create(buffer());
+    ShortDenseNdArray mutableElement = new ShortDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected ShortDenseNdArray(ShortDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected ShortDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   ShortDenseNdArray allocate(DataBuffer<Short> buffer, DimensionalSpace dimensions) {
     return new ShortDenseNdArray((ShortDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected ShortDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final ShortDataBuffer buffer;
+
   private ShortDenseNdArray(ShortDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }

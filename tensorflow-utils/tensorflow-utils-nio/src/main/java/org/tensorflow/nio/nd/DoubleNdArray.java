@@ -139,10 +139,10 @@ public interface DoubleNdArray extends NdArray<Double> {
   DoubleNdArray setValue(Double value, long... coordinates);
 
   @Override
-  ElementCursor<DoubleNdArray> elements(int dimensionIdx);
+  NdArraySequence<DoubleNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<DoubleNdArray> scalars();
+  NdArraySequence<DoubleNdArray> scalars();
 
   @Override
   DoubleNdArray copyTo(NdArray<Double> dst);

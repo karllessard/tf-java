@@ -16,14 +16,19 @@
  */
 package org.tensorflow.nio.nd.impl;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dimension.Dimension;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArray<T> {
+
+  public abstract NdArrayCursor<T, U> cursor(int dimensionIdx);
 
   public DimensionalSpace dimensions() {
     return dimensions;
@@ -41,7 +46,7 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
 
   @Override
   public U read(T[] dst, int offset) {
-    return (U)read(DataBuffers.wrap(dst, false).position(offset));
+    return (U)read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override public U write(T[] src) {
@@ -49,7 +54,7 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
   }
 
   @Override public U write(T[] src, int offset) {
-    return (U)write(DataBuffers.wrap(src, false).position(offset));
+    return (U)write(DataBuffers.wrap(src, false).offset(offset));
   }
 
   protected AbstractNdArray(DimensionalSpace dimensions) {
@@ -65,17 +70,19 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
 
   protected void slowRead(DataBuffer<T> buffer) {
     if (rank() == 0) {
-      buffer.put(getValue());
+      buffer.put(0, getValue());
     } else {
-      scalars().forEach(e -> buffer.put(e.getValue()));
+      AtomicInteger i = new AtomicInteger();
+      scalars().forEach(e -> buffer.put(i.getAndIncrement(), e.getValue()));
     }
   }
 
   protected void slowWrite(DataBuffer<T> buffer) {
     if (rank() == 0) {
-      setValue(buffer.get());
+      setValue(buffer.get(0));
     } else {
-      scalars().forEach(e -> e.setValue(buffer.get()));
+      AtomicInteger i = new AtomicInteger();
+      scalars().forEach(e -> e.setValue(buffer.get(i.getAndIncrement())));
     }
   }
 

@@ -139,10 +139,10 @@ public interface BooleanNdArray extends NdArray<Boolean> {
   BooleanNdArray setValue(Boolean value, long... coordinates);
 
   @Override
-  ElementCursor<BooleanNdArray> elements(int dimensionIdx);
+  NdArraySequence<BooleanNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<BooleanNdArray> scalars();
+  NdArraySequence<BooleanNdArray> scalars();
 
   @Override
   BooleanNdArray copyTo(NdArray<Boolean> dst);

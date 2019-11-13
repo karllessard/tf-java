@@ -26,7 +26,7 @@ public class FloatVirtualDataBuffer extends AbstractVirtualDataBuffer<Float, Flo
 
   @Override
   public FloatDataBuffer get(float[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       dst[i] = adapter.readFloat(physicalBuffer());
     }
@@ -41,14 +41,14 @@ public class FloatVirtualDataBuffer extends AbstractVirtualDataBuffer<Float, Flo
 
   @Override
   public FloatDataBuffer putFloat(long index, float value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     adapter.writeFloat(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return this;
   }
 
   @Override
   public FloatDataBuffer put(float[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       adapter.writeFloat(physicalBuffer(), src[i]);
     }

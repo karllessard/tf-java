@@ -17,16 +17,13 @@
 package org.tensorflow.nio.buffer.impl.misc;
 
 import java.lang.reflect.Array;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
-import java.nio.ReadOnlyBufferException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractBoundDataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractDataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
-public class ArrayDataBuffer<T> extends AbstractBoundDataBuffer<T, DataBuffer<T>> {
+public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
   
@@ -49,74 +46,69 @@ public class ArrayDataBuffer<T> extends AbstractBoundDataBuffer<T, DataBuffer<T>
 
   @Override
   public long capacity() {
-    return values.length;
+    return length;
   }
 
   @Override
-  public T get() {
-    if (!hasRemaining()) {
-      throw new BufferUnderflowException();
-    }
-    return values[(int)nextPosition()];
+  public boolean isReadOnly() {
+    return readOnly;
   }
 
   @Override
   public T get(long index) {
     Validator.getArgs(this, index);
-    return values[(int)index];
+    return values[(int)index + offset];
   }
 
   @Override
   public Stream<T> stream() {
-    return Arrays.stream(values);
-  }
-
-  @Override
-  public DataBuffer<T> put(T value) {
-    if (!hasRemaining()) {
-      throw new BufferOverflowException();
-    }
-    if (isReadOnly()) {
-      throw new ReadOnlyBufferException();
-    }
-    values[(int)nextPosition()] = value;
-    return this;
+    return Arrays.stream(values); // FIXME!
   }
 
   @Override
   public DataBuffer<T> put(long index, T value) {
     Validator.putArgs(this, index);
-    values[(int)index] = value;
+    values[(int)index + offset] = value;
     return this;
   }
 
   @Override
-  public DataBuffer<T> put(DataBuffer<T> src) {
-    Validator.putArgs(this, src);
-    if (src instanceof ArrayDataBuffer) {
-      ArrayDataBuffer<T> srcArrayBuffer = (ArrayDataBuffer<T>)src;
-      int length = (int)src.remaining();
-      System.arraycopy(srcArrayBuffer.values, (int) srcArrayBuffer.position(), values, (int) position(), length);
-      srcArrayBuffer.movePosition(length);
-      movePosition(length);
-      return this;
+  public DataBuffer<T> copyTo(DataBuffer<T> dst) {
+    Validator.copyToArgs(this, dst);
+    if (dst instanceof ArrayDataBuffer) {
+      ArrayDataBuffer<T> dstBuffer = (ArrayDataBuffer<T>)dst;
+      System.arraycopy(values, offset, dstBuffer.values, dstBuffer.offset, dstBuffer.length);
+    } else {
+      slowCopyTo(dst);
     }
-    return super.put(src);
+    return this;
   }
 
   @Override
-  public DataBuffer<T> duplicate() {
-    return new ArrayDataBuffer<>(values, isReadOnly(), (int) position(), (int) limit());
+  public DataBuffer<T> offset(long index) {
+    Validator.offsetArgs(this, index);
+    return new ArrayDataBuffer<>(values, readOnly, (int)index + offset, length);
+  }
+
+  @Override
+  public DataBuffer<T> narrow(long capacity) {
+    Validator.narrowArgs(this, capacity);
+    return new ArrayDataBuffer<>(values, readOnly, offset, (int)capacity);
   }
 
   private ArrayDataBuffer(T[] values, boolean readOnly) {
     this(values, readOnly, 0, values.length);
   }
 
-  private ArrayDataBuffer(T[] values, boolean readOnly, long position, long limit) {
-    super(readOnly, position,  limit);
-    this.values = values;  
+  private ArrayDataBuffer(T[] values, boolean readOnly, int offset, int length) {
+    this.values = values;
+    this.readOnly = readOnly;
+    this.offset = offset;
+    this.length = length;
   }
  
   private final T[] values;
+  private final boolean readOnly;
+  private final int offset;
+  private final int length;
 }

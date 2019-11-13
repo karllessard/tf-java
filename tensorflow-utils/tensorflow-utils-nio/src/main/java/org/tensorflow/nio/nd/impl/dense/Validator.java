@@ -16,13 +16,10 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 
-final class Validator {
+final class Validator extends org.tensorflow.nio.nd.impl.Validator {
 
   static void denseShape(DataBuffer<?> buffer, Shape shape) {
     if (shape == null) {
@@ -34,35 +31,6 @@ final class Validator {
     if (buffer.capacity() < shape.size()) {
       throw new IllegalArgumentException("Buffer capacity is smaller than the shape size");
     };
-  }
-
-  static void getArrayArgs(NdArray<?> ndArray, int arrayLength, int arrayOffset) {
-    copyArrayArgs(arrayLength, arrayOffset);
-    if (arrayLength - arrayOffset < ndArray.size()) {
-      throw new BufferOverflowException();
-    }
-  }
-
-  static void putArrayArgs(NdArray<?> ndArray, int arrayLength, int arrayOffset) {
-    copyArrayArgs(arrayLength, arrayOffset);
-    if (arrayLength - arrayOffset < ndArray.size()) {
-      throw new BufferUnderflowException();
-    }
-  }
-
-  static void copyNdArrayArgs(NdArray<?> ndArray, NdArray<?> otherNdArray) {
-    if (!ndArray.shape().equals(otherNdArray.shape())) {
-      throw new IllegalArgumentException("Can only copy to arrays of the same shape");
-    }
-  }
-
-  private static void copyArrayArgs(int arrayLength, int arrayOffset) {
-    if (arrayOffset < 0) {
-      throw new IndexOutOfBoundsException("Offset must be non-negative");
-    }
-    if (arrayOffset > arrayLength) {
-      throw new IndexOutOfBoundsException("Offset must be no larger than array length");
-    }
   }
 
   private Validator() {}

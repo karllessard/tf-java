@@ -25,7 +25,7 @@ public class FloatTensorBuffer extends AbstractUnsafeBuffer<Float, FloatDataBuff
 
   @Override
   public FloatDataBuffer get(float[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     long effectiveLength = Math.min(length, remaining());
     unsafe.copyMemory(null, currentAddress(), dst, arrayOffset(offset), effectiveLength);
     movePosition(effectiveLength);
@@ -41,14 +41,14 @@ public class FloatTensorBuffer extends AbstractUnsafeBuffer<Float, FloatDataBuff
 
   @Override
   public FloatDataBuffer putFloat(long index, float value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     unsafe.putFloat(addressAt(index), value);
     return this;
   }
 
   @Override
   public FloatDataBuffer put(float[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     unsafe.copyMemory(src, arrayOffset(offset), null, currentAddress(), length);
     movePosition(length);
     return this;

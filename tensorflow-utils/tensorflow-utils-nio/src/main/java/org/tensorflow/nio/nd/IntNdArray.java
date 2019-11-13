@@ -139,10 +139,10 @@ public interface IntNdArray extends NdArray<Integer> {
   IntNdArray setValue(Integer value, long... coordinates);
 
   @Override
-  ElementCursor<IntNdArray> elements(int dimensionIdx);
+  NdArraySequence<IntNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<IntNdArray> scalars();
+  NdArraySequence<IntNdArray> scalars();
 
   @Override
   IntNdArray copyTo(NdArray<Integer> dst);

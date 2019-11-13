@@ -21,7 +21,9 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.nd.IntNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.IntMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
     implements IntNdArray {
@@ -32,26 +34,33 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
   }
 
   @Override
-  public int getInt(long... coordinates) {
-    return buffer().getInt(positionOf(coordinates, true));
+  public int getInt(long... indices) {
+    return buffer().getInt(positionOf(indices, true));
   }
 
   @Override
-  public IntNdArray setInt(int value, long... coordinates) {
-    buffer().putInt(positionOf(coordinates, true), value);
+  public IntNdArray setInt(int value, long... indices) {
+    buffer().putInt(positionOf(indices, true), value);
     return this;
   }
 
   @Override
   public IntNdArray read(int[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public IntNdArray write(int[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Integer, IntNdArray> cursor(int dimensionIdx) {
+    IntDataBuffer mutableBuffer = IntMutableDataBuffer.create(buffer());
+    IntDenseNdArray mutableElement = new IntDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected IntDenseNdArray(IntDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected IntDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   IntDenseNdArray allocate(DataBuffer<Integer> buffer, DimensionalSpace dimensions) {
     return new IntDenseNdArray((IntDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected IntDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final IntDataBuffer buffer;
+
   private IntDenseNdArray(IntDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }

@@ -3,7 +3,7 @@ package org.tensorflow.nio.buffer.slice;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 
-public class BooleanDataBufferSliceTest extends DataBufferSliceTestBase<Boolean> {
+public class BooleanMutableDataBufferTest extends MutableDataBufferTestBase<Boolean> {
 
   @Override
   protected Boolean valueOf(Long val) {

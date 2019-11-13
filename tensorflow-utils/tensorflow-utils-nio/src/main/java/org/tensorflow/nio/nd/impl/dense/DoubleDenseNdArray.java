@@ -21,7 +21,9 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.DoubleMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArray>
     implements DoubleNdArray {
@@ -45,13 +47,20 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   @Override
   public DoubleNdArray read(double[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public DoubleNdArray write(double[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Double, DoubleNdArray> cursor(int dimensionIdx) {
+    DoubleDataBuffer mutableBuffer = DoubleMutableDataBuffer.create(buffer());
+    DoubleDenseNdArray mutableElement = new DoubleDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected DoubleDenseNdArray(DoubleDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected DoubleDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   DoubleDenseNdArray allocate(DataBuffer<Double> buffer, DimensionalSpace dimensions) {
     return new DoubleDenseNdArray((DoubleDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected DoubleDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final DoubleDataBuffer buffer;
+
   private DoubleDenseNdArray(DoubleDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }

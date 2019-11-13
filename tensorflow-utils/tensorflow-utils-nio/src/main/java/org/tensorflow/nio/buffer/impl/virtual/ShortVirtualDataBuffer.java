@@ -26,7 +26,7 @@ public class ShortVirtualDataBuffer extends AbstractVirtualDataBuffer<Short, Sho
 
   @Override
   public ShortDataBuffer get(short[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       dst[i] = adapter.readShort(physicalBuffer());
     }
@@ -41,14 +41,14 @@ public class ShortVirtualDataBuffer extends AbstractVirtualDataBuffer<Short, Sho
 
   @Override
   public ShortDataBuffer putShort(long index, short value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     adapter.writeShort(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return this;
   }
 
   @Override
   public ShortDataBuffer put(short[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       adapter.writeShort(physicalBuffer(), src[i]);
     }

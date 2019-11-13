@@ -22,94 +22,50 @@ import java.util.Arrays;
 import java.util.stream.LongStream;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.LongDataBuffer;
+import org.tensorflow.nio.buffer.impl.Validator;
 
 /**
- * A buffer of longs using a JDK {@link LongBuffer} for storage.
+ * A buffer of bytes using a JDK {@link LongBuffer} for storage.
  * <p>
- * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot exceed
- * 2<sup>32</sup> - 1 (see {@link IntJdkDataBuffer.MAX_CAPACITY} for the real maximum value supported).
+ * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot
+ * exceed 2<sup>32</sup> - 1 (see {@link LongJdkDataBuffer#MAX_CAPACITY} for the real maximum
+ * value supported).
  */
-public final class LongJdkDataBuffer extends AbstractJdkDataBuffer<Long, LongDataBuffer> implements LongDataBuffer {
+public final class LongJdkDataBuffer extends AbstractJdkDataBuffer<Long>
+    implements LongDataBuffer {
 
   /**
-   * The maximum capacity for a buffer of this type, i.e. the maximum number of longs it can store.
+   * The maximum capacity for a buffer of this type, i.e. the maximum number of bytes it can store.
    * <p>
-   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this property returns
-   * a value that is safe for most of them.
+   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this
+   * property returns a value that is safe for most of them.
    */
   public static long MAX_CAPACITY = AbstractJdkDataBuffer.MAX_CAPACITY;
 
   /**
-   * Allocates a new long buffer.
-   * <p>
-   * The new buffer's position will be zero, its limit will be its capacity, and each of its elements will be initialized to zero. 
-   * 
-   * @param capacity the new buffer's capacity, in longs
-   * @return the new long buffer 
-   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds {@link MAX_CAPACITY}.
+   * Allocates a new byte buffer, initialized with zeroes.
+   *
+   * @param capacity the new buffer's capacity, in bytes
+   * @return the new byte buffer
+   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds
+   *                                  {@link #MAX_CAPACITY}.
    */
   public static LongDataBuffer allocate(long capacity) {
     if (capacity > MAX_CAPACITY) {
-      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds " + MAX_CAPACITY + 
-          " longs, use LongJoinDataBuffer instead");
+      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds "
+          + MAX_CAPACITY + " bytes, use LongJoinDataBuffer instead");
     }
     return new LongJdkDataBuffer(LongBuffer.allocate((int)capacity));
   }
 
   /**
    * Wraps a JDK {@link LongBuffer} into a {@code LongDataBuffer}.
-   * 
-   * The new buffer's position, limit and capacity will be the one of the buf passed in parameter, and each of its elements will 
-   * preserver their values.
-   * 
+   *
    * @param buffer buffer to wrap
-   * @return the new long buffer
+   * @return the new byte buffer
    */
-  public static LongDataBuffer wrap(LongBuffer buf) {
-    return new LongJdkDataBuffer(buf);
-  }
-
-  @Override
-  public long getLong() {
-    return buf.get();
-  }
-
-  @Override
-  public long getLong(long index) {
-    return buf.get((int)index);
-  }
-
-  @Override
-  public LongDataBuffer get(long[] dst, int offset, int length) {
-    buf.get(dst, offset, length);
-    return this;
-  }
-
-  @Override
-  public LongDataBuffer putLong(long value) {
-    buf.put(value);
-    return this;
-  }
-
-  @Override
-  public LongDataBuffer putLong(long index, long value) {
-    buf.put((int)index, value);
-    return this;
-  }
-
-  @Override
-  public LongDataBuffer put(long[] src, int offset, int length) {
-    buf.put(src, offset, length);
-    return this;
-  }
-
-  @Override
-  public LongDataBuffer put(DataBuffer<Long> src) {
-    if (src instanceof LongJdkDataBuffer) {
-      buf.put(((LongJdkDataBuffer)src).buf);
-      return this;
-    }
-    return super.put(src);
+  public static LongDataBuffer wrap(LongBuffer buffer) {
+    return new LongJdkDataBuffer(buffer);
   }
 
   @Override
@@ -121,23 +77,61 @@ public final class LongJdkDataBuffer extends AbstractJdkDataBuffer<Long, LongDat
   }
 
   @Override
-  public LongDataBuffer duplicate() {
-    return new LongJdkDataBuffer(buf.duplicate());
+  public long getLong(long index) {
+    Validator.getArgs(this, index);
+    return buf.get((int)index);
   }
 
   @Override
-  public LongDataBuffer slice() {
-    return new LongJdkDataBuffer(buf.slice());
+  public LongDataBuffer putLong(long index, long value) {
+    Validator.putArgs(this, index);
+    buf.put((int)index, value);
+    return this;
   }
 
   @Override
-  protected LongBuffer buf() {
+  public LongDataBuffer read(long[] dst, int offset, int length) {
+    buf.get(dst, offset, length);
+    return this;
+  }
+
+  @Override
+  public LongDataBuffer write(long[] src, int offset, int length) {
+    buf.put(src, offset, length);
+    return this;
+  }
+
+  @Override
+  public LongDataBuffer copyTo(DataBuffer<Long> dst) {
+    Validator.copyToArgs(this, dst);
+    if (dst instanceof LongJdkDataBuffer) {
+      ((LongJdkDataBuffer)dst).buf.duplicate().put(buf.duplicate());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public LongDataBuffer offset(long index) {
+    Validator.offsetArgs(this, index);
+    return new LongJdkDataBuffer(((LongBuffer)buf.duplicate().position((int)index)).slice());
+  }
+
+  @Override
+  public LongDataBuffer narrow(long capacity) {
+    Validator.narrowArgs(this, capacity);
+    return new LongJdkDataBuffer(((LongBuffer)buf.duplicate().limit((int)capacity)).slice());
+  }
+
+  @Override
+  LongBuffer buf() {
     return buf;
   }
 
   private LongJdkDataBuffer(LongBuffer buf) {
     this.buf = buf;
   }
-  
+
   private LongBuffer buf;
 }

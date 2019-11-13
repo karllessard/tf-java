@@ -20,6 +20,7 @@ import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class DenseNdArray<T> extends AbstractDenseNdArray<T, NdArray<T>> {
 
@@ -29,7 +30,7 @@ public class DenseNdArray<T> extends AbstractDenseNdArray<T, NdArray<T>> {
   }
 
   protected DenseNdArray(DataBuffer<T> buffer, Shape shape) {
-    super(buffer, DimensionalSpace.create(shape));
+    this(buffer, DimensionalSpace.create(shape));
   }
 
   @Override
@@ -37,7 +38,20 @@ public class DenseNdArray<T> extends AbstractDenseNdArray<T, NdArray<T>> {
     return new DenseNdArray<>(buffer, dimensions);
   }
 
+  @Override
+  DataBuffer<T> buffer() {
+    return buffer;
+  }
+
+  private final DataBuffer<T> buffer;
+
   private DenseNdArray(DataBuffer<T> buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
+  }
+
+  @Override
+  public NdArrayCursor<T, NdArray<T>> cursor(int dimensionIdx) {
+    return null;
   }
 }

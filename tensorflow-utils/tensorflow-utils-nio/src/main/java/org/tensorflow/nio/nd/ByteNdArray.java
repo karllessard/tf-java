@@ -139,10 +139,10 @@ public interface ByteNdArray extends NdArray<Byte> {
   ByteNdArray setValue(Byte value, long... coordinates);
 
   @Override
-  ElementCursor<ByteNdArray> elements(int dimensionIdx);
+  NdArraySequence<ByteNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<ByteNdArray> scalars();
+  NdArraySequence<ByteNdArray> scalars();
 
   @Override
   ByteNdArray copyTo(NdArray<Byte> dst);

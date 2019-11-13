@@ -31,7 +31,7 @@ public class DoubleVirtualDataBuffer extends AbstractVirtualDataBuffer<Double, D
 
   @Override
   public DoubleDataBuffer get(double[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       dst[i] = adapter.readDouble(physicalBuffer());
     }
@@ -46,14 +46,14 @@ public class DoubleVirtualDataBuffer extends AbstractVirtualDataBuffer<Double, D
 
   @Override
   public DoubleDataBuffer putDouble(long index, double value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     adapter.writeDouble(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return this;
   }
 
   @Override
   public DoubleDataBuffer put(double[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       adapter.writeDouble(physicalBuffer(), src[i]);
     }

@@ -21,7 +21,9 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.nd.FloatNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.FloatMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
     implements FloatNdArray {
@@ -45,13 +47,20 @@ public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
   @Override
   public FloatNdArray read(float[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public FloatNdArray write(float[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Float, FloatNdArray> cursor(int dimensionIdx) {
+    FloatDataBuffer mutableBuffer = FloatMutableDataBuffer.create(buffer());
+    FloatDenseNdArray mutableElement = new FloatDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected FloatDenseNdArray(FloatDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected FloatDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   FloatDenseNdArray allocate(DataBuffer<Float> buffer, DimensionalSpace dimensions) {
     return new FloatDenseNdArray((FloatDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected FloatDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final FloatDataBuffer buffer;
+
   private FloatDenseNdArray(FloatDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }

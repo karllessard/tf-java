@@ -22,94 +22,50 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.IntDataBuffer;
+import org.tensorflow.nio.buffer.impl.Validator;
 
 /**
  * A buffer of bytes using a JDK {@link IntBuffer} for storage.
  * <p>
- * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot exceed
- * 2<sup>32</sup> - 1 (see {@link IntJdkDataBuffer.MAX_CAPACITY} for the real maximum value supported).
+ * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot
+ * exceed 2<sup>32</sup> - 1 (see {@link IntJdkDataBuffer#MAX_CAPACITY} for the real maximum
+ * value supported).
  */
-public final class IntJdkDataBuffer extends AbstractJdkDataBuffer<Integer, IntDataBuffer> implements IntDataBuffer {
+public final class IntJdkDataBuffer extends AbstractJdkDataBuffer<Integer>
+    implements IntDataBuffer {
 
   /**
-   * The maximum capacity for a buffer of this type, i.e. the maximum number of integers it can store.
+   * The maximum capacity for a buffer of this type, i.e. the maximum number of bytes it can store.
    * <p>
-   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this property returns
-   * a value that is safe for most of them.
+   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this
+   * property returns a value that is safe for most of them.
    */
   public static long MAX_CAPACITY = AbstractJdkDataBuffer.MAX_CAPACITY;
-  
+
   /**
-   * Allocates a new integer buffer.
-   * <p>
-   * The new buffer's position will be zero, its limit will be its capacity, and each of its elements will be initialized to zero. 
-   * 
-   * @param capacity the new buffer's capacity, in integers
-   * @return the new integer buffer 
-   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds {@link MAX_CAPACITY}.
+   * Allocates a new byte buffer, initialized with zeroes.
+   *
+   * @param capacity the new buffer's capacity, in bytes
+   * @return the new byte buffer
+   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds
+   *                                  {@link #MAX_CAPACITY}.
    */
   public static IntDataBuffer allocate(long capacity) {
     if (capacity > MAX_CAPACITY) {
-      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds " + MAX_CAPACITY + 
-          " integers, use IntJoinDataBuffer instead");
+      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds "
+          + MAX_CAPACITY + " bytes, use IntJoinDataBuffer instead");
     }
     return new IntJdkDataBuffer(IntBuffer.allocate((int)capacity));
   }
 
   /**
    * Wraps a JDK {@link IntBuffer} into a {@code IntDataBuffer}.
-   * 
-   * The new buffer's position, limit and capacity will be the one of the buf passed in parameter, and each of its elements will 
-   * preserver their values.
-   * 
+   *
    * @param buffer buffer to wrap
-   * @return the new integer buffer
+   * @return the new byte buffer
    */
-  public static IntDataBuffer wrap(IntBuffer buf) {
-    return new IntJdkDataBuffer(buf);
-  }
-
-  @Override
-  public int getInt() {
-    return buf.get();
-  }
-
-  @Override
-  public int getInt(long index) {
-    return buf.get((int)index);
-  }
-
-  @Override
-  public IntDataBuffer get(int[] dst, int offset, int length) {
-    buf.get(dst, offset, length);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer putInt(int value) {
-    buf.put(value);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer putInt(long index, int value) {
-    buf.put((int)index, value);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer put(int[] src, int offset, int length) {
-    buf.put(src, offset, length);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer put(DataBuffer<Integer> src) {
-    if (src instanceof IntJdkDataBuffer) {
-      buf.put(((IntJdkDataBuffer)src).buf);
-      return this;
-    }
-    return super.put(src);
+  public static IntDataBuffer wrap(IntBuffer buffer) {
+    return new IntJdkDataBuffer(buffer);
   }
 
   @Override
@@ -121,23 +77,61 @@ public final class IntJdkDataBuffer extends AbstractJdkDataBuffer<Integer, IntDa
   }
 
   @Override
-  public IntDataBuffer duplicate() {
-    return new IntJdkDataBuffer(buf.duplicate());
+  public int getInt(long index) {
+    Validator.getArgs(this, index);
+    return buf.get((int)index);
   }
 
   @Override
-  public IntDataBuffer slice() {
-    return new IntJdkDataBuffer(buf.slice());
+  public IntDataBuffer putInt(long index, int value) {
+    Validator.putArgs(this, index);
+    buf.put((int)index, value);
+    return this;
   }
 
   @Override
-  protected IntBuffer buf() {
+  public IntDataBuffer read(int[] dst, int offset, int length) {
+    buf.get(dst, offset, length);
+    return this;
+  }
+
+  @Override
+  public IntDataBuffer write(int[] src, int offset, int length) {
+    buf.put(src, offset, length);
+    return this;
+  }
+
+  @Override
+  public IntDataBuffer copyTo(DataBuffer<Integer> dst) {
+    Validator.copyToArgs(this, dst);
+    if (dst instanceof IntJdkDataBuffer) {
+      ((IntJdkDataBuffer)dst).buf.duplicate().put(buf.duplicate());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public IntDataBuffer offset(long index) {
+    Validator.offsetArgs(this, index);
+    return new IntJdkDataBuffer(((IntBuffer)buf.duplicate().position((int)index)).slice());
+  }
+
+  @Override
+  public IntDataBuffer narrow(long capacity) {
+    Validator.narrowArgs(this, capacity);
+    return new IntJdkDataBuffer(((IntBuffer)buf.duplicate().limit((int)capacity)).slice());
+  }
+
+  @Override
+  IntBuffer buf() {
     return buf;
   }
 
   private IntJdkDataBuffer(IntBuffer buf) {
     this.buf = buf;
   }
-  
+
   private IntBuffer buf;
 }

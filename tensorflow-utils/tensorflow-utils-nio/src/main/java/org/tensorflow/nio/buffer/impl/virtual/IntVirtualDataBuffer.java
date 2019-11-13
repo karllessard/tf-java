@@ -31,7 +31,7 @@ public class IntVirtualDataBuffer extends AbstractVirtualDataBuffer<Integer, Int
 
   @Override
   public IntDataBuffer get(int[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       dst[i] = adapter.readInt(physicalBuffer());
     }
@@ -46,14 +46,14 @@ public class IntVirtualDataBuffer extends AbstractVirtualDataBuffer<Integer, Int
 
   @Override
   public IntDataBuffer putInt(long index, int value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     adapter.writeInt(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
     return this;
   }
 
   @Override
   public IntDataBuffer put(int[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     for (int i = offset; i < offset + length; ++i) {
       adapter.writeInt(physicalBuffer(), src[i]);
     }

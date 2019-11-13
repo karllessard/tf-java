@@ -139,10 +139,10 @@ public interface ShortNdArray extends NdArray<Short> {
   ShortNdArray setValue(Short value, long... indices);
 
   @Override
-  ElementCursor<ShortNdArray> elements(int dimensionIdx);
+  NdArraySequence<ShortNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<ShortNdArray> scalars();
+  NdArraySequence<ShortNdArray> scalars();
 
   @Override
   ShortNdArray copyTo(NdArray<Short> dst);

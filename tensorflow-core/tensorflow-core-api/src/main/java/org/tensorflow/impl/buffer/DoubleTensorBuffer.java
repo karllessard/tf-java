@@ -31,7 +31,7 @@ public class DoubleTensorBuffer extends AbstractUnsafeBuffer<Double, DoubleDataB
 
   @Override
   public DoubleDataBuffer get(double[] dst, int offset, int length) {
-    Validator.getArrayArgs(this, dst.length, offset, length);
+    Validator.readArgs(this, dst.length, offset, length);
     long effectiveLength = Math.min(length, remaining());
     unsafe.copyMemory(null, currentAddress(), dst, arrayOffset(offset), effectiveLength);
     movePosition(effectiveLength);
@@ -47,14 +47,14 @@ public class DoubleTensorBuffer extends AbstractUnsafeBuffer<Double, DoubleDataB
 
   @Override
   public DoubleDataBuffer putDouble(long index, double value) {
-    Validator.putArgs(this, index);
+    Validator.copyToArgs(this, index);
     unsafe.putDouble(addressAt(index), value);
     return this;
   }
 
   @Override
   public DoubleDataBuffer put(double[] src, int offset, int length) {
-    Validator.putArrayArgs(this, src.length, offset, length);
+    Validator.writeArgs(this, src.length, offset, length);
     unsafe.copyMemory(src, arrayOffset(offset), null, currentAddress(), length);
     movePosition(length);
     return this;

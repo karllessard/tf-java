@@ -21,7 +21,9 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.LongDataBuffer;
 import org.tensorflow.nio.nd.LongNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.LongMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray>
     implements LongNdArray {
@@ -45,13 +47,20 @@ public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray>
   @Override
   public LongNdArray read(long[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public LongNdArray write(long[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Long, LongNdArray> cursor(int dimensionIdx) {
+    LongDataBuffer mutableBuffer = LongMutableDataBuffer.create(buffer());
+    LongDenseNdArray mutableElement = new LongDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected LongDenseNdArray(LongDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected LongDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   LongDenseNdArray allocate(DataBuffer<Long> buffer, DimensionalSpace dimensions) {
     return new LongDenseNdArray((LongDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected LongDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final LongDataBuffer buffer;
+
   private LongDenseNdArray(LongDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }

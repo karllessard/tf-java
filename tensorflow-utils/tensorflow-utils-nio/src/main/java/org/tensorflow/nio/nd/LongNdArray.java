@@ -139,10 +139,10 @@ public interface LongNdArray extends NdArray<Long> {
   LongNdArray setValue(Long value, long... coordinates);
 
   @Override
-  ElementCursor<LongNdArray> elements(int dimensionIdx);
+  NdArraySequence<LongNdArray> elements(int dimensionIdx);
 
   @Override
-  ElementCursor<LongNdArray> scalars();
+  NdArraySequence<LongNdArray> scalars();
 
   @Override
   LongNdArray copyTo(NdArray<Long> dst);

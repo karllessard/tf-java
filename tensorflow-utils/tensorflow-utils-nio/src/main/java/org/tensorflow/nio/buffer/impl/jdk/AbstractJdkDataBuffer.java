@@ -18,17 +18,14 @@
 package org.tensorflow.nio.buffer.impl.jdk;
 
 import java.nio.Buffer;
-import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.impl.AbstractDataBuffer;
 
 /**
  * Base class for all JDK-based data buffers.
  * 
  * @param <T> type of elements (or values) stored in this buffer
- * @param <B> the {@link DataBuffer} variant implemented by the subclass extending this base class
  */
-@SuppressWarnings("unchecked")
-abstract class AbstractJdkDataBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T, B> {
+abstract class AbstractJdkDataBuffer<T> extends AbstractDataBuffer<T> {
 
   protected static long MAX_CAPACITY = Integer.MAX_VALUE - 10;
 
@@ -38,47 +35,9 @@ abstract class AbstractJdkDataBuffer<T, B extends DataBuffer<T>> extends Abstrac
   }
 
   @Override
-  public long limit() {
-    return buf().limit();
-  }
-
-  @Override
-  public B limit(long newLimit) {
-    buf().limit((int)newLimit);
-    return (B)this;
-  }
-
-  @Override
-  public boolean hasRemaining() {
-    return buf().hasRemaining();
-  }
-
-  @Override
-  public long remaining() {
-    return buf().remaining();
-  }
-
-  @Override
-  public long position() {
-    return buf().position();
-  }
-
-  @Override
-  public B position(long newPosition) {
-    buf().position((int)newPosition);
-    return (B)this;
-  }
-
-  @Override
-  public B rewind() {
-    buf().rewind();
-    return (B)this;
-  }
-
-  @Override
   public boolean isReadOnly() {
     return buf().isReadOnly();
   }
 
-  protected abstract Buffer buf();
+  abstract Buffer buf();
 }

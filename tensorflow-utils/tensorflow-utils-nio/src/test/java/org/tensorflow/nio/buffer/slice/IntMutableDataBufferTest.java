@@ -3,7 +3,7 @@ package org.tensorflow.nio.buffer.slice;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 
-public class IntDataBufferSliceTest extends DataBufferSliceTestBase<Integer> {
+public class IntMutableDataBufferTest extends MutableDataBufferTestBase<Integer> {
 
   @Override
   protected Integer valueOf(Long val) {

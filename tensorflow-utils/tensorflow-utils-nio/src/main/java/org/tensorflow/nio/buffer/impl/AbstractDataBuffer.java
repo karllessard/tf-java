@@ -16,21 +16,13 @@
  */
 package org.tensorflow.nio.buffer.impl;
 
-import java.nio.BufferOverflowException;
 import org.tensorflow.nio.buffer.DataBuffer;
 
-@SuppressWarnings("unchecked")
-public abstract class AbstractDataBuffer<T, B extends DataBuffer<T>> implements DataBuffer<T> {
+public abstract class AbstractDataBuffer<T> implements DataBuffer<T> {
 
-  @Override
-  public B put(DataBuffer<T> src) {
-    Validator.putArgs(this, src);
-    if (src.remaining() > remaining()) {
-      throw new BufferOverflowException();
+  protected void slowCopyTo(DataBuffer<T> dst) {
+    for (long idx = 0; idx < capacity(); ++idx) {
+      dst.put(idx, get(idx));
     }
-    while (src.hasRemaining()) {
-      put(src.get());
-    }
-    return (B)this;
   }
 }

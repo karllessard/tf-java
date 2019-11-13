@@ -23,42 +23,12 @@ import org.tensorflow.nio.buffer.DataBuffer;
 
 public class Validator {
 
-  public static <T> void newLimit(DataBuffer<T> buffer, long limit) {
-    if (limit < 0) {
-      throw new IllegalArgumentException("Buffer limit must be non-negative");
-    }
-    if (limit > buffer.capacity()) {
-      throw new IllegalArgumentException("Buffer limit must not exceed its capacity");
-    }
-  }
-
-  public static <T> void newPosition(DataBuffer<T> buffer, long newPosition) {
-    if (newPosition < 0) {
-      throw new IllegalArgumentException("Buffer position must be non-negative");
-    }
-    if (newPosition > buffer.limit()) {
-      throw new IllegalArgumentException("Buffer position must not exceed its limit");
-    }
-  }
-
-  public static <T> void get(DataBuffer<T> buffer) {
-    if (!buffer.hasRemaining()) {
-      throw new BufferUnderflowException();
-    }
-  }
-
   public static <T> void getArgs(DataBuffer<T> buffer, long index) {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
     }
-    if (index >= buffer.limit()) {
-      throw new IndexOutOfBoundsException("Index must be smaller than the buffer limit");
-    }
-  }
-
-  public static <T> void put(DataBuffer<T> buffer) {
-    if (!buffer.hasRemaining()) {
-      throw new BufferOverflowException();
+    if (index >= buffer.capacity()) {
+      throw new IndexOutOfBoundsException("Index must be smaller than the buffer capacity");
     }
   }
 
@@ -66,44 +36,56 @@ public class Validator {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
     }
-    if (index >= buffer.limit()) {
-      throw new IndexOutOfBoundsException("Index must be smaller than the buffer limit");
+    if (index >= buffer.capacity()) {
+      throw new IndexOutOfBoundsException("Index must be smaller than the buffer capacity");
     }
     if (buffer.isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
   }
 
-  public static <T> void putArgs(DataBuffer<T> buffer, DataBuffer<T> src) {
-    if (src == buffer) {
+  public static <T> void copyToArgs(DataBuffer<T> src, DataBuffer<T> dst) {
+    if (dst == src) {
       throw new IllegalArgumentException("Source cannot be the same buffer as destination");
     }
-    if (src.remaining() > buffer.remaining()) {
+    if (src.capacity() > dst.capacity()) {
       throw new BufferOverflowException();
     }
-    if (buffer.isReadOnly()) {
+    if (dst.isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
   }
 
-  public static <T> void getArrayArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
-    if (length > buffer.remaining()) {
+  public static <T> void readArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
+    if (length > buffer.capacity()) {
       throw new BufferUnderflowException();
     }
-    arrayCopyArgs(arrayLength, offset, length);
+    arrayArgs(arrayLength, offset, length);
   }
 
-  public static <T> void putArrayArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
-    if (length > buffer.remaining()) {
+  public static <T> void writeArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
+    if (length > buffer.capacity()) {
       throw new BufferOverflowException();
     }
     if (buffer.isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
-    arrayCopyArgs(arrayLength, offset, length);
+    arrayArgs(arrayLength, offset, length);
   }
 
-  private static void arrayCopyArgs(int arrayLength, int offset, int length) {
+  public static <T> void offsetArgs(DataBuffer<T> buffer, long index) {
+    if (index < 0 || index >= buffer.capacity()) {
+      throw new IllegalArgumentException();
+    }
+  }
+
+  public static <T> void narrowArgs(DataBuffer<T> buffer, long capacity) {
+    if (capacity < 0 || capacity > buffer.capacity()) {
+      throw new IllegalArgumentException();
+    }
+  }
+
+  private static void arrayArgs(int arrayLength, int offset, int length) {
     if (offset < 0) {
       throw new IndexOutOfBoundsException("Offset must be non-negative");
     }

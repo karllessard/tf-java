@@ -16,12 +16,14 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
-import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
+import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.nd.BooleanNdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.mutable.BooleanMutableDataBuffer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNdArray>
     implements BooleanNdArray {
@@ -45,13 +47,20 @@ public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNd
   @Override
   public BooleanNdArray read(boolean[] dst, int offset) {
     Validator.getArrayArgs(this, dst.length, offset);
-    return read(DataBuffers.wrap(dst, false).position(offset));
+    return read(DataBuffers.wrap(dst, false).offset(offset));
   }
 
   @Override
   public BooleanNdArray write(boolean[] src, int offset) {
     Validator.putArrayArgs(this, src.length, offset);
-    return write(DataBuffers.wrap(src, true).position(offset));
+    return write(DataBuffers.wrap(src, true).offset(offset));
+  }
+
+  @Override
+  public NdArrayCursor<Boolean, BooleanNdArray> cursor(int dimensionIdx) {
+    BooleanDataBuffer mutableBuffer = BooleanMutableDataBuffer.create(buffer());
+    BooleanDenseNdArray mutableElement = new BooleanDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected BooleanDenseNdArray(BooleanDataBuffer buffer, Shape shape) {
@@ -59,17 +68,19 @@ public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNd
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  protected BooleanDataBuffer buffer() {
-    return super.buffer();
-  }
-
-  @Override
   BooleanDenseNdArray allocate(DataBuffer<Boolean> buffer, DimensionalSpace dimensions) {
     return new BooleanDenseNdArray((BooleanDataBuffer)buffer, dimensions);
   }
 
+  @Override
+  protected BooleanDataBuffer buffer() {
+    return buffer;
+  }
+
+  private final BooleanDataBuffer buffer;
+
   private BooleanDenseNdArray(BooleanDataBuffer buffer, DimensionalSpace dimensions) {
-    super(buffer, dimensions);
+    super(dimensions);
+    this.buffer = buffer;
   }
 }
