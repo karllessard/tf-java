@@ -19,7 +19,7 @@ package org.tensorflow.nio.nd.impl.dimension;
 final class Axis extends AbstractDimension {
   
   @Override
-  public long numElements() {
+  public long size() {
     return numElements;
   }
   

@@ -19,9 +19,14 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
+import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.nd.BooleanNdArray;
+import org.tensorflow.nio.nd.DoubleNdArray;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.BooleanMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.BooleanDataTransfer;
+import org.tensorflow.nio.nd.impl.dense.transfer.DoubleDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +45,7 @@ public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNd
 
   @Override
   public BooleanNdArray setBoolean(boolean value, long... indices) {
-    buffer().putBoolean(positionOf(indices, true), value);
+    buffer().setBoolean(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,6 +62,32 @@ public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNd
   }
 
   @Override
+  public BooleanNdArray copyTo(NdArray<Boolean> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof BooleanDenseNdArray) {
+      BooleanDenseNdArray floatDst = (BooleanDenseNdArray)dst;
+      BooleanDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public BooleanNdArray read(BooleanDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    BooleanDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public BooleanNdArray write(BooleanDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    BooleanDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Boolean, BooleanNdArray> cursor(int dimensionIdx) {
     BooleanDataBuffer mutableBuffer = BooleanMutableDataBuffer.create(buffer());
     BooleanDenseNdArray mutableElement = new BooleanDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
@@ -68,7 +99,7 @@ public class BooleanDenseNdArray extends AbstractDenseNdArray<Boolean, BooleanNd
   }
 
   @Override
-  BooleanDenseNdArray allocate(DataBuffer<Boolean> buffer, DimensionalSpace dimensions) {
+  BooleanDenseNdArray instantiate(DataBuffer<Boolean> buffer, DimensionalSpace dimensions) {
     return new BooleanDenseNdArray((BooleanDataBuffer)buffer, dimensions);
   }
 

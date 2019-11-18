@@ -29,7 +29,7 @@ public class LongDenseNdArrayTest extends LongNdArrayTestBase {
     return NdArrays.ofLongs(shape);
   }
 
-  @Override protected DataBuffer<Long> allocateBuffer(long capacity) {
-    return DataBuffers.ofLongs(capacity);
+  @Override protected DataBuffer<Long> allocateBuffer(long size) {
+    return DataBuffers.ofLongs(size);
   }
 }

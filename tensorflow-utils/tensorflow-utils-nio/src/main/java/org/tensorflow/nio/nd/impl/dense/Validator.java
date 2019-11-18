@@ -28,8 +28,8 @@ final class Validator extends org.tensorflow.nio.nd.impl.Validator {
     if (shape.hasUnknownDimension()) {
       throw new IllegalArgumentException("Dense arrays cannot have unknown dimension(s)");
     }
-    if (buffer.capacity() < shape.size()) {
-      throw new IllegalArgumentException("Buffer capacity is smaller than the shape size");
+    if (buffer.size() < shape.size()) {
+      throw new IllegalArgumentException("Buffer size is smaller than the shape size");
     };
   }
 

@@ -30,27 +30,27 @@ public interface BooleanDataBuffer extends DataBuffer<Boolean> {
    *
    * @param index the index from which the float will be read
    * @return the boolean at the given index
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer size
    */
   boolean getBoolean(long index);
 
   /**
    * Writes the given boolean into this buffer at the given index.
    *
-   * @param index the index at which the value will be written
    * @param value the boolean to be written
+   * @param index the index at which the value will be written
    * @return this buffer
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer size
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
-  BooleanDataBuffer putBoolean(long index, boolean value);
+  BooleanDataBuffer setBoolean(boolean value, long index);
 
   /**
    * Bulk <i>get</i> method, using boolean arrays.
    * <p>
    * This method transfers values from this buffer into the given destination array. If there are
    * fewer values in the buffer than are required to satisfy the request, that is, if
-   * {@code dst.length > capacity()}, then no values are transferred and a
+   * {@code dst.length > size()}, then no values are transferred and a
    * BufferUnderflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = dst.length} values from this buffer into the given
@@ -69,7 +69,7 @@ public interface BooleanDataBuffer extends DataBuffer<Boolean> {
    * <p>
    * This method transfers values from this buffer into the given destination array. If there are
    * fewer values in the buffer than are required to satisfy the request, that is, if
-   * {@code length > capacity()}, then no values are transferred and a
+   * {@code length > size()}, then no values are transferred and a
    * BufferUnderflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = length} values from this buffer into the given array
@@ -92,7 +92,7 @@ public interface BooleanDataBuffer extends DataBuffer<Boolean> {
    * <p>
    * This method transfers the values in the given source array into this buffer. If there are 
    * more values in the source array than in this buffer, that is, if
-   * {@code src.length > capacity()}, then no values are transferred and a
+   * {@code src.length > size()}, then no values are transferred and a
    * BufferOverflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = src.length} values from the given array.
@@ -112,7 +112,7 @@ public interface BooleanDataBuffer extends DataBuffer<Boolean> {
    * <p>
    * This method transfers the values in the given source array into this buffer. If there are 
    * more values in the source array than in this buffer, that is, if
-   * {@code length > capacity()}, then no values are transferred and a
+   * {@code length > size()}, then no values are transferred and a
    * BufferOverflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = length} values from the given array into this buffer,
@@ -138,16 +138,16 @@ public interface BooleanDataBuffer extends DataBuffer<Boolean> {
   }
 
   @Override
-  default BooleanDataBuffer put(long index, Boolean value) {
-    return putBoolean(index, value);
+  default BooleanDataBuffer set(Boolean value, long index) {
+    return setBoolean(value, index);
   }
 
   @Override
-  BooleanDataBuffer copyTo(DataBuffer<Boolean> dst);
+  BooleanDataBuffer copyTo(DataBuffer<Boolean> dst, long size);
 
   @Override
   BooleanDataBuffer offset(long index);
 
   @Override
-  BooleanDataBuffer narrow(long capacity);
+  BooleanDataBuffer narrow(long size);
 }

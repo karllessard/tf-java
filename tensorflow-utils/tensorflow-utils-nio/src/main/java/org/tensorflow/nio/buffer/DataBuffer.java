@@ -17,7 +17,6 @@
 
 package org.tensorflow.nio.buffer;
 
-import java.nio.BufferOverflowException;
 import java.nio.ReadOnlyBufferException;
 import java.util.stream.Stream;
 
@@ -27,7 +26,7 @@ import java.util.stream.Stream;
  * <p>Instances of {@code DataBuffer} map native or heap memory segments to a linear view that
  * supports:
  * <ul>
- *  <li>64-bits indexation, allowing to work with a single buffer with a capacity up to
+ *  <li>64-bits indexation, allowing to work with a single buffer with a size up to
  *      approximately 2<sup>63</sup> bytes</li>
  *  <li>Storage of object of any types and not only primitives</li>
  *  <li>Generic types allows to work directly with boxed types as well, which does not require
@@ -45,11 +44,11 @@ public interface DataBuffer<T> {
    * <p>
    * For exemple, in case of a byte buffer, this value is equal to the number of bytes this buffer
    * can hold. For an integer buffer, it is equal to the number of integers, therefore the size
-   * in bytes of this buffer is {@code capacity() * Integer.BYTES}.
+   * in bytes of this buffer is {@code size() * Integer.BYTES}.
    * 
-   * @return the buffer capacity
+   * @return the buffer size
    */
-  long capacity();
+  long size();
 
   /**
    * Tells whether or not this buffer is backed by an accessible array.
@@ -78,7 +77,7 @@ public interface DataBuffer<T> {
    * 
    * @param index the index from which the float will be read
    * @return the value at the given index
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer size
    */
   T get(long index);
 
@@ -88,45 +87,47 @@ public interface DataBuffer<T> {
    * <b>Important: </b>Usage of this method should be limited to buffers of non-primitive types or
    * when the data type is not deterministically known by the caller. In any other case, prefer
    * the usage of its primitive variant which will significantly improve performances
-   * (e.g. {@code IntDataBuffer.putInt(idx)}
+   * (e.g. {@code IntDataBuffer.setInt(idx)}
    *
-   * @param index the index at which the value will be written
    * @param value the value to be written
+   * @param index the index at which the value will be written
    * @return this buffer
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer size
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
-  DataBuffer<T> put(long index, T value);
+  DataBuffer<T> set(T value, long index);
   
   /**
    * Copy data of this buffer in the given buffer.
    * <p>
-   * If there are more values in this buffer than the destination buffer capacity, that is, if
-   * {@code capacity() > dst.capacity()}, then no values are transferred and a
-   * BufferOverflowException is thrown.
+   * If there are more values to copy than the destination buffer size, i.e.
+   * {@code size > dst.size()}, then no values are transferred and a
+   * BufferOverflowException is thrown. On the other hand, if there are more values to copy that
+   * the source buffer size, i.e. {@code > src.size()}, then a BufferUnderfloatException is thrown.
    * <p>
-   * Otherwise, this method copies {@code n = capacity()} values from this buffer into
+   * Otherwise, this method copies {@code n = size} values from this buffer into
    * the destination buffer.
    *
    * @param dst the destination buffer into which values are copied; must not be this buffer
+   * @param size number of values to copy to the destination buffer
    * @return this buffer
-   * @throws BufferOverflowException if there is insufficient space in the destination buffer for
-   *                                 the number of values stored in this buffer
    * @throws IllegalArgumentException if the destination buffer is this buffer
    * @throws ReadOnlyBufferException if the destination buffer is read-only
+   * @throws java.nio.BufferOverflowException if there is not enough space in destination buffer
+   * @throws java.nio.BufferUnderflowException if there are not enough values in the source buffer
    */
-  DataBuffer<T> copyTo(DataBuffer<T> dst);
+  DataBuffer<T> copyTo(DataBuffer<T> dst, long size);
 
   /**
    * Creates a new buffer whose content is a shared subsequence of this buffer's content, starting
    * at the given index.
    * <p>
-   * The index must not be greater than this buffer capacity. Changes to this buffer's content will
+   * The index must not be greater than this buffer size. Changes to this buffer's content will
    * be visible in the new buffer and vice versa. The new buffer will be read-only if, and only if,
    * this buffer is read-only.
    *
    * @param index index of the first value of the new buffer created, must not be greater than
-   *              {@code capacity()}
+   *              {@code size()}
    * @return the new buffer
    * @throws IllegalArgumentException if index do not pass validation checks
    */
@@ -134,15 +135,15 @@ public interface DataBuffer<T> {
 
   /**
    * Creates a new buffer whose content is a shared subsequence of this buffer's content, whose
-   * capacity is set to the given value.
+   * size is set to the given value.
    * <p>
-   * The new capacity must not be greater than this buffer capacity. Changes to this buffer's
+   * The new size must not be greater than this buffer size. Changes to this buffer's
    * content will be visible in the new buffer and vice versa. The new buffer will be read-only if,
    * and only if, this buffer is read-only.
    *
-   * @param capacity capacity of this new buffer, must not be greater than {@code capacity()}
+   * @param size size of this new buffer, must not be greater than {@code size()}
    * @return the new buffer
-   * @throws IllegalArgumentException if capacity value do not pass validation checks
+   * @throws IllegalArgumentException if size value do not pass validation checks
    */
-  DataBuffer<T> narrow(long capacity);
+  DataBuffer<T> narrow(long size);
 }

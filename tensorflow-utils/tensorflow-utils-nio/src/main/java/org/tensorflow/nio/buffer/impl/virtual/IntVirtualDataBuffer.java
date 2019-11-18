@@ -15,54 +15,48 @@ public class IntVirtualDataBuffer extends AbstractVirtualDataBuffer<Integer, Int
 
   @Override
   public IntStream intStream() {
-    return IntStream.iterate(0, this::get).limit(remaining());
-  }
-
-  @Override
-  public int getInt() {
-    return adapter.readInt(physicalBuffer());
+    return IntStream.iterate(0, this::getInt).limit(size());
   }
 
   @Override
   public int getInt(long index) {
     Validator.getArgs(this, index);
-    return adapter.readInt(physicalBuffer().withPosition(index * adapter.sizeInBytes()));
+    return adapter.readInt(physicalBuffer(), index * adapter.sizeInBytes());
   }
 
   @Override
-  public IntDataBuffer get(int[] dst, int offset, int length) {
+  public IntDataBuffer setInt(int value, long index) {
+    Validator.putArgs(this, index);
+    adapter.writeInt(physicalBuffer(), value, index * adapter.sizeInBytes());
+    return this;
+  }
+
+  @Override
+  public IntDataBuffer read(int[] dst, int offset, int length) {
     Validator.readArgs(this, dst.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      dst[i] = adapter.readInt(physicalBuffer());
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      dst[j] = adapter.readInt(physicalBuffer(), i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public IntDataBuffer putInt(int value) {
-    adapter.writeInt(physicalBuffer(), value);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer putInt(long index, int value) {
-    Validator.copyToArgs(this, index);
-    adapter.writeInt(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer put(int[] src, int offset, int length) {
+  public IntDataBuffer write(int[] src, int offset, int length) {
     Validator.writeArgs(this, src.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      adapter.writeInt(physicalBuffer(), src[i]);
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      adapter.writeInt(physicalBuffer(), src[j], i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public IntDataBuffer duplicate() {
-    return new IntVirtualDataBuffer(physicalBuffer().duplicate(), adapter);
+  public IntDataBuffer offset(long index) {
+    return new IntVirtualDataBuffer(physicalBuffer().offset(index * adapter.sizeInBytes()), adapter);
+  }
+
+  @Override
+  public IntDataBuffer narrow(long size) {
+    return new IntVirtualDataBuffer(physicalBuffer().narrow(size * adapter.sizeInBytes()), adapter);
   }
 
   private IntVirtualDataBuffer(ByteDataBuffer physicalBuffer, IntDataAdapter adapter) {

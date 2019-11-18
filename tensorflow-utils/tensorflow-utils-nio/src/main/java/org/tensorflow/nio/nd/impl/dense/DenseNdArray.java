@@ -19,6 +19,7 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.dense.transfer.DataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -29,17 +30,29 @@ public class DenseNdArray<T> extends AbstractDenseNdArray<T, NdArray<T>> {
     return new DenseNdArray<>(buffer, shape);
   }
 
+  @Override
+  public NdArray<T> copyTo(NdArray<T> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof AbstractDenseNdArray) {
+      AbstractDenseNdArray<T, ?> denseDst = (AbstractDenseNdArray<T, ?>)dst;
+      DataTransfer.execute(buffer(), dimensions(), denseDst.buffer(), denseDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
   protected DenseNdArray(DataBuffer<T> buffer, Shape shape) {
     this(buffer, DimensionalSpace.create(shape));
   }
 
   @Override
-  DenseNdArray<T> allocate(DataBuffer<T> buffer, DimensionalSpace dimensions) {
+  DenseNdArray<T> instantiate(DataBuffer<T> buffer, DimensionalSpace dimensions) {
     return new DenseNdArray<>(buffer, dimensions);
   }
 
   @Override
-  DataBuffer<T> buffer() {
+  protected DataBuffer<T> buffer() {
     return buffer;
   }
 

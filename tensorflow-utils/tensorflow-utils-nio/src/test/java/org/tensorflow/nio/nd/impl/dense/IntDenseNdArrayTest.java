@@ -29,7 +29,7 @@ public class IntDenseNdArrayTest extends IntNdArrayTestBase {
     return NdArrays.ofInts(shape);
   }
 
-  @Override protected DataBuffer<Integer> allocateBuffer(long capacity) {
-    return DataBuffers.ofInts(capacity);
+  @Override protected DataBuffer<Integer> allocateBuffer(long size) {
+    return DataBuffers.ofInts(size);
   }
 }

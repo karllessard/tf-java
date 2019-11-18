@@ -25,7 +25,7 @@ import org.junit.Test;
 public abstract class IntDataBufferTestBase extends DataBufferTestBase<Integer> {
 
   @Override
-  protected abstract IntDataBuffer allocate(long capacity);
+  protected abstract IntDataBuffer allocate(long size);
 
   @Override
   protected Integer valueOf(Long val) {
@@ -35,35 +35,29 @@ public abstract class IntDataBufferTestBase extends DataBufferTestBase<Integer> 
   @Test
   public void writeAndReadFromArray() {
     IntDataBuffer buffer = allocate(10L);
-    int[] oneToFive = new int[]{valueOf(1L), valueOf(2L), valueOf(3L), valueOf(4L), valueOf(5L)};
+    int[] oneToFive = new int[]{ 1, 2, 3, 4, 5 };
 
-    buffer.put(oneToFive);
-    assertEquals(valueOf(2L), buffer.get(1));
-    assertEquals(5L, buffer.position());
+    buffer.write(oneToFive);
+    assertEquals(2, buffer.getInt(1));
 
-    buffer.put(oneToFive);
-    assertEquals(valueOf(2L), buffer.get(6));
-    assertEquals(10L, buffer.position());
+    buffer.offset(5).write(oneToFive);
+    assertEquals(2, buffer.getInt(1));
+    assertEquals(2, buffer.getInt(6));
 
-    buffer.rewind();
     int[] read = new int[5];
-    buffer.get(read);
+    buffer.read(read);
     assertArrayEquals(oneToFive, read);
-    assertEquals(5L, buffer.position());
 
-    buffer.rewind();
-    buffer.put(oneToFive, 2, 2);
-    assertEquals(valueOf(3L), buffer.get(0));
-    assertEquals(valueOf(4L), buffer.get(1));
-    assertEquals(valueOf(3L), buffer.get(2));
-    assertEquals(2L, buffer.position());
+    buffer.write(oneToFive, 2, 2);
+    assertEquals(3, buffer.getInt(0));
+    assertEquals(4, buffer.getInt(1));
+    assertEquals(3, buffer.getInt(2));
 
     Arrays.fill(read, valueOf(0L));
-    buffer.get(read, 1, 2);
-    assertEquals(valueOf(0L), (Integer) read[0]);
-    assertEquals(valueOf(3L), (Integer) read[1]);
-    assertEquals(valueOf(4L), (Integer) read[2]);
-    assertEquals(valueOf(0L), (Integer) read[3]);
-    assertEquals(4L, buffer.position());
+    buffer.read(read, 1, 2);
+    assertEquals(0, read[0]);
+    assertEquals(3, read[1]);
+    assertEquals(4, read[2]);
+    assertEquals(0, read[3]);
   }
 }

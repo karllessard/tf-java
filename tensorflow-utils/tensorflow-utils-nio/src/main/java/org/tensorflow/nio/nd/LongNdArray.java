@@ -17,6 +17,7 @@
 package org.tensorflow.nio.nd;
 
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.LongDataBuffer;
 import org.tensorflow.nio.nd.index.Index;
 
 /**
@@ -150,8 +151,12 @@ public interface LongNdArray extends NdArray<Long> {
   @Override
   LongNdArray read(DataBuffer<Long> dst);
 
+  LongNdArray read(LongDataBuffer dst);
+
   @Override
   LongNdArray write(DataBuffer<Long> src);
+
+  LongNdArray write(LongDataBuffer src);
 
   @Override
   LongNdArray read(Long[] dst);

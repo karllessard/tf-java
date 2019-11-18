@@ -32,7 +32,7 @@ public class DoubleMutableDataBuffer extends MutableDataBuffer<Double, DoubleDat
      * @return mutable buffer
      */
     public static DoubleDataBuffer create(DoubleDataBuffer buffer) {
-        return new DoubleMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new DoubleMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -46,8 +46,8 @@ public class DoubleMutableDataBuffer extends MutableDataBuffer<Double, DoubleDat
     }
 
     @Override
-    public DoubleDataBuffer putDouble(long index, double value) {
-        original().putDouble(adjust(index), value);
+    public DoubleDataBuffer setDouble(double value, long index) {
+        original().setDouble(value, adjust(index));
         return this;
     }
 
@@ -63,7 +63,7 @@ public class DoubleMutableDataBuffer extends MutableDataBuffer<Double, DoubleDat
         return this;
     }
 
-    public DoubleMutableDataBuffer(DoubleDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    public DoubleMutableDataBuffer(DoubleDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

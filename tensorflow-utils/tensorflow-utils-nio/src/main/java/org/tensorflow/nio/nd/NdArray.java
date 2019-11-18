@@ -19,6 +19,7 @@ package org.tensorflow.nio.nd;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.DataTransfer;
 import org.tensorflow.nio.nd.index.Index;
 
 /**
@@ -267,21 +268,21 @@ public interface NdArray<T> {
   /**
    * Read the content of this N-dimensional array into the destination buffer.
    *
-   * <p>The remaining space of the buffer must be equal or greater to the {@link #size()} of this
+   * <p>The size of the buffer must be equal or greater to the {@link #size()} of this
    * array, or an exception is thrown. After the copy, content of the buffer and of the array can be
    * altered independently, without affecting each other.
    *
    * @param dst the destination buffer
    * @return this array
    * @throws java.nio.BufferOverflowException if the buffer cannot hold the content of this array
-   * @see DataBuffer#capacity()
+   * @see DataBuffer#size()
    */
   NdArray<T> read(DataBuffer<T> dst);
 
   /**
    * Write the content of this N-dimensional array from the source buffer.
    *
-   * <p>The remaining data of the buffer must be equal or greater to the {@link #size()} of this
+   * <p>The size of the buffer must be equal or greater to the {@link #size()} of this
    * array, or an exception is thrown. After the copy, content of the buffer and of the array can be
    * altered independently, without affecting each other.
    *
@@ -289,7 +290,7 @@ public interface NdArray<T> {
    * @return this array
    * @throws java.nio.BufferUnderflowException if the buffer has not enough remaining data to write
    * into this array
-   * @see DataBuffer#capacity()
+   * @see DataBuffer#size()
    */
   NdArray<T> write(DataBuffer<T> src);
 

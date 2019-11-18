@@ -27,8 +27,8 @@ public class Validator {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
     }
-    if (index >= buffer.capacity()) {
-      throw new IndexOutOfBoundsException("Index must be smaller than the buffer capacity");
+    if (index >= buffer.size()) {
+      throw new IndexOutOfBoundsException("Index must be smaller than the buffer size");
     }
   }
 
@@ -36,20 +36,23 @@ public class Validator {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
     }
-    if (index >= buffer.capacity()) {
-      throw new IndexOutOfBoundsException("Index must be smaller than the buffer capacity");
+    if (index >= buffer.size()) {
+      throw new IndexOutOfBoundsException("Index must be smaller than the buffer size");
     }
     if (buffer.isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
   }
 
-  public static <T> void copyToArgs(DataBuffer<T> src, DataBuffer<T> dst) {
+  public static <T> void copyToArgs(DataBuffer<T> src, DataBuffer<T> dst, long size) {
     if (dst == src) {
       throw new IllegalArgumentException("Source cannot be the same buffer as destination");
     }
-    if (src.capacity() > dst.capacity()) {
+    if (size > dst.size()) {
       throw new BufferOverflowException();
+    }
+    if (size > src.size()) {
+      throw new BufferUnderflowException();
     }
     if (dst.isReadOnly()) {
       throw new ReadOnlyBufferException();
@@ -57,14 +60,14 @@ public class Validator {
   }
 
   public static <T> void readArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
-    if (length > buffer.capacity()) {
+    if (length > buffer.size()) {
       throw new BufferUnderflowException();
     }
     arrayArgs(arrayLength, offset, length);
   }
 
   public static <T> void writeArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
-    if (length > buffer.capacity()) {
+    if (length > buffer.size()) {
       throw new BufferOverflowException();
     }
     if (buffer.isReadOnly()) {
@@ -74,14 +77,17 @@ public class Validator {
   }
 
   public static <T> void offsetArgs(DataBuffer<T> buffer, long index) {
-    if (index < 0 || index >= buffer.capacity()) {
+    if (index < 0 || index > buffer.size()) {
       throw new IllegalArgumentException();
     }
   }
 
-  public static <T> void narrowArgs(DataBuffer<T> buffer, long capacity) {
-    if (capacity < 0 || capacity > buffer.capacity()) {
-      throw new IllegalArgumentException();
+  public static <T> void narrowArgs(DataBuffer<T> buffer, long size) {
+    if (size < 0) {
+      throw new IllegalArgumentException("Size must be non-negative");
+    }
+    if (size > buffer.size()) {
+      throw new IllegalArgumentException("Cannot narrow a buffer of size " + buffer.size() + " to " + size);
     }
   }
 

@@ -32,7 +32,7 @@ public class ShortMutableDataBuffer extends
      * @return mutable buffer
      */
     public static ShortDataBuffer create(ShortDataBuffer buffer) {
-        return new ShortMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new ShortMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -41,8 +41,8 @@ public class ShortMutableDataBuffer extends
     }
 
     @Override
-    public ShortDataBuffer putShort(long index, short value) {
-        original().putShort(adjust(index), value);
+    public ShortDataBuffer setShort(short value, long index) {
+        original().setShort(value, adjust(index));
         return this;
     }
 
@@ -58,7 +58,7 @@ public class ShortMutableDataBuffer extends
         return this;
     }
 
-    private ShortMutableDataBuffer(ShortDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    private ShortMutableDataBuffer(ShortDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

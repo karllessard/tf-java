@@ -14,20 +14,19 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.buffer.impl.join;
 
-import org.tensorflow.nio.buffer.FloatDataBuffer;
-import org.tensorflow.nio.buffer.FloatDataBufferTestBase;
+package org.tensorflow.nio.nd.impl.dimension;
 
-public class FloatLargeDataBufferTest extends FloatDataBufferTestBase {
+public class DimensionalSpaceWithOffset extends DimensionalSpace {
 
-  @Override
-  protected long maxCapacity() {
-    return FloatJoinDataBuffer.MAX_CAPACITY;
+  public long offset() {
+    return offset;
   }
 
-  @Override
-  protected FloatDataBuffer allocate(long capacity) {
-    return FloatJoinDataBuffer.allocate(capacity);
+  DimensionalSpaceWithOffset(Dimension[] dimensions, int segmentationIdx, long offset) {
+    super(dimensions, segmentationIdx);
+    this.offset = offset;
   }
+
+  private long offset;
 }

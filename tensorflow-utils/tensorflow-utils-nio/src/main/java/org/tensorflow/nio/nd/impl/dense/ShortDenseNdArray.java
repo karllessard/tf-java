@@ -20,8 +20,11 @@ import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.ShortDataBuffer;
 import org.tensorflow.nio.nd.ShortNdArray;
+import org.tensorflow.nio.nd.NdArray;
+import org.tensorflow.nio.nd.ShortNdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.ShortMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.ShortDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +43,7 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
 
   @Override
   public ShortNdArray setShort(short value, long... indices) {
-    buffer().putShort(positionOf(indices, true), value);
+    buffer().setShort(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,6 +60,32 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
   }
 
   @Override
+  public ShortNdArray copyTo(NdArray<Short> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof ShortDenseNdArray) {
+      ShortDenseNdArray floatDst = (ShortDenseNdArray)dst;
+      ShortDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public ShortNdArray read(ShortDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    ShortDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public ShortNdArray write(ShortDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    ShortDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Short, ShortNdArray> cursor(int dimensionIdx) {
     ShortDataBuffer mutableBuffer = ShortMutableDataBuffer.create(buffer());
     ShortDenseNdArray mutableElement = new ShortDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
@@ -68,7 +97,7 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
   }
 
   @Override
-  ShortDenseNdArray allocate(DataBuffer<Short> buffer, DimensionalSpace dimensions) {
+  ShortDenseNdArray instantiate(DataBuffer<Short> buffer, DimensionalSpace dimensions) {
     return new ShortDenseNdArray((ShortDataBuffer)buffer, dimensions);
   }
 

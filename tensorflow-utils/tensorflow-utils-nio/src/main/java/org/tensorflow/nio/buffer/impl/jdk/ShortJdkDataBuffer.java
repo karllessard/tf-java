@@ -25,7 +25,7 @@ import org.tensorflow.nio.buffer.impl.Validator;
 /**
  * A buffer of bytes using a JDK {@link ShortBuffer} for storage.
  * <p>
- * Since JDK buffers supports only 32-bits indexation, the capacity of this buffer type cannot
+ * Since JDK buffers supports only 32-bits indexation, the size of this buffer type cannot
  * exceed 2<sup>32</sup> - 1 (see {@link ShortJdkDataBuffer#MAX_CAPACITY} for the real maximum
  * value supported).
  */
@@ -33,9 +33,9 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
     implements ShortDataBuffer {
 
   /**
-   * The maximum capacity for a buffer of this type, i.e. the maximum number of bytes it can store.
+   * The maximum size for a buffer of this type, i.e. the maximum number of bytes it can store.
    * <p>
-   * As the maximum capacity may vary depending on the JVM implementation and on the platform, this
+   * As the maximum size may vary depending on the JVM implementation and on the platform, this
    * property returns a value that is safe for most of them.
    */
   public static long MAX_CAPACITY = AbstractJdkDataBuffer.MAX_CAPACITY;
@@ -43,17 +43,17 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
   /**
    * Allocates a new byte buffer, initialized with zeroes.
    *
-   * @param capacity the new buffer's capacity, in bytes
+   * @param size the new buffer's size, in bytes
    * @return the new byte buffer
-   * @throws IllegalArgumentException if the capacity is a negative integer or exceeds
+   * @throws IllegalArgumentException if the size is a negative integer or exceeds
    *                                  {@link #MAX_CAPACITY}.
    */
-  public static ShortDataBuffer allocate(long capacity) {
-    if (capacity > MAX_CAPACITY) {
+  public static ShortDataBuffer allocate(long size) {
+    if (size > MAX_CAPACITY) {
       throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds "
           + MAX_CAPACITY + " bytes, use ShortJoinDataBuffer instead");
     }
-    return new ShortJdkDataBuffer(ShortBuffer.allocate((int)capacity));
+    return new ShortJdkDataBuffer(ShortBuffer.allocate((int)size));
   }
 
   /**
@@ -74,7 +74,7 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
   }
 
   @Override
-  public ShortDataBuffer putShort(long index, short value) {
+  public ShortDataBuffer setShort(short value, long index) {
     Validator.putArgs(this, index);
     buf.put((int)index, value);
     return this;
@@ -82,21 +82,23 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
 
   @Override
   public ShortDataBuffer read(short[] dst, int offset, int length) {
-    buf.get(dst, offset, length);
+    buf.get(dst, offset, length).rewind();
     return this;
   }
 
   @Override
   public ShortDataBuffer write(short[] src, int offset, int length) {
-    buf.put(src, offset, length);
+    buf.put(src, offset, length).rewind();
     return this;
   }
 
   @Override
-  public ShortDataBuffer copyTo(DataBuffer<Short> dst) {
-    Validator.copyToArgs(this, dst);
+  public ShortDataBuffer copyTo(DataBuffer<Short> dst, long size) {
+    Validator.copyToArgs(this, dst, size);
     if (dst instanceof ShortJdkDataBuffer) {
-      ((ShortJdkDataBuffer)dst).buf.duplicate().put(buf.duplicate());
+      ShortBuffer dstBuf = ((ShortJdkDataBuffer)dst).buf.duplicate();
+      ShortBuffer srcBuf = (ShortBuffer)buf.duplicate().limit((int)size);
+      dstBuf.put(srcBuf);
     } else {
       slowCopyTo(dst);
     }
@@ -110,9 +112,9 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
   }
 
   @Override
-  public ShortDataBuffer narrow(long capacity) {
-    Validator.narrowArgs(this, capacity);
-    return new ShortJdkDataBuffer(((ShortBuffer)buf.duplicate().limit((int)capacity)).slice());
+  public ShortDataBuffer narrow(long size) {
+    Validator.narrowArgs(this, size);
+    return new ShortJdkDataBuffer(((ShortBuffer)buf.duplicate().limit((int)size)).slice());
   }
 
   @Override

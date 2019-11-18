@@ -29,7 +29,7 @@ public class FloatDenseNdArrayTest extends FloatNdArrayTestBase {
     return NdArrays.ofFloats(shape);
   }
 
-  @Override protected DataBuffer<Float> allocateBuffer(long capacity) {
-    return DataBuffers.ofFloats(capacity);
+  @Override protected DataBuffer<Float> allocateBuffer(long size) {
+    return DataBuffers.ofFloats(size);
   }
 }

@@ -1,4 +1,4 @@
-package org.tensorflow.nio.nd.impl.dense;
+package org.tensorflow.nio.nd.impl.sequence;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -8,19 +8,21 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.tensorflow.nio.nd.IntNdArray;
+import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.NdArrays;
 import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.impl.AbstractNdArray;
 
-public class DefaultElementCursorTest {
+public class ElementSequenceTest {
 
   @Test
   public void iterateVectorsWithIndex() {
     IntNdArray array = NdArrays.ofInts(Shape.make(2, 3, 2));
 
-    DefaultElementCursor<Integer, IntNdArray> cursor =
-        new DefaultElementCursor<>(1, (AbstractDenseNdArray<Integer, IntNdArray>)array);
+    @SuppressWarnings("unchecked")
+    NdArraySequence<IntNdArray> sequence = ElementSequence.create((AbstractNdArray<Integer, IntNdArray>)array, 1);
     List<long[]> coords = new ArrayList<>((int)array.shape().size());
-    cursor.forEachIdx((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
+    sequence.forEachIdx((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
 
     assertEquals(6, coords.size());
     assertArrayEquals(new long[] {0, 0}, coords.get(0));
@@ -35,8 +37,8 @@ public class DefaultElementCursorTest {
   public void iterateScalarsWithIndex() {
     IntNdArray array = NdArrays.ofInts(Shape.make(2, 3, 2));
 
-    DefaultElementCursor<Integer, IntNdArray> cursor =
-        new DefaultElementCursor<>(2, (AbstractDenseNdArray<Integer, IntNdArray>)array);
+    @SuppressWarnings("unchecked")
+    NdArraySequence<IntNdArray> cursor = ElementSequence.create((AbstractNdArray<Integer, IntNdArray>)array, 2);
     List<long[]> coords = new ArrayList<>((int)array.shape().size());
     cursor.forEachIdx((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
 

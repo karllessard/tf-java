@@ -32,7 +32,7 @@ public class ByteMutableDataBuffer extends
      * @return mutable buffer
      */
     public static ByteDataBuffer create(ByteDataBuffer buffer) {
-        return new ByteMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new ByteMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -41,8 +41,8 @@ public class ByteMutableDataBuffer extends
     }
 
     @Override
-    public ByteDataBuffer putByte(long index, byte value) {
-        original().putByte(adjust(index), value);
+    public ByteDataBuffer setByte(byte value, long index) {
+        original().setByte(value, adjust(index));
         return this;
     }
 
@@ -58,7 +58,7 @@ public class ByteMutableDataBuffer extends
         return this;
     }
 
-    private ByteMutableDataBuffer(ByteDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    private ByteMutableDataBuffer(ByteDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

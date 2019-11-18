@@ -29,19 +29,19 @@ abstract public class DataBufferTestBase<T> {
 
   protected final boolean enableLargeBufferTests = System.getProperty("testLargeBuffers") != null;
 
-  protected abstract long maxCapacity();
+  protected abstract long maxSize();
 
-  protected abstract DataBuffer<T> allocate(long capacity);
+  protected abstract DataBuffer<T> allocate(long size);
 
   protected abstract T valueOf(Long val);
 
   @Test
-  public void capacities() {
+  public void bufferSize() {
     DataBuffer<T> buffer = allocate(10L);
-    assertEquals(10L, buffer.capacity());
+    assertEquals(10L, buffer.size());
 
     buffer = allocate(0L);
-    assertEquals(0L, buffer.capacity());
+    assertEquals(0L, buffer.size());
 
     try {
       allocate(-1L);
@@ -50,81 +50,56 @@ abstract public class DataBufferTestBase<T> {
       // as expected
     }
     try {
-      allocate(maxCapacity() + 1);
+      allocate(maxSize() + 1);
       fail();
     } catch (IllegalArgumentException e) {
       // as expected
     }
     if (enableLargeBufferTests) {
-      buffer = allocate(maxCapacity());
-      assertEquals(maxCapacity(), buffer.capacity());
+      buffer = allocate(maxSize());
+      assertEquals(maxSize(), buffer.size());
     }
   }
 
   @Test
-  public void limitsAndPositions() {
+  public void offsetAndNarrow() {
     DataBuffer<T> buffer = allocate(10L);
-    assertEquals(10L, buffer.limit());
-    assertEquals(0L, buffer.position());
-    assertTrue(buffer.hasRemaining());
-    assertEquals(10L, buffer.remaining());
+    buffer.set(valueOf(100L), 6);
+    assertEquals(10L, buffer.size());
+    assertEquals(valueOf(100L), buffer.get(6));
 
-    buffer.position(8L);
-    assertEquals(10L, buffer.limit());
-    assertEquals(8L, buffer.position());
-    assertTrue(buffer.hasRemaining());
-    assertEquals(2L, buffer.remaining());
+    DataBuffer<T> subBuffer = buffer.offset(3L);
+    assertEquals(7L, subBuffer.size());
+    assertEquals(valueOf(100L), subBuffer.get(3));
 
-    buffer.limit(5L);
-    assertEquals(5L, buffer.limit());
-    assertEquals(5L, buffer.position());
-    assertFalse(buffer.hasRemaining());
-    assertEquals(0L, buffer.remaining());
-
-    buffer.rewind();
-    assertEquals(5L, buffer.limit());
-    assertEquals(0L, buffer.position());
-    assertTrue(buffer.hasRemaining());
-    assertEquals(5L, buffer.remaining());
-
-    buffer.limit(0L);
-    assertEquals(0L, buffer.limit());
-    assertEquals(0L, buffer.position());
-    assertFalse(buffer.hasRemaining());
-    assertEquals(0L, buffer.remaining());
-
-    buffer.limit(10L);
-    assertEquals(10L, buffer.limit());
-    assertEquals(0L, buffer.position());
-    assertTrue(buffer.hasRemaining());
-    assertEquals(10L, buffer.remaining());
-
-    buffer.position(10L);
-    assertEquals(10L, buffer.limit());
-    assertEquals(10L, buffer.position());
-    assertFalse(buffer.hasRemaining());
-    assertEquals(0L, buffer.remaining());
-
+    subBuffer = subBuffer.narrow(2L);
+    assertEquals(2L, subBuffer.size());
     try {
-      buffer.limit(-1L);
+      subBuffer.get(3);
+      fail();
+    } catch (IndexOutOfBoundsException e) {
+      //as expected
+    }
+    try {
+      buffer.offset(-1L);
       fail();
     } catch (IllegalArgumentException e) {
       // as expected
     }
     try {
-      buffer.limit(11L);
+      buffer.offset(11L);
       fail();
     } catch (IllegalArgumentException e) {
       // as expected
     }
     try {
-      buffer.position(11L);
+      buffer.narrow(-1L);
       fail();
     } catch (IllegalArgumentException e) {
       // as expected
     }
     try {
-      buffer.position(-1L);
+      buffer.narrow(11L);
       fail();
     } catch (IllegalArgumentException e) {
       // as expected
@@ -132,110 +107,13 @@ abstract public class DataBufferTestBase<T> {
   }
 
   @Test
-  public void duplicates() {
-    DataBuffer<T> buffer = allocate(10L);
-    buffer.limit(8L);
-    buffer.position(3L);
-
-    DataBuffer<T> duplicate = buffer.duplicate();
-    assertEquals(buffer.capacity(), duplicate.capacity());
-    assertEquals(buffer.limit(), duplicate.limit());
-    assertEquals(buffer.position(), duplicate.position());
-
-    duplicate = buffer.withLimit(2L);
-    assertEquals(buffer.capacity(), duplicate.capacity());
-    assertEquals(8L, buffer.limit());
-    assertEquals(3L, buffer.position());
-    assertEquals(2L, duplicate.limit());
-    assertEquals(2L, duplicate.position());
-
-    duplicate = buffer.withPosition(2L);
-    assertEquals(buffer.capacity(), duplicate.capacity());
-    assertEquals(8L, buffer.limit());
-    assertEquals(3L, buffer.position());
-    assertEquals(8L, duplicate.limit());
-    assertEquals(2L, duplicate.position());
-  }
-
-  @Test
-  public void slices() {
-    DataBuffer<T> buffer = allocate(12L);
-
-    DataBuffer<T> fullSlice = buffer.slice();
-    assertEquals(12L, fullSlice.capacity());
-    assertEquals(12L, fullSlice.limit());
-    assertEquals(0L, fullSlice.position());
-
-    fullSlice.position(1L);
-    assertEquals(1L, fullSlice.position());
-    assertEquals(0L, buffer.position());
-
-    buffer.position(6L);
-    assertEquals(1L, fullSlice.position());
-
-    DataBuffer<T> secondHalfSlice = buffer.slice();
-    assertEquals(6L, secondHalfSlice.capacity());
-    assertEquals(6L, secondHalfSlice.limit());
-    assertEquals(0L, secondHalfSlice.position());
-
-    fullSlice.position(3L).limit(6L);
-    DataBuffer<T> secondQuarterSlice = fullSlice.slice();
-    assertEquals(3L, secondQuarterSlice.capacity());
-    assertEquals(3L, secondQuarterSlice.limit());
-    assertEquals(0L, secondQuarterSlice.position());
-
-    fullSlice.put(3L, valueOf(3L));
-    assertEquals(valueOf(3L), fullSlice.get(3L));
-    assertEquals(valueOf(3L), secondQuarterSlice.get()); // increments position
-    assertEquals(valueOf(3L), buffer.get(3L));
-
-    secondHalfSlice.put(valueOf(6L));
-    assertEquals(valueOf(6L), secondHalfSlice.get(0L));
-    assertEquals(valueOf(6L), buffer.get(6L));
-
-    secondQuarterSlice.put(valueOf(9L));
-    assertEquals(valueOf(9L), fullSlice.get(4L));
-    assertEquals(valueOf(9L), buffer.get(4L));
-  }
-
-  @Test
-  public void writeAndReadFromPosition() {
+  public void putAndGet() {
     DataBuffer<T> buffer = allocate(10L);
 
-    long val = 0L;
-    while (buffer.hasRemaining()) {
-      buffer.put(valueOf(val++));
-    }
-    assertEquals(10L, val);
-    assertEquals(0L, buffer.remaining());
-    try {
-      buffer.put(valueOf(val));
-      fail();
-    } catch (BufferOverflowException e) {
-      // as expected
-    }
-    val = 0L;
-    buffer.rewind();
-    while (buffer.hasRemaining()) {
-      assertEquals(valueOf(val++), buffer.get());
-    }
-    try {
-      buffer.get();
-      fail();
-    } catch (BufferUnderflowException e) {
-      // as expected
-    }
-  }
-
-  @Test
-  public void writeAndReadWithIndex() {
-    DataBuffer<T> buffer = allocate(10L);
-
-    buffer.put(5L, valueOf(5L));
-    assertEquals(0L, buffer.position());
+    buffer.set(valueOf(5L), 5L);
     assertEquals(valueOf(5L), buffer.get(5L));
     try {
-      buffer.put(10L, valueOf(10L));
+      buffer.set(valueOf(10L), 10L);
       fail();
     } catch (IndexOutOfBoundsException e) {
       // as expected
@@ -247,7 +125,7 @@ abstract public class DataBufferTestBase<T> {
       // as expected
     }
     try {
-      buffer.put(-1L, valueOf(-1L));
+      buffer.set(valueOf(-1L), -1L);
       fail();
     } catch (IndexOutOfBoundsException e) {
       // as expected
@@ -261,55 +139,29 @@ abstract public class DataBufferTestBase<T> {
   }
 
   @Test
-  public void writeFromSourceBuffer() {
-    DataBuffer<T> buffer = allocate(20L);
+  public void copyToBuffer() {
+    DataBuffer<T> srcBuffer = allocate(25L);
+    srcBuffer.set(valueOf(5L), 5L);
+    srcBuffer.set(valueOf(10L), 10L);
+    srcBuffer.set(valueOf(15L), 15L);
+    srcBuffer.set(valueOf(20L), 20L);
     try {
-      buffer.put(buffer);
+      srcBuffer.copyTo(srcBuffer, srcBuffer.size());
       fail();
     } catch (IllegalArgumentException e) {
       // as expected
     }
-    DataBuffer<T> srcBuffer = allocate(25L);
-    srcBuffer.put(5L, valueOf(5L));
-    srcBuffer.put(10L, valueOf(10L));
-    srcBuffer.put(15L, valueOf(15L));
-    srcBuffer.put(20L, valueOf(20L));
-
-    srcBuffer.limit(10L);
-    buffer.put(srcBuffer);
-    assertEquals(valueOf(5L), buffer.get(5L));
-    assertEquals(10L, srcBuffer.position());
-    assertEquals(10L, buffer.position());
-
-    srcBuffer.rewind();
-    buffer.put(srcBuffer);
-    assertEquals(valueOf(5L), buffer.get(15L));
-    assertEquals(10L, srcBuffer.position());
-    assertEquals(20L, buffer.position());
-
-    assertFalse(srcBuffer.hasRemaining());
-    buffer.put(srcBuffer); // should be allowed because srcBuffer is now empty
-
-    srcBuffer.rewind();
+    DataBuffer<T> dstBuffer = allocate(30L);
+    srcBuffer.copyTo(dstBuffer, srcBuffer.size());
+    assertEquals(valueOf(5L), dstBuffer.get(5L));
     try {
-      buffer.put(srcBuffer);
+      srcBuffer.copyTo(dstBuffer, dstBuffer.size());
       fail();
-    } catch (BufferOverflowException e) {
+    } catch (BufferUnderflowException e) {
       // as expected
     }
-    buffer.rewind();
-    srcBuffer.rewind();
-    srcBuffer.limit(20L);
-    buffer.put(srcBuffer);
-    assertEquals(valueOf(5L), buffer.get(5L));
-    assertEquals(valueOf(10L), buffer.get(10L));
-    assertEquals(valueOf(15L), buffer.get(15L));
-
-    buffer.rewind();
-    srcBuffer.rewind();
-    srcBuffer.limit(25L);
     try {
-      buffer.put(srcBuffer);
+      dstBuffer.copyTo(srcBuffer, dstBuffer.size());
       fail();
     } catch (BufferOverflowException e) {
       // as expected

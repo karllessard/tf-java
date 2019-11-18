@@ -40,7 +40,7 @@ import org.tensorflow.nio.nd.Shape;
 
 @Fork(value = 1, jvmArgs = {"-Xms4G", "-Xmx4G"})
 @BenchmarkMode(Mode.AverageTime)
-@Warmup(iterations = 3)
+@Warmup(iterations = 0)
 @Measurement(iterations = 5)
 @State(Scope.Benchmark)
 public class NdArrayBenchmark {
@@ -80,6 +80,12 @@ public class NdArrayBenchmark {
   @Measurement(batchSize = 1500 * 916)
 	public void getElementAtIndex() {
 	  pixels.get(0);
+	}
+
+	@Benchmark
+	@Measurement(batchSize = 1500 * 916)
+	public void slicing() {
+		array.slice(at(0), all(), at(0));
 	}
 
 	@Benchmark

@@ -19,9 +19,13 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
+import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.nd.DoubleNdArray;
+import org.tensorflow.nio.nd.DoubleNdArray;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.DoubleMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.DoubleDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +44,7 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
 
   @Override
   public DoubleNdArray setDouble(double value, long... indices) {
-    buffer().putDouble(positionOf(indices, true), value);
+    buffer().setDouble(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,6 +61,32 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   }
 
   @Override
+  public DoubleNdArray copyTo(NdArray<Double> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof DoubleDenseNdArray) {
+      DoubleDenseNdArray floatDst = (DoubleDenseNdArray)dst;
+      DoubleDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public DoubleNdArray read(DoubleDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    DoubleDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public DoubleNdArray write(DoubleDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    DoubleDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Double, DoubleNdArray> cursor(int dimensionIdx) {
     DoubleDataBuffer mutableBuffer = DoubleMutableDataBuffer.create(buffer());
     DoubleDenseNdArray mutableElement = new DoubleDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
@@ -68,7 +98,7 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   }
 
   @Override
-  DoubleDenseNdArray allocate(DataBuffer<Double> buffer, DimensionalSpace dimensions) {
+  DoubleDenseNdArray instantiate(DataBuffer<Double> buffer, DimensionalSpace dimensions) {
     return new DoubleDenseNdArray((DoubleDataBuffer)buffer, dimensions);
   }
 

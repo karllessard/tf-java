@@ -21,13 +21,13 @@ import org.tensorflow.nio.nd.index.Index;
 final class IndexedDimension extends AbstractDimension {
 
   @Override
-  public long numElements() {
+  public long size() {
     return numElements;
   }
   
   @Override
   public long positionOf(long coord) {
-    if (coord >= numElements()) {
+    if (coord >= size()) {
       throw new IndexOutOfBoundsException();
     }
     return originalDimension.positionOf(index.mapCoordinate(coord, originalDimension));
@@ -46,7 +46,7 @@ final class IndexedDimension extends AbstractDimension {
 
   @Override
   public String toString() {
-    return String.valueOf(numElements());
+    return String.valueOf(size());
   }
 
   IndexedDimension(Index index, Dimension originalDimension) {

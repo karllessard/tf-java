@@ -16,6 +16,7 @@
  */
 package org.tensorflow.nio.nd;
 
+import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.index.Index;
 
@@ -150,8 +151,12 @@ public interface ByteNdArray extends NdArray<Byte> {
   @Override
   ByteNdArray read(DataBuffer<Byte> dst);
 
+  ByteNdArray read(ByteDataBuffer dst);
+
   @Override
   ByteNdArray write(DataBuffer<Byte> src);
+
+  ByteNdArray write(ByteDataBuffer src);
 
   @Override
   ByteNdArray read(Byte[] dst);

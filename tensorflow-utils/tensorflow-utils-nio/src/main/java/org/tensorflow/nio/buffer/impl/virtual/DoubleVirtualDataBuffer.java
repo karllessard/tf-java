@@ -15,54 +15,48 @@ public class DoubleVirtualDataBuffer extends AbstractVirtualDataBuffer<Double, D
 
   @Override
   public DoubleStream doubleStream() {
-    return DoubleStream.iterate(0.0, d -> get((int)d)).limit(remaining());
-  }
-
-  @Override
-  public double getDouble() {
-    return adapter.readDouble(physicalBuffer());
+    return DoubleStream.iterate(0.0, d -> getDouble((int)d)).limit(size());
   }
 
   @Override
   public double getDouble(long index) {
     Validator.getArgs(this, index);
-    return adapter.readDouble(physicalBuffer().withPosition(index * adapter.sizeInBytes()));
+    return adapter.readDouble(physicalBuffer(), index * adapter.sizeInBytes());
   }
 
   @Override
-  public DoubleDataBuffer get(double[] dst, int offset, int length) {
+  public DoubleDataBuffer setDouble(double value, long index) {
+    Validator.putArgs(this, index);
+    adapter.writeDouble(physicalBuffer(), value, index * adapter.sizeInBytes());
+    return this;
+  }
+
+  @Override
+  public DoubleDataBuffer read(double[] dst, int offset, int length) {
     Validator.readArgs(this, dst.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      dst[i] = adapter.readDouble(physicalBuffer());
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      dst[j] = adapter.readDouble(physicalBuffer(), i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public DoubleDataBuffer putDouble(double value) {
-    adapter.writeDouble(physicalBuffer(), value);
-    return this;
-  }
-
-  @Override
-  public DoubleDataBuffer putDouble(long index, double value) {
-    Validator.copyToArgs(this, index);
-    adapter.writeDouble(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
-    return this;
-  }
-
-  @Override
-  public DoubleDataBuffer put(double[] src, int offset, int length) {
+  public DoubleDataBuffer write(double[] src, int offset, int length) {
     Validator.writeArgs(this, src.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      adapter.writeDouble(physicalBuffer(), src[i]);
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      adapter.writeDouble(physicalBuffer(), src[j], i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public DoubleDataBuffer duplicate() {
-    return new DoubleVirtualDataBuffer(physicalBuffer().duplicate(), adapter);
+  public DoubleDataBuffer offset(long index) {
+    return new DoubleVirtualDataBuffer(physicalBuffer().offset(index * adapter.sizeInBytes()), adapter);
+  }
+
+  @Override
+  public DoubleDataBuffer narrow(long size) {
+    return new DoubleVirtualDataBuffer(physicalBuffer().narrow(size * adapter.sizeInBytes()), adapter);
   }
 
   private DoubleVirtualDataBuffer(ByteDataBuffer physicalBuffer, DoubleDataAdapter adapter) {

@@ -35,14 +35,6 @@ import org.tensorflow.nio.buffer.impl.jdk.FloatJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.IntJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.LongJdkDataBuffer;
 import org.tensorflow.nio.buffer.impl.jdk.ShortJdkDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.BooleanJoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.ByteJoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.DoubleJoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.FloatJoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.IntJoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.JoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.LongJoinDataBuffer;
-import org.tensorflow.nio.buffer.impl.join.ShortJoinDataBuffer;
 import org.tensorflow.nio.buffer.impl.misc.ArrayDataBuffer;
 import org.tensorflow.nio.buffer.impl.misc.BitSetDataBuffer;
 import org.tensorflow.nio.buffer.impl.misc.BooleanArrayDataBuffer;
@@ -60,16 +52,13 @@ import org.tensorflow.nio.buffer.impl.virtual.VirtualDataBuffer;
 public final class DataBuffers {
 
   /**
-   * Creates a buffer of bytes that can store up to {@code capacity} values
+   * Creates a buffer of bytes that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static ByteDataBuffer ofBytes(long capacity) {
-    if (capacity > ByteJdkDataBuffer.MAX_CAPACITY) {
-      return ByteJoinDataBuffer.allocate(capacity);
-    }
-    return ByteJdkDataBuffer.allocate(capacity);
+  public static ByteDataBuffer ofBytes(long size) {
+    return ByteJdkDataBuffer.allocate(size);
   }
 
   /**
@@ -95,43 +84,27 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple byte buffers together to create a large buffer indexable with 64-bits values.
+   * Creates a buffer of longs that can store up to {@code size} values
    *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  public static ByteDataBuffer join(ByteDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : ByteJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of longs that can store up to {@code capacity} values
-   *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static LongDataBuffer ofLongs(long capacity) {
-    if (capacity > LongJdkDataBuffer.MAX_CAPACITY) {
-      return LongJoinDataBuffer.allocate(capacity);
-    }
-    return LongJdkDataBuffer.allocate(capacity);
+  public static LongDataBuffer ofLongs(long size) {
+    return LongJdkDataBuffer.allocate(size);
   }
 
   /**
-   * Creates a virtual buffer of longs that can store up to {@code capacity} values.
+   * Creates a virtual buffer of longs that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the long values to/from bytes, allowing custom
    * representation of a long.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @param adapter an object converting buffer data to longs
    * @return a new buffer
    */
-  public static LongDataBuffer ofLongs(long capacity, LongDataAdapter adapter) {
-    return toLongs(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static LongDataBuffer ofLongs(long size, LongDataAdapter adapter) {
+    return toLongs(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -171,43 +144,27 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple long buffers together to create a large buffer indexable with 64-bits values.
+   * Creates a buffer of integers that can store up to {@code size} values
    *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  public static LongDataBuffer join(LongDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : LongJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of integers that can store up to {@code capacity} values
-   *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static IntDataBuffer ofInts(long capacity) {
-    if (capacity > IntJdkDataBuffer.MAX_CAPACITY) {
-      return IntJoinDataBuffer.allocate(capacity);
-    }
-    return IntJdkDataBuffer.allocate(capacity);
+  public static IntDataBuffer ofInts(long size) {
+    return IntJdkDataBuffer.allocate(size);
   }
 
   /**
-   * Creates a virtual buffer of integers that can store up to {@code capacity} values.
+   * Creates a virtual buffer of integers that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the integer values to/from bytes, allowing custom
    * representation of an integer.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @param adapter an object converting buffer data to integers
    * @return a new buffer
    */
-  public static IntDataBuffer ofInts(long capacity, IntDataAdapter adapter) {
-    return toInts(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static IntDataBuffer ofInts(long size, IntDataAdapter adapter) {
+    return toInts(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -247,42 +204,26 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple integer buffers together to create a large buffer indexable with 64-bits values.
+   * Creates a buffer of shorts that can store up to {@code size} values
    *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  public static IntDataBuffer join(IntDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : IntJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of shorts that can store up to {@code capacity} values
-   *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static ShortDataBuffer ofShorts(long capacity) {
-    if (capacity > ShortJdkDataBuffer.MAX_CAPACITY) {
-      return ShortJoinDataBuffer.allocate(capacity);
-    }
-    return ShortJdkDataBuffer.allocate(capacity);
+  public static ShortDataBuffer ofShorts(long size) {
+    return ShortJdkDataBuffer.allocate(size);
   }
 
   /**
-   * Creates a virtual buffer of shorts that can store up to {@code capacity} values.
+   * Creates a virtual buffer of shorts that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the short values to/from bytes, allowing custom
    * representation of a short.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static ShortDataBuffer ofShorts(long capacity, ShortDataAdapter adapter) {
-    return toShorts(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static ShortDataBuffer ofShorts(long size, ShortDataAdapter adapter) {
+    return toShorts(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -322,43 +263,27 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple short buffers together to create a large buffer indexable with 64-bits values.
+   * Creates a buffer of doubles that can store up to {@code size} values
    *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  public static ShortDataBuffer join(ShortDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : ShortJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of doubles that can store up to {@code capacity} values
-   *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static DoubleDataBuffer ofDoubles(long capacity) {
-    if (capacity > DoubleJdkDataBuffer.MAX_CAPACITY) {
-      return DoubleJoinDataBuffer.allocate(capacity);
-    }
-    return DoubleJdkDataBuffer.allocate(capacity);
+  public static DoubleDataBuffer ofDoubles(long size) {
+    return DoubleJdkDataBuffer.allocate(size);
   }
 
   /**
-   * Creates a virtual buffer of doubles that can store up to {@code capacity} values.
+   * Creates a virtual buffer of doubles that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the double values to/from bytes, allowing custom
    * representation of a double.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @param adapter an object converting buffer data to doubles
    * @return a new buffer
    */
-  public static DoubleDataBuffer ofDoubles(long capacity, DoubleDataAdapter adapter) {
-    return toDoubles(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static DoubleDataBuffer ofDoubles(long size, DoubleDataAdapter adapter) {
+    return toDoubles(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -398,43 +323,26 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple double buffers together to create a large buffer indexable with 64-bits values.
+   * Creates a buffer of floats that can store up to {@code size} values
    *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-
-  public static DoubleDataBuffer join(DoubleDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : DoubleJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of floats that can store up to {@code capacity} values
-   *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static FloatDataBuffer ofFloats(long capacity) {
-    if (capacity > FloatJdkDataBuffer.MAX_CAPACITY) {
-      return FloatJoinDataBuffer.allocate(capacity);
-    }
-    return FloatJdkDataBuffer.allocate(capacity);
+  public static FloatDataBuffer ofFloats(long size) {
+    return FloatJdkDataBuffer.allocate(size);
   }
 
   /**
-   * Creates a virtual buffer of floats that can store up to {@code capacity} values.
+   * Creates a virtual buffer of floats that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the float values to/from bytes, allowing custom
    * representation of a float.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static FloatDataBuffer ofFloats(long capacity, FloatDataAdapter adapter) {
-    return toFloats(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static FloatDataBuffer ofFloats(long size, FloatDataAdapter adapter) {
+    return toFloats(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -474,42 +382,26 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple float buffers together to create a large buffer indexable with 64-bits values.
+   * Creates a buffer of booleans that can store up to {@code size} values
    *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  public static FloatDataBuffer join(FloatDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : FloatJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of booleans that can store up to {@code capacity} values
-   *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static BooleanDataBuffer ofBooleans(long capacity) {
-    if (capacity > BitSetDataBuffer.MAX_CAPACITY) {
-      return BooleanJoinDataBuffer.allocate(capacity);
-    }
-    return BitSetDataBuffer.allocate(capacity);
+  public static BooleanDataBuffer ofBooleans(long size) {
+    return BitSetDataBuffer.allocate(size);
   }
 
   /**
-   * Creates a virtual buffer of booleans that can store up to {@code capacity} values.
+   * Creates a virtual buffer of booleans that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the boolean values to/from bytes, allowing custom
    * representation of a boolean.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static BooleanDataBuffer ofBooleans(long capacity, BooleanDataAdapter adapter) {
-    return toBooleans(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static BooleanDataBuffer ofBooleans(long size, BooleanDataAdapter adapter) {
+    return toBooleans(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -538,43 +430,27 @@ public final class DataBuffers {
   }
 
   /**
-   * Join multiple boolean buffers together to create a large buffer indexable with 64-bits values.
-   *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  public static BooleanDataBuffer join(BooleanDataBuffer... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : BooleanJoinDataBuffer.join(buffers);
-  }
-
-  /**
-   * Creates a buffer of objects of type {@code clazz` that can store up to `capacity} values
+   * Creates a buffer of objects of type {@code clazz` that can store up to `size} values
    *
    * @param clazz the type of object stored in this buffer
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static <T> DataBuffer<T> of(Class<T> clazz, long capacity) {
-    if (capacity > ArrayDataBuffer.MAX_CAPACITY) {
-      return JoinDataBuffer.allocate(clazz, capacity);
-    }
-    return ArrayDataBuffer.allocate(clazz, capacity);
+  public static <T> DataBuffer<T> of(Class<T> clazz, long size) {
+    return ArrayDataBuffer.allocate(clazz, size);
   }
 
   /**
-   * Creates a virtual buffer that can store up to {@code capacity} values.
+   * Creates a virtual buffer that can store up to {@code size} values.
    *
    * <p>The provided adapter is used to create the values to/from bytes, allowing custom
    * representation of this buffer type.
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  public static <T> DataBuffer<T> of(long capacity, DataAdapter<T> adapter) {
-    return to(ofBytes(capacity * adapter.sizeInBytes()), adapter);
+  public static <T> DataBuffer<T> of(long size, DataAdapter<T> adapter) {
+    return to(ofBytes(size * adapter.sizeInBytes()), adapter);
   }
 
   /**
@@ -600,19 +476,5 @@ public final class DataBuffers {
    */
   public static <T> DataBuffer<T> wrap(T[] array, boolean readOnly) {
     return ArrayDataBuffer.wrap(array, readOnly);
-  }
-
-  /**
-   * Join multiple buffers together to create a large buffer indexable with 64-bits values.
-   *
-   * @param buffers buffers to join
-   * @return a potentially large buffer
-   */
-  @SafeVarargs
-  public static <T> DataBuffer<T> join(DataBuffer<T>... buffers) {
-    if (buffers == null) {
-      return null;
-    }
-    return (buffers.length == 1) ? buffers[0] : JoinDataBuffer.join(buffers);
   }
 }

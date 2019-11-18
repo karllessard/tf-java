@@ -29,7 +29,7 @@ public class DoubleDenseNdArrayTest extends DoubleNdArrayTestBase {
     return NdArrays.ofDoubles(shape);
   }
 
-  @Override protected DataBuffer<Double> allocateBuffer(long capacity) {
-    return DataBuffers.ofDoubles(capacity);
+  @Override protected DataBuffer<Double> allocateBuffer(long size) {
+    return DataBuffers.ofDoubles(size);
   }
 }

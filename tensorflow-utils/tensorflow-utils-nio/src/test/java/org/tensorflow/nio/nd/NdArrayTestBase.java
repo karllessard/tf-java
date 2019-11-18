@@ -41,7 +41,7 @@ public abstract class NdArrayTestBase<T> {
 
   protected abstract NdArray<T> allocate(Shape shape);
 
-  protected abstract DataBuffer<T> allocateBuffer(long capacity);
+  protected abstract DataBuffer<T> allocateBuffer(long size);
 
   protected abstract T valueOf(Long val);
 
@@ -254,12 +254,11 @@ public abstract class NdArrayTestBase<T> {
   @Test
   public void writeAndReadWithBuffers() {
     DataBuffer<T> buffer = allocateBuffer(15L);
-    long val = 0L;
-    while (buffer.hasRemaining()) {
-      buffer.put(valueOf(val++));
+    for (long val = 0L; val < buffer.size(); ++val) {
+      buffer.set(valueOf(val), val);
     }
     NdArray<T> matrix = allocate(Shape.make(3, 5));
-    matrix.write(buffer.rewind());
+    matrix.write(buffer);
     assertEquals(valueOf(0L), matrix.getValue(0, 0));
     assertEquals(valueOf(4L), matrix.getValue(0, 4));
     assertEquals(valueOf(5L), matrix.getValue(1, 0));
@@ -267,7 +266,7 @@ public abstract class NdArrayTestBase<T> {
     assertEquals(valueOf(14L), matrix.getValue(2, 4));
 
     matrix.setValue(valueOf(100L), 1, 0);
-    matrix.read(buffer.rewind());
+    matrix.read(buffer);
     assertEquals(valueOf(0L), buffer.get(0));
     assertEquals(valueOf(4L), buffer.get(4));
     assertEquals(valueOf(100L), buffer.get(5));

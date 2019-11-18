@@ -3,33 +3,34 @@ package org.tensorflow.nio.buffer.adapter;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 
 /**
- * Converts a boolean to/from bytes
+ * Converts a int to/from bytes
  */
 public interface IntDataAdapter extends DataAdapter<Integer> {
 
   /**
-   * Writes an integer as bytes to the given buffer at its current position.
-   *
-   * @param buffer buffer that receives the value as bytes
+   * Writes a int as bytes to the given buffer at its current position.
+   *  @param buffer buffer that receives the value as bytes
    * @param value value
+   * @param index byte index of the value to write
    */
-  void writeInt(ByteDataBuffer buffer, int value);
+  void writeInt(ByteDataBuffer buffer, int value, long index);
 
   /**
-   * Reads an integer as bytes from the given buffer at its current position.
+   * Reads a int as bytes from the given buffer at its current position.
    *
    * @param buffer buffer that supplies the value as bytes
+   * @param index byte index of the value to read
    * @return value
    */
-  int readInt(ByteDataBuffer buffer);
+  int readInt(ByteDataBuffer buffer, long index);
 
   @Override
-  default void writeValue(ByteDataBuffer buffer, Integer value) {
-    writeInt(buffer, value);
+  default void writeValue(ByteDataBuffer buffer, Integer value, long index) {
+    writeInt(buffer, value, index);
   }
 
   @Override
-  default Integer readValue(ByteDataBuffer buffer) {
-    return readInt(buffer);
+  default Integer readValue(ByteDataBuffer buffer, long index) {
+    return readInt(buffer, index);
   }
 }

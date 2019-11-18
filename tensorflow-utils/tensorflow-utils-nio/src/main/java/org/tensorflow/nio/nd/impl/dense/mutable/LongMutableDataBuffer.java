@@ -32,7 +32,7 @@ public class LongMutableDataBuffer extends MutableDataBuffer<Long, LongDataBuffe
      * @return mutable buffer
      */
     public static LongDataBuffer create(LongDataBuffer buffer) {
-        return new LongMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new LongMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -46,8 +46,8 @@ public class LongMutableDataBuffer extends MutableDataBuffer<Long, LongDataBuffe
     }
 
     @Override
-    public LongDataBuffer putLong(long index, long value) {
-        original().putLong(adjust(index), value);
+    public LongDataBuffer setLong(long value, long index) {
+        original().setLong(value, adjust(index));
         return this;
     }
 
@@ -63,7 +63,7 @@ public class LongMutableDataBuffer extends MutableDataBuffer<Long, LongDataBuffe
         return this;
     }
 
-    private LongMutableDataBuffer(LongDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    private LongMutableDataBuffer(LongDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

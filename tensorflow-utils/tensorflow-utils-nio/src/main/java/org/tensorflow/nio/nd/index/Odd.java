@@ -24,7 +24,7 @@ class Odd implements Index {
 
   @Override
   public long numElements(Dimension dim) {
-    return dim.numElements() >> 1;
+    return dim.size() >> 1;
   }
 
   @Override

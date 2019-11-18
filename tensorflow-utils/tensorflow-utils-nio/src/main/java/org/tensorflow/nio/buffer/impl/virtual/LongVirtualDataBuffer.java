@@ -15,54 +15,48 @@ public class LongVirtualDataBuffer extends AbstractVirtualDataBuffer<Long, LongD
 
   @Override
   public LongStream longStream() {
-    return LongStream.iterate(0, this::get).limit(remaining());
-  }
-
-  @Override
-  public long getLong() {
-    return adapter.readLong(physicalBuffer());
+    return LongStream.iterate(0, this::getLong).limit(size());
   }
 
   @Override
   public long getLong(long index) {
     Validator.getArgs(this, index);
-    return adapter.readLong(physicalBuffer().withPosition(index * adapter.sizeInBytes()));
+    return adapter.readLong(physicalBuffer(), index * adapter.sizeInBytes());
   }
 
   @Override
-  public LongDataBuffer get(long[] dst, int offset, int length) {
+  public LongDataBuffer setLong(long value, long index) {
+    Validator.putArgs(this, index);
+    adapter.writeLong(physicalBuffer(), value, index * adapter.sizeInBytes());
+    return this;
+  }
+
+  @Override
+  public LongDataBuffer read(long[] dst, int offset, int length) {
     Validator.readArgs(this, dst.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      dst[i] = adapter.readLong(physicalBuffer());
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      dst[j] = adapter.readLong(physicalBuffer(), i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public LongDataBuffer putLong(long value) {
-    adapter.writeLong(physicalBuffer(), value);
-    return this;
-  }
-
-  @Override
-  public LongDataBuffer putLong(long index, long value) {
-    Validator.copyToArgs(this, index);
-    adapter.writeLong(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
-    return this;
-  }
-
-  @Override
-  public LongDataBuffer put(long[] src, int offset, int length) {
+  public LongDataBuffer write(long[] src, int offset, int length) {
     Validator.writeArgs(this, src.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      adapter.writeLong(physicalBuffer(), src[i]);
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      adapter.writeLong(physicalBuffer(), src[j], i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public LongDataBuffer duplicate() {
-    return new LongVirtualDataBuffer(physicalBuffer().duplicate(), adapter);
+  public LongDataBuffer offset(long index) {
+    return new LongVirtualDataBuffer(physicalBuffer().offset(index * adapter.sizeInBytes()), adapter);
+  }
+
+  @Override
+  public LongDataBuffer narrow(long size) {
+    return new LongVirtualDataBuffer(physicalBuffer().narrow(size * adapter.sizeInBytes()), adapter);
   }
 
   private LongVirtualDataBuffer(ByteDataBuffer physicalBuffer, LongDataAdapter adapter) {

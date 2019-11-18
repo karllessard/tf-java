@@ -20,8 +20,10 @@ import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.nd.FloatNdArray;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.FloatMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.FloatDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +42,7 @@ public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
 
   @Override
   public FloatNdArray setFloat(float value, long... indices) {
-    buffer().putFloat(positionOf(indices, true), value);
+    buffer().setFloat(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,9 +59,36 @@ public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
   }
 
   @Override
+  public FloatNdArray copyTo(NdArray<Float> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof FloatDenseNdArray) {
+      FloatDenseNdArray floatDst = (FloatDenseNdArray)dst;
+      FloatDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public FloatNdArray read(FloatDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    FloatDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public FloatNdArray write(FloatDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    FloatDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Float, FloatNdArray> cursor(int dimensionIdx) {
     FloatDataBuffer mutableBuffer = FloatMutableDataBuffer.create(buffer());
-    FloatDenseNdArray mutableElement = new FloatDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
+    FloatDenseNdArray mutableElement = new FloatDenseNdArray(mutableBuffer,
+        dimensions().from(dimensionIdx));
     return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
@@ -68,12 +97,12 @@ public class FloatDenseNdArray extends AbstractDenseNdArray<Float, FloatNdArray>
   }
 
   @Override
-  FloatDenseNdArray allocate(DataBuffer<Float> buffer, DimensionalSpace dimensions) {
-    return new FloatDenseNdArray((FloatDataBuffer)buffer, dimensions);
+  FloatDenseNdArray instantiate(DataBuffer<Float> buffer, DimensionalSpace dimensions) {
+    return new FloatDenseNdArray((FloatDataBuffer) buffer, dimensions);
   }
 
   @Override
-  protected FloatDataBuffer buffer() {
+  public FloatDataBuffer buffer() {
     return buffer;
   }
 

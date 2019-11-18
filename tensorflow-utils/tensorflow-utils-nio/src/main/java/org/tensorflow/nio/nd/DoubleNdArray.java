@@ -17,6 +17,7 @@
 package org.tensorflow.nio.nd;
 
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.nd.index.Index;
 
 /**
@@ -150,8 +151,12 @@ public interface DoubleNdArray extends NdArray<Double> {
   @Override
   DoubleNdArray read(DataBuffer<Double> dst);
 
+  DoubleNdArray read(DoubleDataBuffer dst);
+
   @Override
   DoubleNdArray write(DataBuffer<Double> src);
+
+  DoubleNdArray write(DoubleDataBuffer src);
 
   @Override
   DoubleNdArray read(Double[] dst);

@@ -22,12 +22,12 @@ import org.tensorflow.nio.buffer.ShortDataBufferTestBase;
 public class ShortJdkDataBufferTest extends ShortDataBufferTestBase {
 
   @Override
-  protected long maxCapacity() {
+  protected long maxSize() {
     return ShortJdkDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected ShortDataBuffer allocate(long capacity) {
-    return ShortJdkDataBuffer.allocate(capacity);
+  protected ShortDataBuffer allocate(long size) {
+    return ShortJdkDataBuffer.allocate(size);
   }
 }

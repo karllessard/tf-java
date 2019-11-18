@@ -17,6 +17,7 @@
 
 package org.tensorflow.nio.nd.impl.dimension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.tensorflow.nio.nd.IllegalRankException;
 import org.tensorflow.nio.nd.Shape;
@@ -28,35 +29,52 @@ public class DimensionalSpace {
     Dimension[] dimensions = new Dimension[shape.numDimensions()];
 
     // Start from the last dimension, where all elements are continuous
-    int lastSegmentedDimensionIdx = -1;
     for (int i = dimensions.length - 1, stride = 1; i >= 0; --i) {
-      if (shape.size(i) == Shape.UNKNOWN_SIZE) {
-        dimensions[i] = new UnknownDimension();
-        if (lastSegmentedDimensionIdx < 0) {
-          lastSegmentedDimensionIdx = i;
-        }
-      } else {
-        dimensions[i] = new Axis(shape.size(i), stride);
-      }
-      stride *= dimensions[i].numElements(); // FIXME what if unknown??
+      dimensions[i] = new Axis(shape.size(i), stride);
+      stride *= dimensions[i].size();
     }
-    return new DimensionalSpace(dimensions, lastSegmentedDimensionIdx, shape);
+    return new DimensionalSpace(dimensions, shape);
   }
 
-  public DimensionalSpace mapTo(Index[] indices) {
+  public DimensionalSpaceWithOffset mapTo(Index[] indices) {
     if (dimensions == null || indices.length > dimensions.length) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    Dimension[] newDimensions = Arrays.copyOf(dimensions, dimensions.length);
-    int newLastSegmentedDimensionIdx = lastSegmentedDimensionIdx;
-    for (int i = 0; i < indices.length; ++i) {
-      Dimension newDimension = indices[i].apply(dimensions[i]);
-      newDimensions[i] = newDimension;
-      if (newDimension.isSegmented() && newLastSegmentedDimensionIdx < i) {
-        newLastSegmentedDimensionIdx = i;
+    int dimIdx = 0;
+    int newDimIdx = 0;
+    int segmentationIdx = -1;
+    long initialOffset = 0;
+
+    Dimension[] newDimensions = new Dimension[dimensions.length];
+    while (dimIdx < indices.length) {
+      if (indices[dimIdx].isPoint()) {
+        long offset = 0;
+        do {
+          offset += indices[dimIdx].mapCoordinate(0, dimensions[dimIdx]);
+        } while (++dimIdx < indices.length && indices[dimIdx].isPoint());
+        if (newDimIdx == 0) {
+          initialOffset = offset;
+        } else {
+          newDimensions[newDimIdx - 1] = new OffsetDimension(offset, newDimensions[newDimIdx - 1]);
+          segmentationIdx = newDimIdx - 1;
+        }
+      } else {
+        Dimension newDimension = indices[dimIdx].apply(dimensions[dimIdx++]);
+        newDimensions[newDimIdx] = newDimension;
+        if (newDimension.isSegmented()) {
+          segmentationIdx = newDimIdx;
+        }
+        ++newDimIdx;
       }
     }
-    return new DimensionalSpace(newDimensions, newLastSegmentedDimensionIdx);
+    for (; dimIdx < dimensions.length; ++dimIdx, ++newDimIdx) {
+      Dimension dim = dimensions[dimIdx];
+      newDimensions[newDimIdx] = dim;
+      if (dim.isSegmented()) {
+        segmentationIdx = newDimIdx;
+      }
+    }
+    return new DimensionalSpaceWithOffset(Arrays.copyOf(newDimensions, newDimIdx), segmentationIdx, initialOffset);
   }
 
   public DimensionalSpace from(int dimensionStart) {
@@ -64,16 +82,15 @@ public class DimensionalSpace {
       throw new IndexOutOfBoundsException();
     }
     Dimension[] newDimensions = Arrays.copyOfRange(dimensions, dimensionStart, dimensions.length);
-    int newLastSegmentedDimensionIdx = -1;
-    if (lastSegmentedDimensionIdx >= dimensionStart) {
-      newLastSegmentedDimensionIdx = lastSegmentedDimensionIdx - dimensionStart;
+    if (segmentationIdx > dimensionStart) {
+      return new DimensionalSpace(newDimensions, segmentationIdx - dimensionStart);
     }
-    return new DimensionalSpace(newDimensions, newLastSegmentedDimensionIdx);
+    return new DimensionalSpace(newDimensions);
   }
 
   public Shape shape() {
     if (shape == null) {
-      shape = computeShape(dimensions);
+      shape = shape(dimensions);
     }
     return shape;
   }
@@ -86,31 +103,20 @@ public class DimensionalSpace {
     return dimensions[i];
   }
 
+  public int segmentationIdx() {
+    return segmentationIdx;
+  }
+
   public long positionOf(long[] coords, boolean isValue) {
-    if (coords.length > shape.numDimensions()) {
-      throw new IndexOutOfBoundsException();
-    }
     long position = 0L;
     int dimIdx = 0;
     for (long coord : coords) {
       position += dimensions[dimIdx++].positionOf(coord);
-      // Fast-forward any remaining dimensions that are a single point
-      while (dimIdx < dimensions.length && dimensions[dimIdx].isSinglePoint()) {
-        position += dimensions[dimIdx++].position();
-      }
     }
     if (isValue && dimIdx < shape.numDimensions()) {
       throw new IllegalRankException("Not a scalar value");
     }
     return position;
-  }
-
-  public int getLastSegmentedDimensionIdx() {
-    return lastSegmentedDimensionIdx;
-  }
-
-  public boolean isSegmented() {
-    return lastSegmentedDimensionIdx >= 0;
   }
 
   /** Succinct description of the shape meant for debugging. */
@@ -119,29 +125,30 @@ public class DimensionalSpace {
     return Arrays.toString(dimensions);
   }
 
-  private DimensionalSpace(Dimension[] dimensions, int lastSegmentedDimensionIdx) {
-    this(dimensions, lastSegmentedDimensionIdx, null);
+  DimensionalSpace(Dimension[] dimensions, int segmentationIdx) {
+    this.dimensions = dimensions;
+    this.segmentationIdx = segmentationIdx;
   }
 
-  private DimensionalSpace(Dimension[] dimensions, int lastSegmentedDimensionIdx, Shape shape) {
-    this.dimensions = dimensions;
-    this.lastSegmentedDimensionIdx = lastSegmentedDimensionIdx;
+  private DimensionalSpace(Dimension[] dimensions) {
+    this(dimensions, -1);
+  }
+
+  private DimensionalSpace(Dimension[] dimensions, Shape shape) {
+    this(dimensions);
     this.shape = shape;
   }
 
   private final Dimension[] dimensions;
-  private final int lastSegmentedDimensionIdx;
+  private final int segmentationIdx;
   private Shape shape;
 
-  private static Shape computeShape(Dimension[] dimensions) {
+  private static Shape shape(Dimension[] dimensions) {
     long[] shapeDimSizes = new long[dimensions.length];
-    int numShapeDims = 0;
+    int i = 0;
     for (Dimension dimension : dimensions) {
-      if (!dimension.isSinglePoint()) {
-        shapeDimSizes[numShapeDims++] = dimension.numElements();
-      }
+      shapeDimSizes[i++] = dimension.size();
     }
-    // TODO instead of truncating the shape dims, have a different constructor accepting a length
-    return Shape.make(Arrays.copyOf(shapeDimSizes, numShapeDims));
+    return Shape.make(shapeDimSizes);
   }
 }

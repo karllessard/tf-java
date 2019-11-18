@@ -19,9 +19,13 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
+import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.nd.ByteNdArray;
+import org.tensorflow.nio.nd.ByteNdArray;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.ByteMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.ByteDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +44,7 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
 
   @Override
   public ByteNdArray setByte(byte value, long... indices) {
-    buffer().putByte(positionOf(indices, true), value);
+    buffer().setByte(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,6 +61,32 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
   }
 
   @Override
+  public ByteNdArray copyTo(NdArray<Byte> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof ByteDenseNdArray) {
+      ByteDenseNdArray floatDst = (ByteDenseNdArray)dst;
+      ByteDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public ByteNdArray read(ByteDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    ByteDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public ByteNdArray write(ByteDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    ByteDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Byte, ByteNdArray> cursor(int dimensionIdx) {
     ByteDataBuffer mutableBuffer = ByteMutableDataBuffer.create(buffer());
     ByteDenseNdArray mutableElement = new ByteDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
@@ -68,7 +98,7 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
   }
 
   @Override
-  ByteDenseNdArray allocate(DataBuffer<Byte> buffer, DimensionalSpace dimensions) {
+  ByteDenseNdArray instantiate(DataBuffer<Byte> buffer, DimensionalSpace dimensions) {
     return new ByteDenseNdArray((ByteDataBuffer)buffer, dimensions);
   }
 

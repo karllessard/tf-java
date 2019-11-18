@@ -22,7 +22,7 @@ class From implements Index {
 
   @Override
   public long numElements(Dimension dim) {
-    return dim.numElements() - start;
+    return dim.size() - start;
   }
 
   @Override

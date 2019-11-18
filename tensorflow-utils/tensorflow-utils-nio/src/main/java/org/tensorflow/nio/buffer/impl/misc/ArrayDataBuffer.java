@@ -27,16 +27,16 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
   
-  public static <T> DataBuffer<T> allocate(Class<T> clazz, long capacity) {
-    if (capacity < 0) {
+  public static <T> DataBuffer<T> allocate(Class<T> clazz, long size) {
+    if (size < 0) {
       throw new IllegalArgumentException("Capacity must be non-negative");
     }
-    if (capacity > MAX_CAPACITY) {
+    if (size > MAX_CAPACITY) {
       throw new IllegalArgumentException("Size for an array-based data buffer cannot exceeds " + MAX_CAPACITY +
           " elements, use a JoinDataBuffer instead");
     }
     @SuppressWarnings("unchecked")
-    T[] array = (T[])Array.newInstance(clazz, (int)capacity);
+    T[] array = (T[])Array.newInstance(clazz, (int)size);
     return new ArrayDataBuffer<>(array, false);
   }
 
@@ -45,7 +45,7 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
   }
 
   @Override
-  public long capacity() {
+  public long size() {
     return length;
   }
 
@@ -66,18 +66,18 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
   }
 
   @Override
-  public DataBuffer<T> put(long index, T value) {
+  public DataBuffer<T> set(T value, long index) {
     Validator.putArgs(this, index);
     values[(int)index + offset] = value;
     return this;
   }
 
   @Override
-  public DataBuffer<T> copyTo(DataBuffer<T> dst) {
-    Validator.copyToArgs(this, dst);
+  public DataBuffer<T> copyTo(DataBuffer<T> dst, long size) {
+    Validator.copyToArgs(this, dst, size);
     if (dst instanceof ArrayDataBuffer) {
       ArrayDataBuffer<T> dstBuffer = (ArrayDataBuffer<T>)dst;
-      System.arraycopy(values, offset, dstBuffer.values, dstBuffer.offset, dstBuffer.length);
+      System.arraycopy(values, offset, dstBuffer.values, dstBuffer.offset, (int)size);
     } else {
       slowCopyTo(dst);
     }
@@ -87,13 +87,13 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
   @Override
   public DataBuffer<T> offset(long index) {
     Validator.offsetArgs(this, index);
-    return new ArrayDataBuffer<>(values, readOnly, (int)index + offset, length);
+    return new ArrayDataBuffer<>(values, readOnly, offset + (int)index, length - (int)index);
   }
 
   @Override
-  public DataBuffer<T> narrow(long capacity) {
-    Validator.narrowArgs(this, capacity);
-    return new ArrayDataBuffer<>(values, readOnly, offset, (int)capacity);
+  public DataBuffer<T> narrow(long size) {
+    Validator.narrowArgs(this, size);
+    return new ArrayDataBuffer<>(values, readOnly, offset, (int)size);
   }
 
   private ArrayDataBuffer(T[] values, boolean readOnly) {

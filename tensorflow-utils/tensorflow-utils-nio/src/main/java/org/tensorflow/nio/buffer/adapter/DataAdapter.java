@@ -14,16 +14,18 @@ public interface DataAdapter<T> {
    *
    * @param buffer buffer that receives the value as bytes
    * @param value value
+   * @param index index of the value to write
    */
-  void writeValue(ByteDataBuffer buffer, T value);
+  void writeValue(ByteDataBuffer buffer, T value, long index);
 
   /**
    * Reads a value as bytes from the given buffer at its current position.
    *
    * @param buffer buffer that supplies the value as bytes
+   * @param index index of the value to read
    * @return value
    */
-  T readValue(ByteDataBuffer buffer);
+  T readValue(ByteDataBuffer buffer, long index);
 
   /**
    * Returns the number of bytes required to represent a single value

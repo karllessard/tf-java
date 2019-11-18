@@ -11,19 +11,19 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
 
   public static long MAX_CAPACITY = Integer.MAX_VALUE - 2;
 
-  public static BooleanDataBuffer allocate(long capacity) {
-    if (capacity < 0) {
+  public static BooleanDataBuffer allocate(long size) {
+    if (size < 0) {
       throw new IllegalArgumentException("Capacity must be non-negative");
     }
-    if (capacity > MAX_CAPACITY) {
+    if (size > MAX_CAPACITY) {
       throw new IllegalArgumentException("Size for an bit-set data buffer cannot exceeds " + MAX_CAPACITY +
           " elements, use a JoinDataBuffer instead");
     }
-    return new BitSetDataBuffer(new BitSet((int)capacity), false);
+    return new BitSetDataBuffer(new BitSet((int)size), false, 0, (int)size);
   }
 
   @Override
-  public long capacity() {
+  public long size() {
     return length;
   }
 
@@ -44,15 +44,15 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
   }
 
   @Override
-  public BooleanDataBuffer putBoolean(long index, boolean value) {
+  public BooleanDataBuffer setBoolean(boolean value, long index) {
     Validator.putArgs(this, index);
     bitSet.set((int)index + offset, value);
     return this;
   }
 
   @Override
-  public BooleanDataBuffer copyTo(DataBuffer<Boolean> dst) {
-    Validator.copyToArgs(this, dst);
+  public BooleanDataBuffer copyTo(DataBuffer<Boolean> dst, long size) {
+    Validator.copyToArgs(this, dst, size);
     slowCopyTo(dst);
     return this;
   }
@@ -60,8 +60,8 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
   @Override
   public BooleanDataBuffer read(boolean[] dst, int offset, int length) {
     Validator.readArgs(this, dst.length, offset, length);
-    for (int idx = 0; idx < length; ++idx) {
-      dst[idx + offset] = bitSet.get(idx + this.offset);
+    for (int i = this.offset, j = offset; i < this.offset + length; ++i, ++j) {
+      dst[j] = bitSet.get(i);
     }
     return this;
   }
@@ -69,8 +69,8 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
   @Override
   public BooleanDataBuffer write(boolean[] src, int offset, int length) {
     Validator.readArgs(this, src.length, offset, length);
-    for (int idx = 0; idx < length; ++idx) {
-      bitSet.set(idx + this.offset, src[idx + offset]);
+    for (int i = this.offset, j = offset; i < this.offset + length; ++i, ++j) {
+      bitSet.set(i, src[j]);
     }
     return this;
   }
@@ -78,17 +78,13 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
   @Override
   public BooleanDataBuffer offset(long index) {
     Validator.offsetArgs(this, index);
-    return new BitSetDataBuffer(bitSet, readOnly, (int)index + offset, length);
+    return new BitSetDataBuffer(bitSet, readOnly, offset + (int)index, length - (int)index);
   }
 
   @Override
-  public BooleanDataBuffer narrow(long capacity) {
-    Validator.narrowArgs(this, capacity);
-    return new BitSetDataBuffer(bitSet, readOnly, offset, (int)capacity);
-  }
-
-  private BitSetDataBuffer(BitSet bitSet, boolean readOnly) {
-    this(bitSet, readOnly, 0, bitSet.length());
+  public BooleanDataBuffer narrow(long size) {
+    Validator.narrowArgs(this, size);
+    return new BitSetDataBuffer(bitSet, readOnly, offset, (int)size);
   }
 
   private BitSetDataBuffer(BitSet bitSet, boolean readOnly, int offset, int length) {

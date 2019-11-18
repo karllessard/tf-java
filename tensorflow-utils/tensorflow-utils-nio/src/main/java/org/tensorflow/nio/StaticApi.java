@@ -28,84 +28,84 @@ import org.tensorflow.nio.nd.index.Indices;
 public interface StaticApi {
 
   /**
-   * Creates a buffer of objects of type {@code clazz} that can store up to {@code capacity} values
+   * Creates a buffer of objects of type {@code clazz} that can store up to {@code size} values
    *
    * @param clazz the type of object stored in this buffer
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static <T> DataBuffer<T> bufferOf(Class<T> clazz, long capacity) {
-    return DataBuffers.of(clazz, capacity);
+  static <T> DataBuffer<T> bufferOf(Class<T> clazz, long size) {
+    return DataBuffers.of(clazz, size);
   }
 
   /**
-   * Creates a buffer of bytes that can store up to {@code capacity} values
+   * Creates a buffer of bytes that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static ByteDataBuffer bufferOfBytes(long capacity) {
-    return DataBuffers.ofBytes(capacity);
+  static ByteDataBuffer bufferOfBytes(long size) {
+    return DataBuffers.ofBytes(size);
   }
 
   /**
-   * Creates a buffer of shorts that can store up to {@code capacity} values
+   * Creates a buffer of shorts that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static ShortDataBuffer bufferOfShorts(long capacity) {
-    return DataBuffers.ofShorts(capacity);
+  static ShortDataBuffer bufferOfShorts(long size) {
+    return DataBuffers.ofShorts(size);
   }
 
   /**
-   * Creates a buffer of ints that can store up to {@code capacity} values
+   * Creates a buffer of ints that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static IntDataBuffer bufferOfInts(long capacity) {
-    return DataBuffers.ofInts(capacity);
+  static IntDataBuffer bufferOfInts(long size) {
+    return DataBuffers.ofInts(size);
   }
 
   /**
-   * Creates a buffer of longs that can store up to {@code capacity} values
+   * Creates a buffer of longs that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static LongDataBuffer bufferOfLongs(long capacity) {
-    return DataBuffers.ofLongs(capacity);
+  static LongDataBuffer bufferOfLongs(long size) {
+    return DataBuffers.ofLongs(size);
   }
 
   /**
-   * Creates a buffer of floats that can store up to {@code capacity} values
+   * Creates a buffer of floats that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static FloatDataBuffer bufferOfFloats(long capacity) {
-    return DataBuffers.ofFloats(capacity);
+  static FloatDataBuffer bufferOfFloats(long size) {
+    return DataBuffers.ofFloats(size);
   }
 
   /**
-   * Creates a buffer of doubles that can store up to {@code capacity} values
+   * Creates a buffer of doubles that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static DoubleDataBuffer bufferOfDoubles(long capacity) {
-    return DataBuffers.ofDoubles(capacity);
+  static DoubleDataBuffer bufferOfDoubles(long size) {
+    return DataBuffers.ofDoubles(size);
   }
 
   /**
-   * Creates a buffer of booleans that can store up to {@code capacity} values
+   * Creates a buffer of booleans that can store up to {@code size} values
    *
-   * @param capacity capacity of the buffer to allocate
+   * @param size size of the buffer to allocate
    * @return a new buffer
    */
-  static BooleanDataBuffer bufferOfBooleans(long capacity) {
-    return DataBuffers.ofBooleans(capacity);
+  static BooleanDataBuffer bufferOfBooleans(long size) {
+    return DataBuffers.ofBooleans(size);
   }
 
   /**
@@ -297,7 +297,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static <T> NdArray<T> ndArrayOf(DataBuffer<T> buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -310,7 +310,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new byte N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static ByteNdArray ndArrayOf(ByteDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -323,7 +323,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new short N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static ShortNdArray ndArrayOf(ShortDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -336,7 +336,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new int N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static IntNdArray ndArrayOf(IntDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -349,7 +349,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new long N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static LongNdArray ndArrayOf(LongDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -362,7 +362,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new float N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static FloatNdArray ndArrayOf(FloatDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -375,7 +375,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new double N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static DoubleNdArray ndArrayOf(DoubleDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);
@@ -388,7 +388,7 @@ public interface StaticApi {
    * @param shape shape of the array
    * @return new boolean N-dimensional array
    * @throws IllegalArgumentException if shape is null, has unknown dimensions or has size bigger
-   *                                  in the buffer capacity
+   *                                  in the buffer size
    */
   static BooleanNdArray ndArrayOf(BooleanDataBuffer buffer, Shape shape) {
     return NdArrays.wrap(buffer, shape);

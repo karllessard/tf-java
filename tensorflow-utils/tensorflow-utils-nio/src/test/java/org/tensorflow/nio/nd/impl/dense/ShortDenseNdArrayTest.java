@@ -29,7 +29,7 @@ public class ShortDenseNdArrayTest extends ShortNdArrayTestBase {
     return NdArrays.ofShorts(shape);
   }
 
-  @Override protected DataBuffer<Short> allocateBuffer(long capacity) {
-    return DataBuffers.ofShorts(capacity);
+  @Override protected DataBuffer<Short> allocateBuffer(long size) {
+    return DataBuffers.ofShorts(size);
   }
 }

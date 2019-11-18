@@ -32,7 +32,7 @@ public class FloatMutableDataBuffer extends
      * @return mutable buffer
      */
     public static FloatDataBuffer create(FloatDataBuffer buffer) {
-        return new FloatMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new FloatMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -41,8 +41,8 @@ public class FloatMutableDataBuffer extends
     }
 
     @Override
-    public FloatDataBuffer putFloat(long index, float value) {
-        original().putFloat(adjust(index), value);
+    public FloatDataBuffer setFloat(float value, long index) {
+        original().setFloat(value, adjust(index));
         return this;
     }
 
@@ -58,7 +58,7 @@ public class FloatMutableDataBuffer extends
         return this;
     }
 
-    private FloatMutableDataBuffer(FloatDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    private FloatMutableDataBuffer(FloatDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

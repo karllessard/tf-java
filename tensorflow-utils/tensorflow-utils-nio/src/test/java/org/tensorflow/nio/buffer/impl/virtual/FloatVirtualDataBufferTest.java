@@ -5,28 +5,28 @@ import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.FloatDataBufferTestBase;
 import org.tensorflow.nio.buffer.adapter.FloatDataAdapter;
-import org.tensorflow.nio.buffer.impl.join.ByteJoinDataBuffer;
+import org.tensorflow.nio.buffer.impl.jdk.ByteJdkDataBuffer;
 
 public class FloatVirtualDataBufferTest extends FloatDataBufferTestBase {
 
   @Override
-  protected long maxCapacity() {
-    return ByteJoinDataBuffer.MAX_CAPACITY / 2;
+  protected long maxSize() {
+    return ByteJdkDataBuffer.MAX_CAPACITY / 2;
   }
 
   private static class TestFloat16Adapter implements FloatDataAdapter {
 
     @Override
-    public void writeFloat(ByteDataBuffer buffer, float value) {
+    public void writeFloat(ByteDataBuffer buffer, float value, long index) {
       int bits = Float.floatToIntBits(value);
-      buffer.put((byte)((bits >> 24) & 0xFF));
-      buffer.put((byte)((bits >> 16) & 0xFF));
+      buffer.set((byte)((bits >> 24) & 0xFF), index);
+      buffer.set((byte)((bits >> 16) & 0xFF), index + 1);
     }
 
     @Override
-    public float readFloat(ByteDataBuffer buffer) {
-      int byte3 = buffer.get();
-      int byte2 = buffer.get();
+    public float readFloat(ByteDataBuffer buffer, long index) {
+      int byte3 = buffer.get(index);
+      int byte2 = buffer.get(index + 1);
       return Float.intBitsToFloat(((byte3 & 0xFF) << 24) | ((byte2 & 0xFF) << 16));
     }
 
@@ -36,7 +36,7 @@ public class FloatVirtualDataBufferTest extends FloatDataBufferTestBase {
     }
   }
 
-  public FloatDataBuffer allocate(long capacity) {
-    return DataBuffers.ofFloats(capacity, new TestFloat16Adapter());
+  public FloatDataBuffer allocate(long size) {
+    return DataBuffers.ofFloats(size, new TestFloat16Adapter());
   }
 }

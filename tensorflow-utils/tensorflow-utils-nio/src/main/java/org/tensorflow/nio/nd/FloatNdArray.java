@@ -17,6 +17,7 @@
 package org.tensorflow.nio.nd;
 
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.nd.index.Index;
 
 /**
@@ -150,8 +151,12 @@ public interface FloatNdArray extends NdArray<Float> {
   @Override
   FloatNdArray read(DataBuffer<Float> dst);
 
+  FloatNdArray read(FloatDataBuffer dst);
+
   @Override
   FloatNdArray write(DataBuffer<Float> src);
+
+  FloatNdArray write(FloatDataBuffer src);
 
   @Override
   FloatNdArray read(Float[] dst);

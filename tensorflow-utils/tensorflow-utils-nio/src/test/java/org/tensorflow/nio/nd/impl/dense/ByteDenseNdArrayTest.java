@@ -29,7 +29,7 @@ public class ByteDenseNdArrayTest extends ByteNdArrayTestBase {
     return NdArrays.ofBytes(shape);
   }
 
-  @Override protected DataBuffer<Byte> allocateBuffer(long capacity) {
-    return DataBuffers.ofBytes(capacity);
+  @Override protected DataBuffer<Byte> allocateBuffer(long size) {
+    return DataBuffers.ofBytes(size);
   }
 }

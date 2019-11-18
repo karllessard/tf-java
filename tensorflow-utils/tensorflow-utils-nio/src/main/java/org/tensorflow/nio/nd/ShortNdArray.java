@@ -17,6 +17,7 @@
 package org.tensorflow.nio.nd;
 
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.ShortDataBuffer;
 import org.tensorflow.nio.nd.index.Index;
 
 /**
@@ -150,8 +151,12 @@ public interface ShortNdArray extends NdArray<Short> {
   @Override
   ShortNdArray read(DataBuffer<Short> dst);
 
+  ShortNdArray read(ShortDataBuffer dst);
+
   @Override
   ShortNdArray write(DataBuffer<Short> src);
+
+  ShortNdArray write(ShortDataBuffer src);
 
   @Override
   ShortNdArray read(Short[] dst);

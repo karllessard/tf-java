@@ -23,12 +23,12 @@ import org.tensorflow.nio.buffer.impl.jdk.DoubleJdkDataBuffer;
 public class DoubleJdkDataBufferTest extends DoubleDataBufferTestBase {
 
   @Override
-  protected long maxCapacity() {
+  protected long maxSize() {
     return DoubleJdkDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected DoubleDataBuffer allocate(long capacity) {
-    return DoubleJdkDataBuffer.allocate(capacity);
+  protected DoubleDataBuffer allocate(long size) {
+    return DoubleJdkDataBuffer.allocate(size);
   }
 }

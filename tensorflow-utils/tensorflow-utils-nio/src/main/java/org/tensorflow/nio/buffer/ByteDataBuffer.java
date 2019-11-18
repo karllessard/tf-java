@@ -30,27 +30,27 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
    *
    * @param index the index from which the float will be read
    * @return the byte at the given index
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer size
    */
   byte getByte(long index);
 
   /**
    * Writes the given byte into this buffer at the given index.
    *
-   * @param index the index at which the value will be written
    * @param value the byte to be written
+   * @param index the index at which the value will be written
    * @return this buffer
-   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer capacity
+   * @throws IndexOutOfBoundsException if index is negative or not smaller than the buffer size
    * @throws ReadOnlyBufferException if this buffer is read-only
    */
-  ByteDataBuffer putByte(long index, byte value);
+  ByteDataBuffer setByte(byte value, long index);
 
   /**
    * Bulk <i>get</i> method, using byte arrays.
    * <p>
    * This method transfers values from this buffer into the given destination array. If there are
    * fewer values in the buffer than are required to satisfy the request, that is, if
-   * {@code dst.length > capacity()}, then no values are transferred and a
+   * {@code dst.length > size()}, then no values are transferred and a
    * BufferUnderflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = dst.length} values from this buffer into the given
@@ -69,7 +69,7 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
    * <p>
    * This method transfers values from this buffer into the given destination array. If there are
    * fewer values in the buffer than are required to satisfy the request, that is, if
-   * {@code length > capacity()}, then no values are transferred and a
+   * {@code length > size()}, then no values are transferred and a
    * BufferUnderflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = length} values from this buffer into the given array
@@ -92,7 +92,7 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
    * <p>
    * This method transfers the values in the given source array into this buffer. If there are
    * more values in the source array than in this buffer, that is, if
-   * {@code src.length > capacity()}, then no values are transferred and a
+   * {@code src.length > size()}, then no values are transferred and a
    * BufferOverflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = src.length} values from the given array.
@@ -112,7 +112,7 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
    * <p>
    * This method transfers the values in the given source array into this buffer. If there are
    * more values in the source array than in this buffer, that is, if
-   * {@code length > capacity()}, then no values are transferred and a
+   * {@code length > size()}, then no values are transferred and a
    * BufferOverflowException is thrown.
    * <p>
    * Otherwise, this method copies {@code n = length} values from the given array into this buffer,
@@ -138,13 +138,13 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
   }
 
   @Override
-  default ByteDataBuffer put(long index, Byte value) {
-    return putByte(index, value);
+  default ByteDataBuffer set(Byte value, long index) {
+    return setByte(value, index);
   }
 
   @Override
   ByteDataBuffer offset(long index);
 
   @Override
-  ByteDataBuffer narrow(long capacity);
+  ByteDataBuffer narrow(long size);
 }

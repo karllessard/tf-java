@@ -31,7 +31,7 @@ public class BooleanMutableDataBuffer extends MutableDataBuffer<Boolean, Boolean
      * @return mutable buffer
      */
     public static BooleanDataBuffer create(BooleanDataBuffer buffer) {
-        return new BooleanMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new BooleanMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -40,8 +40,8 @@ public class BooleanMutableDataBuffer extends MutableDataBuffer<Boolean, Boolean
     }
 
     @Override
-    public BooleanDataBuffer putBoolean(long index, boolean value) {
-        original().putBoolean(adjust(index), value);
+    public BooleanDataBuffer setBoolean(boolean value, long index) {
+        original().setBoolean(value, adjust(index));
         return this;
     }
 
@@ -57,7 +57,7 @@ public class BooleanMutableDataBuffer extends MutableDataBuffer<Boolean, Boolean
         return this;
     }
 
-    private BooleanMutableDataBuffer(BooleanDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    private BooleanMutableDataBuffer(BooleanDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

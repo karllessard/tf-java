@@ -27,12 +27,17 @@ class At implements Index {
 
   @Override
   public long mapCoordinate(long coordinate, Dimension dim) {
-    return coord;  // TODO Validate that coordinate is 0?
+    return dim.positionOf(coord); // TODO validate coordinate is 0?
   }
 
   @Override
   public Dimension apply(Dimension dim) {
-    return dim.withCoordinate(coord);
+    throw new IllegalStateException(); // FIXME?
+  }
+
+  @Override
+  public boolean isPoint() {
+    return true;
   }
 
   At(long coord) {

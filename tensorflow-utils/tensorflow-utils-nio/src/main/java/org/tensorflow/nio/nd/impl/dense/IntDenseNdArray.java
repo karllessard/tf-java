@@ -19,9 +19,13 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.IntDataBuffer;
+import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.nd.IntNdArray;
+import org.tensorflow.nio.nd.IntNdArray;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.IntMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.IntDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +44,7 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
 
   @Override
   public IntNdArray setInt(int value, long... indices) {
-    buffer().putInt(positionOf(indices, true), value);
+    buffer().setInt(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,6 +61,32 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
   }
 
   @Override
+  public IntNdArray copyTo(NdArray<Integer> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof IntDenseNdArray) {
+      IntDenseNdArray floatDst = (IntDenseNdArray)dst;
+      IntDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public IntNdArray read(IntDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    IntDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public IntNdArray write(IntDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    IntDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Integer, IntNdArray> cursor(int dimensionIdx) {
     IntDataBuffer mutableBuffer = IntMutableDataBuffer.create(buffer());
     IntDenseNdArray mutableElement = new IntDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
@@ -68,7 +98,7 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
   }
 
   @Override
-  IntDenseNdArray allocate(DataBuffer<Integer> buffer, DimensionalSpace dimensions) {
+  IntDenseNdArray instantiate(DataBuffer<Integer> buffer, DimensionalSpace dimensions) {
     return new IntDenseNdArray((IntDataBuffer)buffer, dimensions);
   }
 

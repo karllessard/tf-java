@@ -1,8 +1,10 @@
 package org.tensorflow.nio.nd.impl.sequence;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.NdArray;
+import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.AbstractNdArray;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 
@@ -18,12 +20,15 @@ public class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence
   @Override
   public void forEachIdx(BiConsumer<long[], U> consumer) {
     long[] coords = new long[dimensionIdx + 1];
-    NdArrayCursor<T, U> cursor = ndArray.cursor(coords.length);
+    //NdArrayCursor<T, U> cursor = ndArray.cursor(coords.length);
+    //U element = (U)ndArray.get(coords);
+    Shape shape = ndArray.shape();
     while (true) {
-      consumer.accept(coords, cursor.elementAt(coords));
+      //consumer.accept(coords, cursor.elementAt(coords));
+      consumer.accept(coords, (U)ndArray.get(coords));
       int j;
       for (j = dimensionIdx; j >= 0; --j) {
-        if ((coords[j] = (coords[j] + 1) % ndArray.shape().size(j)) > 0) {
+        if ((coords[j] = (coords[j] + 1) % shape.size(j)) > 0) {
           break;
         }
       }
@@ -33,7 +38,7 @@ public class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence
     }
   }
 
-  ElementSequence(AbstractNdArray<T, U> ndArray, int dimensionIdx) {
+  private ElementSequence(AbstractNdArray<T, U> ndArray, int dimensionIdx) {
     this.ndArray = ndArray;
     this.dimensionIdx = dimensionIdx;
   }

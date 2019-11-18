@@ -27,7 +27,7 @@ import org.junit.Test;
 public abstract class BooleanDataBufferTestBase extends DataBufferTestBase<Boolean> {
 
   @Override
-  protected abstract BooleanDataBuffer allocate(long capacity);
+  protected abstract BooleanDataBuffer allocate(long size);
 
   @Override
   protected Boolean valueOf(Long val) {
@@ -39,34 +39,27 @@ public abstract class BooleanDataBufferTestBase extends DataBufferTestBase<Boole
     BooleanDataBuffer buffer = allocate(10L);
     boolean[] values = new boolean[]{true, false, false, true, false};
 
-    buffer.put(values);
+    buffer.write(values);
     assertTrue(buffer.get(0));
     assertFalse(buffer.get(1));
-    assertEquals(5L, buffer.position());
 
-    buffer.put(values);
+    buffer.offset(5).write(values);
     assertTrue(buffer.get(5));
-    assertEquals(10L, buffer.position());
 
-    buffer.rewind();
     boolean[] read = new boolean[5];
-    buffer.get(read);
+    buffer.read(read);
     assertArrayEquals(values, read);
-    assertEquals(5L, buffer.position());
 
-    buffer.rewind();
-    buffer.put(values, 2, 3);
+    buffer.write(values, 2, 3);
     assertFalse(buffer.get(0));
     assertTrue(buffer.get(1));
     assertFalse(buffer.get(2));
 
     Arrays.fill(read, false);
-    buffer.rewind();
-    buffer.get(read, 1, 2);
+    buffer.read(read, 1, 2);
     assertFalse(read[0]);
     assertFalse(read[1]);
     assertTrue(read[2]);
     assertFalse(read[3]);
-    assertEquals(2L, buffer.position());
   }
 }

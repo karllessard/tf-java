@@ -21,20 +21,22 @@ abstract class AbstractDimension implements Dimension {
   /**
    * Dimensions are known to be equal if they have the same number of elements
    */
-  @Override public int hashCode() {
-    return (int)numElements();
+  @Override
+  public int hashCode() {
+    return (int) size();
   }
 
   /**
    * Dimensions are known to be equal if they have the same number of elements
    */
-  @Override public boolean equals(Object obj) {
+  @Override
+  public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
     if (obj instanceof Dimension) {
       Dimension otherDimension = (Dimension) obj;
-      return numElements() == otherDimension.numElements();
+      return size() == otherDimension.size();
     }
     return false;
   }

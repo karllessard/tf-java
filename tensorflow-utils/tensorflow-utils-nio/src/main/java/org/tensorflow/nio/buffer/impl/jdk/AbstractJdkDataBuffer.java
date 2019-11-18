@@ -30,7 +30,7 @@ abstract class AbstractJdkDataBuffer<T> extends AbstractDataBuffer<T> {
   protected static long MAX_CAPACITY = Integer.MAX_VALUE - 10;
 
   @Override
-  public long capacity() {
+  public long size() {
     return buf().capacity();
   }
 

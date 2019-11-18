@@ -23,7 +23,7 @@ import org.tensorflow.nio.buffer.DataBuffer;
 public class MutableDataBuffer<T, U extends DataBuffer<T>> implements DataBuffer<T> {
 
   public static <T, U extends DataBuffer<T>> MutableDataBuffer<T, U> create(U buffer) {
-    return new MutableDataBuffer<>(buffer, 0, buffer.capacity());
+    return new MutableDataBuffer<>(buffer, 0, buffer.size());
   }
 
   public void moveTo(long startIndex) {
@@ -32,8 +32,8 @@ public class MutableDataBuffer<T, U extends DataBuffer<T>> implements DataBuffer
   }
 
   @Override
-  public long capacity() {
-    return capacity;
+  public long size() {
+    return size;
   }
 
   @Override
@@ -52,25 +52,25 @@ public class MutableDataBuffer<T, U extends DataBuffer<T>> implements DataBuffer
   }
 
   @Override
-  public U put(long index, T value) {
-    original.put(adjust(index), value);
+  public U set(T value, long index) {
+    original.set(value, adjust(index));
     return (U)this;
   }
 
   @Override
-  public U copyTo(DataBuffer<T> dst) {
-    slice().copyTo(dst);
+  public U copyTo(DataBuffer<T> dst, long size) {
+    slice().copyTo(dst, size);
     return (U)this;
   }
 
   @Override
   public U offset(long index) {
-    return (U)original.offset(index + startIndex).narrow(capacity);
+    return (U)original.offset(index + startIndex);
   }
 
   @Override
-  public U narrow(long capacity) {
-    return (U)original.offset(startIndex).narrow(capacity);
+  public U narrow(long size) {
+    return (U)original.offset(startIndex).narrow(size);
   }
 
   U original() {
@@ -79,7 +79,7 @@ public class MutableDataBuffer<T, U extends DataBuffer<T>> implements DataBuffer
 
   U slice() {
     if (slice == null) {
-      slice = (U)original.offset(startIndex).narrow(capacity);
+      slice = (U)original.offset(startIndex).narrow(size);
     }
     return slice;
   }
@@ -88,14 +88,14 @@ public class MutableDataBuffer<T, U extends DataBuffer<T>> implements DataBuffer
     return index + startIndex;
   }
 
-  MutableDataBuffer(U original, long startIndex, long capacity) {
+  MutableDataBuffer(U original, long startIndex, long size) {
     this.original = original;
     this.startIndex = startIndex;
-    this.capacity = capacity;
+    this.size = size;
   }
 
   private final U original;
   private U slice;
   private long startIndex;
-  private long capacity;
+  private long size;
 }

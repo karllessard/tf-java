@@ -25,7 +25,7 @@ import org.junit.Test;
 public abstract class FloatDataBufferTestBase extends DataBufferTestBase<Float> {
 
   @Override
-  protected abstract FloatDataBuffer allocate(long capacity);
+  protected abstract FloatDataBuffer allocate(long size);
 
   @Override
   protected Float valueOf(Long val) {
@@ -35,36 +35,29 @@ public abstract class FloatDataBufferTestBase extends DataBufferTestBase<Float> 
   @Test
   public void writeAndReadFromArray() {
     FloatDataBuffer buffer = allocate(10L);
-    float[] oneToFive = new float[]{valueOf(1L), valueOf(2L), valueOf(3L), valueOf(4L),
-        valueOf(5L)};
+    float[] oneToFive = new float[]{ 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
 
-    buffer.put(oneToFive);
-    assertEquals(valueOf(2L), buffer.get(1));
-    assertEquals(5L, buffer.position());
+    buffer.write(oneToFive);
+    assertEquals(2.0f, buffer.getFloat(1), 0.0f);
 
-    buffer.put(oneToFive);
-    assertEquals(valueOf(2L), buffer.get(6));
-    assertEquals(10L, buffer.position());
+    buffer.offset(5).write(oneToFive);
+    assertEquals(2.0f, buffer.getFloat(1), 0.0f);
+    assertEquals(2.0f, buffer.getFloat(6), 0.0f);
 
-    buffer.rewind();
     float[] read = new float[5];
-    buffer.get(read);
+    buffer.read(read);
     assertArrayEquals(oneToFive, read, 0.0f);
-    assertEquals(5L, buffer.position());
 
-    buffer.rewind();
-    buffer.put(oneToFive, 2, 2);
-    assertEquals(valueOf(3L), buffer.get(0));
-    assertEquals(valueOf(4L), buffer.get(1));
-    assertEquals(valueOf(3L), buffer.get(2));
-    assertEquals(2L, buffer.position());
+    buffer.write(oneToFive, 2, 2);
+    assertEquals(3.0f, buffer.getFloat(0), 0.0f);
+    assertEquals(4.0f, buffer.getFloat(1), 0.0f);
+    assertEquals(3.0f, buffer.getFloat(2), 0.0f);
 
     Arrays.fill(read, valueOf(0L));
-    buffer.get(read, 1, 2);
-    assertEquals(valueOf(0L), (Float) read[0]);
-    assertEquals(valueOf(3L), (Float) read[1]);
-    assertEquals(valueOf(4L), (Float) read[2]);
-    assertEquals(valueOf(0L), (Float) read[3]);
-    assertEquals(4L, buffer.position());
+    buffer.read(read, 1, 2);
+    assertEquals(0.0f, read[0], 0.0f);
+    assertEquals(3.0f, read[1], 0.0f);
+    assertEquals(4.0f, read[2], 0.0f);
+    assertEquals(0.0f, read[3], 0.0f);
   }
 }

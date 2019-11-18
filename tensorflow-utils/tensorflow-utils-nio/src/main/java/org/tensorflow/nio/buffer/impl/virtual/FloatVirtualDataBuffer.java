@@ -1,6 +1,5 @@
 package org.tensorflow.nio.buffer.impl.virtual;
 
-import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.adapter.FloatDataAdapter;
@@ -14,55 +13,44 @@ public class FloatVirtualDataBuffer extends AbstractVirtualDataBuffer<Float, Flo
   }
 
   @Override
-  public float getFloat() {
-    return adapter.readFloat(physicalBuffer());
-  }
-
-  @Override
   public float getFloat(long index) {
     Validator.getArgs(this, index);
-    return adapter.readFloat(physicalBuffer().withPosition(index * adapter.sizeInBytes()));
+    return adapter.readFloat(physicalBuffer(), index * adapter.sizeInBytes());
   }
 
   @Override
-  public FloatDataBuffer get(float[] dst, int offset, int length) {
+  public FloatDataBuffer setFloat(float value, long index) {
+    Validator.putArgs(this, index);
+    adapter.writeFloat(physicalBuffer(), value, index * adapter.sizeInBytes());
+    return this;
+  }
+
+  @Override
+  public FloatDataBuffer read(float[] dst, int offset, int length) {
     Validator.readArgs(this, dst.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      dst[i] = adapter.readFloat(physicalBuffer());
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      dst[j] = adapter.readFloat(physicalBuffer(), i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public FloatDataBuffer putFloat(float value) {
-    adapter.writeFloat(physicalBuffer(), value);
-    return this;
-  }
-
-  @Override
-  public FloatDataBuffer putFloat(long index, float value) {
-    Validator.copyToArgs(this, index);
-    adapter.writeFloat(physicalBuffer().withPosition(index * adapter.sizeInBytes()), value);
-    return this;
-  }
-
-  @Override
-  public FloatDataBuffer put(float[] src, int offset, int length) {
+  public FloatDataBuffer write(float[] src, int offset, int length) {
     Validator.writeArgs(this, src.length, offset, length);
-    for (int i = offset; i < offset + length; ++i) {
-      adapter.writeFloat(physicalBuffer(), src[i]);
+    for (int i = 0, j = offset; i < length; ++i, ++j) {
+      adapter.writeFloat(physicalBuffer(), src[j], i * adapter.sizeInBytes());
     }
     return this;
   }
 
   @Override
-  public Stream<Float> stream() {
-    return Stream.iterate(0.0f, f -> get(f.intValue())).limit(remaining());
+  public FloatDataBuffer offset(long index) {
+    return new FloatVirtualDataBuffer(physicalBuffer().offset(index * adapter.sizeInBytes()), adapter);
   }
 
   @Override
-  public FloatDataBuffer duplicate() {
-    return new FloatVirtualDataBuffer(physicalBuffer().duplicate(), adapter);
+  public FloatDataBuffer narrow(long size) {
+    return new FloatVirtualDataBuffer(physicalBuffer().narrow(size * adapter.sizeInBytes()), adapter);
   }
 
   private FloatVirtualDataBuffer(ByteDataBuffer physicalBuffer, FloatDataAdapter adapter) {

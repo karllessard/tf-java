@@ -20,7 +20,6 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.NdArray;
-import org.tensorflow.nio.nd.Shape;
 
 public class Validator {
 
@@ -40,18 +39,19 @@ public class Validator {
 
   public static void copyToNdArrayArgs(NdArray<?> ndArray, NdArray<?> otherNdArray) {
     if (!ndArray.shape().equals(otherNdArray.shape())) {
-      throw new IllegalArgumentException("Can only copy to arrays of the same shape");
+      throw new IllegalArgumentException("Can only copy to arrays of the same shape (" +
+          ndArray.shape() + " != " + otherNdArray.shape() + ")");
     }
   }
 
   public static void readToBufferArgs(NdArray<?> ndArray, DataBuffer<?> dst) {
-    if (dst.capacity() < ndArray.size()) {
+    if (dst.size() < ndArray.size()) {
       throw new BufferOverflowException();
     }
   }
 
   public static void writeFromBufferArgs(NdArray<?> ndArray, DataBuffer<?> src) {
-    if (src.capacity() < ndArray.size()) {
+    if (src.size() < ndArray.size()) {
       throw new BufferUnderflowException();
     }
   }

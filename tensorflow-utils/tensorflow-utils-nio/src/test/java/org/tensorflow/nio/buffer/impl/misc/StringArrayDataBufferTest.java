@@ -22,13 +22,13 @@ import org.tensorflow.nio.buffer.DataBufferTestBase;
 public class StringArrayDataBufferTest extends DataBufferTestBase<String> {
 
   @Override
-  protected long maxCapacity() {
+  protected long maxSize() {
     return ArrayDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected DataBuffer<String> allocate(long capacity) {
-    return ArrayDataBuffer.allocate(String.class, capacity);
+  protected DataBuffer<String> allocate(long size) {
+    return ArrayDataBuffer.allocate(String.class, size);
   }
 
   @Override

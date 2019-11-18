@@ -16,52 +16,36 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
+import java.util.concurrent.atomic.AtomicLong;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.NdArray;
-import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.impl.AbstractNdArray;
+import org.tensorflow.nio.nd.impl.dense.transfer.DataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.sequence.ElementSequence;
+import org.tensorflow.nio.nd.impl.dimension.DimensionalSpaceWithOffset;
 import org.tensorflow.nio.nd.index.Index;
 
 @SuppressWarnings("unchecked")
-abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends AbstractNdArray<T, U> {
+public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends AbstractNdArray<T, U> {
 
   @Override
-  public U slice(Index... coords) {
-    DimensionalSpace sliceDimensions = dimensions().mapTo(coords);
-
-    // Skip all leading dimensions that are a single point (i.e. a coordinate)
-    long slicePosition = 0L;
-    int i = 0;
-    while (i < sliceDimensions.size() && sliceDimensions.get(i).isSinglePoint()) {
-      slicePosition += sliceDimensions.get(i++).position();
+  public U slice(Index... indices) {
+    if (indices == null) {
+      throw new IllegalArgumentException("Slicing requires at least one index");
     }
-    if (i > 0) {
-      sliceDimensions = sliceDimensions.from(i);
+    DimensionalSpaceWithOffset sliceDimensions = dimensions().mapTo(indices);
+    DataBuffer<T> sliceBuffer = buffer();
+    if (sliceDimensions.offset() > 0) {
+      sliceBuffer = sliceBuffer.offset(sliceDimensions.offset());
     }
-    return allocateSlice(slicePosition, sliceDimensions);
-  }
-
-  @Override
-  public NdArraySequence<U> elements(int dimensionIdx) {
-    if (dimensionIdx >= shape().numDimensions()) {
-      throw new IllegalArgumentException("Cannot iterate elements in dimension '" + dimensionIdx +
-          "' of array with shape " + shape());
-    }
-    return ElementSequence.create(this, dimensionIdx);
-  }
-
-  @Override
-  public NdArraySequence<U> scalars() {
-    return ElementSequence.create(this, shape().numDimensions() - 1);  // negative if this array is a scalar
+    return instantiate(sliceBuffer, sliceDimensions);
   }
 
   @Override
   public U get(long... coords) {
     DimensionalSpace sliceDimensions = dimensions().from(coords.length);
     long slicePosition = positionOf(coords, false);
-    return allocateSlice(slicePosition, sliceDimensions);
+    return instantiate(buffer().offset(slicePosition), sliceDimensions);
   }
 
   @Override
@@ -77,34 +61,21 @@ abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends AbstractNdA
 
   @Override
   public U setValue(T value, long... coords) {
-    buffer().put(positionOf(coords, true), value);
-    return (U)this;
-  }
-
-  @Override
-  public U copyTo(NdArray<T> dst) {
-    Validator.copyToNdArrayArgs(this, dst);
-    if (!BulkDataTransfer.execute(this, dst)) {
-      slowCopyTo(dst);
-    }
+    buffer().set(value, positionOf(coords, true));
     return (U)this;
   }
 
   @Override
   public U read(DataBuffer<T> dst) {
     Validator.readToBufferArgs(this, dst);
-    if (!BulkDataTransfer.execute(this, dst)) {
-      slowRead(dst);
-    }
+    DataTransfer.execute(buffer(), dimensions(), dst, null);
     return (U)this;
   }
 
   @Override
   public U write(DataBuffer<T> src) {
     Validator.writeFromBufferArgs(this, src);
-    if (!BulkDataTransfer.execute(src, this)) {
-      slowWrite(src);
-    }
+    DataTransfer.execute(src, null, buffer(), dimensions());
     return (U)this;
   }
 
@@ -112,18 +83,28 @@ abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends AbstractNdA
     super(dimensions);
   }
 
-  abstract DataBuffer<T> buffer();
+  abstract protected DataBuffer<T> buffer();
 
-  abstract U allocate(DataBuffer<T> buffer, DimensionalSpace dimensions);
+  abstract U instantiate(DataBuffer<T> buffer, DimensionalSpace dimensions);
 
   long positionOf(long[] coords, boolean isValue) {
     if (coords == null || coords.length == 0) {
       return 0;
     }
+    if (coords.length > dimensions().size()) {
+      throw new IndexOutOfBoundsException();
+    }
     return dimensions().positionOf(coords, isValue);
   }
 
-  private U allocateSlice(long position, DimensionalSpace dims) {
-    return allocate(buffer().offset(position), dims);
+  @Override
+  protected void slowCopyTo(NdArray<T> array) {
+    if (array instanceof AbstractDenseNdArray) {
+      AbstractDenseNdArray<T, U> dst = (AbstractDenseNdArray)array;
+      AtomicLong off = new AtomicLong();
+      scalars().forEach(s -> dst.buffer().set(s.getValue(), off.getAndIncrement()));
+    } else {
+      super.slowCopyTo(array);
+    }
   }
 }

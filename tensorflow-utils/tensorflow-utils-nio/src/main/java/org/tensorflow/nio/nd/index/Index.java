@@ -66,4 +66,11 @@ public interface Index {
   default Dimension apply(Dimension dim) {
     return dim.withIndex(this);
   }
+
+  /**
+   * Returns true if this index is a single point, reducing the number of dimensions by one
+   */
+  default boolean isPoint() {
+    return false;
+  }
 }

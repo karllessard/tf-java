@@ -22,13 +22,13 @@ import org.tensorflow.nio.buffer.BooleanDataBufferTestBase;
 public class BitSetDataBufferTest extends BooleanDataBufferTestBase {
 
   @Override
-  protected long maxCapacity() {
+  protected long maxSize() {
     return BitSetDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected BooleanDataBuffer allocate(long capacity) {
-    return BitSetDataBuffer.allocate(capacity);
+  protected BooleanDataBuffer allocate(long size) {
+    return BitSetDataBuffer.allocate(size);
   }
 
   @Override

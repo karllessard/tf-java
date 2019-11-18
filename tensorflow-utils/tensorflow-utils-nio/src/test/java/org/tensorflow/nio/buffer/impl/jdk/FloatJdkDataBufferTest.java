@@ -23,12 +23,12 @@ import org.tensorflow.nio.buffer.impl.jdk.FloatJdkDataBuffer;
 public class FloatJdkDataBufferTest extends FloatDataBufferTestBase {
 
   @Override
-  protected long maxCapacity() {
+  protected long maxSize() {
     return FloatJdkDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected FloatDataBuffer allocate(long capacity) {
-    return FloatJdkDataBuffer.allocate(capacity);
+  protected FloatDataBuffer allocate(long size) {
+    return FloatJdkDataBuffer.allocate(size);
   }
 }

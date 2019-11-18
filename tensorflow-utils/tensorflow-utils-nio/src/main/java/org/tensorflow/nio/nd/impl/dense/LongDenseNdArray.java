@@ -20,8 +20,11 @@ import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.LongDataBuffer;
 import org.tensorflow.nio.nd.LongNdArray;
+import org.tensorflow.nio.nd.LongNdArray;
+import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dense.mutable.LongMutableDataBuffer;
+import org.tensorflow.nio.nd.impl.dense.transfer.LongDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
@@ -40,7 +43,7 @@ public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray>
 
   @Override
   public LongNdArray setLong(long value, long... indices) {
-    buffer().putLong(positionOf(indices, true), value);
+    buffer().setLong(value, positionOf(indices, true));
     return this;
   }
 
@@ -57,6 +60,32 @@ public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray>
   }
 
   @Override
+  public LongNdArray copyTo(NdArray<Long> dst) {
+    Validator.copyToNdArrayArgs(this, dst);
+    if (dst instanceof LongDenseNdArray) {
+      LongDenseNdArray floatDst = (LongDenseNdArray)dst;
+      LongDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+    } else {
+      slowCopyTo(dst);
+    }
+    return this;
+  }
+
+  @Override
+  public LongNdArray read(LongDataBuffer dst) {
+    Validator.readToBufferArgs(this, dst);
+    LongDataTransfer.execute(buffer, dimensions(), dst, null);
+    return this;
+  }
+
+  @Override
+  public LongNdArray write(LongDataBuffer src) {
+    Validator.writeFromBufferArgs(this, src);
+    LongDataTransfer.execute(src, null, buffer, dimensions());
+    return this;
+  }
+
+  @Override
   public NdArrayCursor<Long, LongNdArray> cursor(int dimensionIdx) {
     LongDataBuffer mutableBuffer = LongMutableDataBuffer.create(buffer());
     LongDenseNdArray mutableElement = new LongDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
@@ -68,7 +97,7 @@ public class LongDenseNdArray extends AbstractDenseNdArray<Long, LongNdArray>
   }
 
   @Override
-  LongDenseNdArray allocate(DataBuffer<Long> buffer, DimensionalSpace dimensions) {
+  LongDenseNdArray instantiate(DataBuffer<Long> buffer, DimensionalSpace dimensions) {
     return new LongDenseNdArray((LongDataBuffer)buffer, dimensions);
   }
 

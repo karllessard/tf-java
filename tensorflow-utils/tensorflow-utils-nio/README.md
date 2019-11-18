@@ -54,7 +54,7 @@ generic parametrization useful when the actual type of the buffer is unknown.
 ```java
 // Allocate a buffer of 4K int values
 IntDataBuffer bufferA = bufferOfInts(4096L);
-assertEquals(4096L, bufferA.capacity());
+assertEquals(4096L, bufferA.size());
 
 // Write an int array at the beginning of the buffer
 bufferA.put(new int[] { 1, 2, 3 });
@@ -63,20 +63,20 @@ assertEquals(3, bufferA.getInt(2));
 
 // Slice buffer after first value
 IntDataBuffer bufferB = bufferA.position(1).slice();
-assertEquals(4095L, bufferB.capacity());
+assertEquals(4095L, bufferB.size());
 assertEquals(0L, bufferB.position());
 assertEquals(2, bufferB.getInt(0));
 
 // Wrap an int array into a data buffer
 IntDataBuffer bufferC = bufferOf(new int[] { 10, 20, 30, 40 }, false);
-assertEquals(4L, bufferC.capacity());
+assertEquals(4L, bufferC.size());
 assertEquals(40, bufferC.getInt(3));
 
 // Join buffers together
 IntDataBuffer bufferBC = DataBuffers.join(bufferB, bufferC);
-assertEquals(4099L, bufferBC.capacity());
+assertEquals(4099L, bufferBC.size());
 assertEquals(2, bufferBC.getInt(0));
-assertEquals(40, bufferBC.getInt(bufferBC.capacity() - 1));
+assertEquals(40, bufferBC.getInt(bufferBC.size() - 1));
 ```
 
 ### ND Arrays

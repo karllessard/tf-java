@@ -24,21 +24,11 @@ public interface Dimension {
     return new IndexedDimension(index, this);
   }
 
-  default Dimension withCoordinate(long coord) {
-    return new Coordinate(coord, this);
-  }
-
-  long numElements();
+  long size();
   
   long positionOf(long coord);
-  
-  default long position() { return positionOf(0); }
 
   long stride();
 
   boolean isSegmented();
-
-  default boolean isSinglePoint() {
-    return numElements() == 0;
-  }
 }

@@ -29,8 +29,8 @@ public class StringDenseNdArrayTest extends NdArrayTestBase<String> {
     return NdArrays.of(String.class, shape);
   }
 
-  @Override protected DataBuffer<String> allocateBuffer(long capacity) {
-    return DataBuffers.of(String.class, capacity);
+  @Override protected DataBuffer<String> allocateBuffer(long size) {
+    return DataBuffers.of(String.class, size);
   }
 
   @Override protected String valueOf(Long val) {

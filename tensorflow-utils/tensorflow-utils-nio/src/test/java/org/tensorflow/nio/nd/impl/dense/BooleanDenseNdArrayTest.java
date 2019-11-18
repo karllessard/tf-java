@@ -29,7 +29,7 @@ public class BooleanDenseNdArrayTest extends BooleanNdArrayTestBase {
     return NdArrays.ofBooleans(shape);
   }
 
-  @Override protected DataBuffer<Boolean> allocateBuffer(long capacity) {
-    return DataBuffers.ofBooleans(capacity);
+  @Override protected DataBuffer<Boolean> allocateBuffer(long size) {
+    return DataBuffers.ofBooleans(size);
   }
 }

@@ -16,6 +16,7 @@
  */
 package org.tensorflow.nio.nd;
 
+import org.tensorflow.nio.buffer.BooleanDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.index.Index;
 
@@ -150,8 +151,12 @@ public interface BooleanNdArray extends NdArray<Boolean> {
   @Override
   BooleanNdArray read(DataBuffer<Boolean> dst);
 
+  BooleanNdArray read(BooleanDataBuffer dst);
+
   @Override
   BooleanNdArray write(DataBuffer<Boolean> src);
+
+  BooleanNdArray write(BooleanDataBuffer src);
 
   @Override
   BooleanNdArray read(Boolean[] dst);

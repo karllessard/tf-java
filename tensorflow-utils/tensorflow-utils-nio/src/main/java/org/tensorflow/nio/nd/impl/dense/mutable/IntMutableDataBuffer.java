@@ -32,7 +32,7 @@ public class IntMutableDataBuffer extends MutableDataBuffer<Integer, IntDataBuff
      * @return mutable buffer
      */
     public static IntDataBuffer create(IntDataBuffer buffer) {
-        return new IntMutableDataBuffer(buffer, 0, buffer.capacity());
+        return new IntMutableDataBuffer(buffer, 0, buffer.size());
     }
 
     @Override
@@ -46,8 +46,8 @@ public class IntMutableDataBuffer extends MutableDataBuffer<Integer, IntDataBuff
     }
 
     @Override
-    public IntDataBuffer putInt(long index, int value) {
-        original().putInt(adjust(index), value);
+    public IntDataBuffer setInt(int value, long index) {
+        original().setInt(value, adjust(index));
         return this;
     }
 
@@ -63,7 +63,7 @@ public class IntMutableDataBuffer extends MutableDataBuffer<Integer, IntDataBuff
         return this;
     }
 
-    private IntMutableDataBuffer(IntDataBuffer buffer, long startIndex, long capacity) {
-        super(buffer, startIndex, capacity);
+    private IntMutableDataBuffer(IntDataBuffer buffer, long startIndex, long size) {
+        super(buffer, startIndex, size);
     }
 }

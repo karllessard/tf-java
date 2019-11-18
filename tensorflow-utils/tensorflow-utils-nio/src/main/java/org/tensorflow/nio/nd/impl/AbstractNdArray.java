@@ -17,12 +17,14 @@
 package org.tensorflow.nio.nd.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.nd.NdArray;
+import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.Shape;
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
+import org.tensorflow.nio.nd.impl.sequence.ElementSequence;
 import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 @SuppressWarnings("unchecked")
@@ -37,6 +39,20 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
   @Override
   public Shape shape() {
     return dimensions.shape();
+  }
+
+  @Override
+  public NdArraySequence<U> elements(int dimensionIdx) {
+    if (dimensionIdx >= shape().numDimensions()) {
+      throw new IllegalArgumentException("Cannot iterate elements in dimension '" + dimensionIdx +
+          "' of array with shape " + shape());
+    }
+    return ElementSequence.create(this, dimensionIdx);
+  }
+
+  @Override
+  public NdArraySequence<U> scalars() {
+    return ElementSequence.create(this, shape().numDimensions() - 1);  // negative if this array is a scalar
   }
 
   @Override
@@ -62,28 +78,7 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
   }
 
   protected void slowCopyTo(NdArray<T> array) {
-    if (!shape().equals(array.shape())) {
-      throw new IllegalArgumentException("Can only copy to arrays of the same shape");
-    }
     scalars().forEachIdx((coords, e) -> array.setValue(e.getValue(), coords));
-  }
-
-  protected void slowRead(DataBuffer<T> buffer) {
-    if (rank() == 0) {
-      buffer.put(0, getValue());
-    } else {
-      AtomicInteger i = new AtomicInteger();
-      scalars().forEach(e -> buffer.put(i.getAndIncrement(), e.getValue()));
-    }
-  }
-
-  protected void slowWrite(DataBuffer<T> buffer) {
-    if (rank() == 0) {
-      setValue(buffer.get(0));
-    } else {
-      AtomicInteger i = new AtomicInteger();
-      scalars().forEach(e -> e.setValue(buffer.get(i.getAndIncrement())));
-    }
   }
 
   private DimensionalSpace dimensions;

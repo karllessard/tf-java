@@ -23,13 +23,13 @@ import org.tensorflow.nio.buffer.DataBufferTestBase;
 public class ArrayDataBufferTest extends DataBufferTestBase<BigDecimal> {
 
   @Override
-  protected long maxCapacity() {
+  protected long maxSize() {
     return ArrayDataBuffer.MAX_CAPACITY;
   }
 
   @Override
-  protected DataBuffer<BigDecimal> allocate(long capacity) {
-    return ArrayDataBuffer.allocate(BigDecimal.class, capacity);
+  protected DataBuffer<BigDecimal> allocate(long size) {
+    return ArrayDataBuffer.allocate(BigDecimal.class, size);
   }
 
   @Override
