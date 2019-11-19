@@ -40,8 +40,8 @@ final class IndexedDimension extends AbstractDimension {
   }
 
   @Override
-  public long stride() {
-    return originalDimension.stride();
+  public long elementSize() {
+    return originalDimension.elementSize();
   }
 
   @Override

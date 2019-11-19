@@ -13,22 +13,15 @@ public interface NdArraySequence<T extends NdArray<?>> {
   /**
    * Visit each elements of this iteration.
    *
-   * <p><i>Important: the consumer method should not keep a reference to the elements of the
-   * iteration, as they might reuse the same object with just a different state for better
-   * performance.</i>
-   *
    * @param consumer method to invoke for each elements
    */
-  default void forEach(Consumer<T> consumer) {
-    forEachIdx((c, e) -> consumer.accept(e));
-  }
+  void forEach(Consumer<T> consumer);
 
   /**
    * Visit each elements of this iteration and their respective coordinates.
    *
-   * <p><i>Important: the consumer method should not keep a reference to the elements or the
-   * coordinates of the iteration, as they might reuse the same object with just a different state
-   * for better performance.</i>
+   * <p><i>Important: the consumer method should not keep a reference to the coordinates
+   * as they might are mutable and reuse during the iteration to improve performance.</i>
    *
    * @param consumer method to invoke for each elements
    */

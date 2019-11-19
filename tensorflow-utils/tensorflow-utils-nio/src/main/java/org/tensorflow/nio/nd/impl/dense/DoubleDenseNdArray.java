@@ -19,15 +19,10 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
-import org.tensorflow.nio.buffer.DoubleDataBuffer;
-import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
-import org.tensorflow.nio.nd.impl.dense.mutable.DoubleMutableDataBuffer;
-import org.tensorflow.nio.nd.impl.dense.transfer.DoubleDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArray>
     implements DoubleNdArray {
@@ -64,8 +59,8 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   public DoubleNdArray copyTo(NdArray<Double> dst) {
     Validator.copyToNdArrayArgs(this, dst);
     if (dst instanceof DoubleDenseNdArray) {
-      DoubleDenseNdArray floatDst = (DoubleDenseNdArray)dst;
-      DoubleDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+      DoubleDenseNdArray doubleDst = (DoubleDenseNdArray)dst;
+      DataTransfer.execute(buffer, dimensions(), doubleDst.buffer, doubleDst.dimensions(), DataTransfer::ofDouble);
     } else {
       slowCopyTo(dst);
     }
@@ -75,22 +70,15 @@ public class DoubleDenseNdArray extends AbstractDenseNdArray<Double, DoubleNdArr
   @Override
   public DoubleNdArray read(DoubleDataBuffer dst) {
     Validator.readToBufferArgs(this, dst);
-    DoubleDataTransfer.execute(buffer, dimensions(), dst, null);
+    DataTransfer.execute(buffer, dimensions(), dst, DataTransfer::ofDouble);
     return this;
   }
 
   @Override
   public DoubleNdArray write(DoubleDataBuffer src) {
     Validator.writeFromBufferArgs(this, src);
-    DoubleDataTransfer.execute(src, null, buffer, dimensions());
+    DataTransfer.execute(src, buffer, dimensions(), DataTransfer::ofDouble);
     return this;
-  }
-
-  @Override
-  public NdArrayCursor<Double, DoubleNdArray> cursor(int dimensionIdx) {
-    DoubleDataBuffer mutableBuffer = DoubleMutableDataBuffer.create(buffer());
-    DoubleDenseNdArray mutableElement = new DoubleDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
-    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected DoubleDenseNdArray(DoubleDataBuffer buffer, Shape shape) {

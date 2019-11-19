@@ -18,34 +18,37 @@ package org.tensorflow.nio.nd.impl.dense;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.nd.IllegalRankException;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.impl.AbstractNdArray;
-import org.tensorflow.nio.nd.impl.dense.transfer.DataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.dimension.DimensionalSpaceWithOffset;
+import org.tensorflow.nio.nd.impl.dimension.DimensionalSpaceWithPosition;
 import org.tensorflow.nio.nd.index.Index;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends AbstractNdArray<T, U> {
 
   @Override
+  public U slice(long position, DimensionalSpace dimensions) {
+    // FIXME! What about buffer size??!?
+    if (position > 0) {
+      return instantiate(buffer().offset(position), dimensions);
+    }
+    return instantiate(buffer(), dimensions);
+  }
+
+  @Override
   public U slice(Index... indices) {
     if (indices == null) {
       throw new IllegalArgumentException("Slicing requires at least one index");
     }
-    DimensionalSpaceWithOffset sliceDimensions = dimensions().mapTo(indices);
-    DataBuffer<T> sliceBuffer = buffer();
-    if (sliceDimensions.offset() > 0) {
-      sliceBuffer = sliceBuffer.offset(sliceDimensions.offset());
-    }
-    return instantiate(sliceBuffer, sliceDimensions);
+    DimensionalSpaceWithPosition sliceDimensions = dimensions().mapTo(indices);
+    return slice(sliceDimensions.position(), sliceDimensions);
   }
 
   @Override
   public U get(long... coords) {
-    DimensionalSpace sliceDimensions = dimensions().from(coords.length);
-    long slicePosition = positionOf(coords, false);
-    return instantiate(buffer().offset(slicePosition), sliceDimensions);
+    return slice(positionOf(coords, false), dimensions().from(coords.length));
   }
 
   @Override
@@ -68,14 +71,14 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
   @Override
   public U read(DataBuffer<T> dst) {
     Validator.readToBufferArgs(this, dst);
-    DataTransfer.execute(buffer(), dimensions(), dst, null);
+    DataTransfer.execute(buffer(), dimensions(), dst, DataTransfer::ofValue);
     return (U)this;
   }
 
   @Override
   public U write(DataBuffer<T> src) {
     Validator.writeFromBufferArgs(this, src);
-    DataTransfer.execute(src, null, buffer(), dimensions());
+    DataTransfer.execute(src, buffer(), dimensions(), DataTransfer::ofValue);
     return (U)this;
   }
 
@@ -94,7 +97,10 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
     if (coords.length > dimensions().size()) {
       throw new IndexOutOfBoundsException();
     }
-    return dimensions().positionOf(coords, isValue);
+    if (isValue && coords.length != dimensions().size()) {
+      throw new IllegalRankException("Not a scalar value");
+    }
+    return dimensions().positionOf(coords);
   }
 
   @Override

@@ -16,18 +16,13 @@
  */
 package org.tensorflow.nio.nd.impl.dense;
 
+import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
-import org.tensorflow.nio.buffer.ByteDataBuffer;
-import org.tensorflow.nio.buffer.ByteDataBuffer;
-import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
-import org.tensorflow.nio.nd.impl.dense.mutable.ByteMutableDataBuffer;
-import org.tensorflow.nio.nd.impl.dense.transfer.ByteDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
     implements ByteNdArray {
@@ -64,8 +59,8 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
   public ByteNdArray copyTo(NdArray<Byte> dst) {
     Validator.copyToNdArrayArgs(this, dst);
     if (dst instanceof ByteDenseNdArray) {
-      ByteDenseNdArray floatDst = (ByteDenseNdArray)dst;
-      ByteDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+      ByteDenseNdArray byteDst = (ByteDenseNdArray)dst;
+      DataTransfer.execute(buffer, dimensions(), byteDst.buffer, byteDst.dimensions(), DataTransfer::ofByte);
     } else {
       slowCopyTo(dst);
     }
@@ -75,22 +70,15 @@ public class ByteDenseNdArray extends AbstractDenseNdArray<Byte, ByteNdArray>
   @Override
   public ByteNdArray read(ByteDataBuffer dst) {
     Validator.readToBufferArgs(this, dst);
-    ByteDataTransfer.execute(buffer, dimensions(), dst, null);
+    DataTransfer.execute(buffer, dimensions(), dst, DataTransfer::ofByte);
     return this;
   }
 
   @Override
   public ByteNdArray write(ByteDataBuffer src) {
     Validator.writeFromBufferArgs(this, src);
-    ByteDataTransfer.execute(src, null, buffer, dimensions());
+    DataTransfer.execute(src, buffer, dimensions(), DataTransfer::ofByte);
     return this;
-  }
-
-  @Override
-  public NdArrayCursor<Byte, ByteNdArray> cursor(int dimensionIdx) {
-    ByteDataBuffer mutableBuffer = ByteMutableDataBuffer.create(buffer());
-    ByteDenseNdArray mutableElement = new ByteDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
-    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected ByteDenseNdArray(ByteDataBuffer buffer, Shape shape) {

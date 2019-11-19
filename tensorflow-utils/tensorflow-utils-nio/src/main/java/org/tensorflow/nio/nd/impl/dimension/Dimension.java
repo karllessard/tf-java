@@ -25,10 +25,10 @@ public interface Dimension {
   }
 
   long size();
-  
-  long positionOf(long coord);
 
-  long stride();
+  long elementSize();
+
+  long positionOf(long coord);
 
   boolean isSegmented();
 }

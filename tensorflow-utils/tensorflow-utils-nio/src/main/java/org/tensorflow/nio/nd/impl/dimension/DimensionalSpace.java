@@ -17,9 +17,7 @@
 
 package org.tensorflow.nio.nd.impl.dimension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import org.tensorflow.nio.nd.IllegalRankException;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.index.Index;
 
@@ -29,14 +27,14 @@ public class DimensionalSpace {
     Dimension[] dimensions = new Dimension[shape.numDimensions()];
 
     // Start from the last dimension, where all elements are continuous
-    for (int i = dimensions.length - 1, stride = 1; i >= 0; --i) {
-      dimensions[i] = new Axis(shape.size(i), stride);
-      stride *= dimensions[i].size();
+    for (int i = dimensions.length - 1, elementSize = 1; i >= 0; --i) {
+      dimensions[i] = new Axis(shape.size(i), elementSize);
+      elementSize *= dimensions[i].size();
     }
     return new DimensionalSpace(dimensions, shape);
   }
 
-  public DimensionalSpaceWithOffset mapTo(Index[] indices) {
+  public DimensionalSpaceWithPosition mapTo(Index[] indices) {
     if (dimensions == null || indices.length > dimensions.length) {
       throw new ArrayIndexOutOfBoundsException();
     }
@@ -47,18 +45,27 @@ public class DimensionalSpace {
 
     Dimension[] newDimensions = new Dimension[dimensions.length];
     while (dimIdx < indices.length) {
+
       if (indices[dimIdx].isPoint()) {
+        // When an index targets a single point in a given dimension, calculate the offset of this
+        // point and cumulate the offset of any subsequent point as well
         long offset = 0;
         do {
           offset += indices[dimIdx].mapCoordinate(0, dimensions[dimIdx]);
         } while (++dimIdx < indices.length && indices[dimIdx].isPoint());
+
+        // If this is the first index, then the offset is the position of the whole dimension
+        // space within the original one. If not, then we apply the offset to the last vectorial
+        // dimension
         if (newDimIdx == 0) {
           initialOffset = offset;
         } else {
           newDimensions[newDimIdx - 1] = new OffsetDimension(offset, newDimensions[newDimIdx - 1]);
           segmentationIdx = newDimIdx - 1;
         }
+
       } else {
+        // Map any other index to the appropriate dimension of this space
         Dimension newDimension = indices[dimIdx].apply(dimensions[dimIdx++]);
         newDimensions[newDimIdx] = newDimension;
         if (newDimension.isSegmented()) {
@@ -67,6 +74,9 @@ public class DimensionalSpace {
         ++newDimIdx;
       }
     }
+
+    // When the number of indices provided is smaller than the number of dimensions in this space,
+    // we copy the remaining dimensions directly to the new space as well.
     for (; dimIdx < dimensions.length; ++dimIdx, ++newDimIdx) {
       Dimension dim = dimensions[dimIdx];
       newDimensions[newDimIdx] = dim;
@@ -74,7 +84,7 @@ public class DimensionalSpace {
         segmentationIdx = newDimIdx;
       }
     }
-    return new DimensionalSpaceWithOffset(Arrays.copyOf(newDimensions, newDimIdx), segmentationIdx, initialOffset);
+    return new DimensionalSpaceWithPosition(Arrays.copyOf(newDimensions, newDimIdx), segmentationIdx, initialOffset);
   }
 
   public DimensionalSpace from(int dimensionStart) {
@@ -103,18 +113,18 @@ public class DimensionalSpace {
     return dimensions[i];
   }
 
+  public boolean isSegmented() {
+    return segmentationIdx >= 0;
+  }
+
   public int segmentationIdx() {
     return segmentationIdx;
   }
 
-  public long positionOf(long[] coords, boolean isValue) {
+  public long positionOf(long[] coords) {
     long position = 0L;
-    int dimIdx = 0;
-    for (long coord : coords) {
-      position += dimensions[dimIdx++].positionOf(coord);
-    }
-    if (isValue && dimIdx < shape.numDimensions()) {
-      throw new IllegalRankException("Not a scalar value");
+    for (int i = 0; i < coords.length; ++i) {
+      position += dimensions[i].positionOf(coords[i]);
     }
     return position;
   }

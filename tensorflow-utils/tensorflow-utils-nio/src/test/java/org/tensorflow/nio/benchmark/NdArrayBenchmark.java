@@ -40,7 +40,7 @@ import org.tensorflow.nio.nd.Shape;
 
 @Fork(value = 1, jvmArgs = {"-Xms4G", "-Xmx4G"})
 @BenchmarkMode(Mode.AverageTime)
-@Warmup(iterations = 0)
+@Warmup(iterations = 3)
 @Measurement(iterations = 5)
 @State(Scope.Benchmark)
 public class NdArrayBenchmark {

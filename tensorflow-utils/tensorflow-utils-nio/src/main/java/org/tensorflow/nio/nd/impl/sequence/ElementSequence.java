@@ -2,9 +2,8 @@ package org.tensorflow.nio.nd.impl.sequence;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.NdArray;
-import org.tensorflow.nio.nd.Shape;
+import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.impl.AbstractNdArray;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 
@@ -18,24 +17,19 @@ public class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence
   }
 
   @Override
+  public void forEach(Consumer<U> consumer) {
+    DimensionalSpace elementDimensions = ndArray.dimensions().from(dimensionIdx + 1);
+    PositionIterator.create(ndArray.dimensions(), dimensionIdx).forEachRemaining((long position) ->
+        consumer.accept(ndArray.slice(position, elementDimensions))
+    );
+  }
+
+  @Override
   public void forEachIdx(BiConsumer<long[], U> consumer) {
-    long[] coords = new long[dimensionIdx + 1];
-    //NdArrayCursor<T, U> cursor = ndArray.cursor(coords.length);
-    //U element = (U)ndArray.get(coords);
-    Shape shape = ndArray.shape();
-    while (true) {
-      //consumer.accept(coords, cursor.elementAt(coords));
-      consumer.accept(coords, (U)ndArray.get(coords));
-      int j;
-      for (j = dimensionIdx; j >= 0; --j) {
-        if ((coords[j] = (coords[j] + 1) % shape.size(j)) > 0) {
-          break;
-        }
-      }
-      if (j < 0) {
-        return;
-      }
-    }
+    DimensionalSpace elementDimensions = ndArray.dimensions().from(dimensionIdx + 1);
+    PositionIterator.createIndexed(ndArray.dimensions(), dimensionIdx).forEachIndexed((long[] coords, long position) ->
+        consumer.accept(coords, ndArray.slice(position, elementDimensions))
+    );
   }
 
   private ElementSequence(AbstractNdArray<T, U> ndArray, int dimensionIdx) {

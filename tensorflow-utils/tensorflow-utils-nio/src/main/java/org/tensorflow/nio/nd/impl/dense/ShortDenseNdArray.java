@@ -18,15 +18,12 @@ package org.tensorflow.nio.nd.impl.dense;
 
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
+import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.ShortDataBuffer;
-import org.tensorflow.nio.nd.ShortNdArray;
 import org.tensorflow.nio.nd.NdArray;
-import org.tensorflow.nio.nd.ShortNdArray;
 import org.tensorflow.nio.nd.Shape;
-import org.tensorflow.nio.nd.impl.dense.mutable.ShortMutableDataBuffer;
-import org.tensorflow.nio.nd.impl.dense.transfer.ShortDataTransfer;
+import org.tensorflow.nio.nd.ShortNdArray;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
     implements ShortNdArray {
@@ -63,8 +60,8 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
   public ShortNdArray copyTo(NdArray<Short> dst) {
     Validator.copyToNdArrayArgs(this, dst);
     if (dst instanceof ShortDenseNdArray) {
-      ShortDenseNdArray floatDst = (ShortDenseNdArray)dst;
-      ShortDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+      ShortDenseNdArray shortDst = (ShortDenseNdArray)dst;
+      DataTransfer.execute(buffer, dimensions(), shortDst.buffer, shortDst.dimensions(), DataTransfer::ofShort);
     } else {
       slowCopyTo(dst);
     }
@@ -74,22 +71,15 @@ public class ShortDenseNdArray extends AbstractDenseNdArray<Short, ShortNdArray>
   @Override
   public ShortNdArray read(ShortDataBuffer dst) {
     Validator.readToBufferArgs(this, dst);
-    ShortDataTransfer.execute(buffer, dimensions(), dst, null);
+    DataTransfer.execute(buffer, dimensions(), dst, DataTransfer::ofShort);
     return this;
   }
 
   @Override
   public ShortNdArray write(ShortDataBuffer src) {
     Validator.writeFromBufferArgs(this, src);
-    ShortDataTransfer.execute(src, null, buffer, dimensions());
+    DataTransfer.execute(src, buffer, dimensions(), DataTransfer::ofShort);
     return this;
-  }
-
-  @Override
-  public NdArrayCursor<Short, ShortNdArray> cursor(int dimensionIdx) {
-    ShortDataBuffer mutableBuffer = ShortMutableDataBuffer.create(buffer());
-    ShortDenseNdArray mutableElement = new ShortDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
-    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected ShortDenseNdArray(ShortDataBuffer buffer, Shape shape) {

@@ -16,21 +16,17 @@
  */
 package org.tensorflow.nio.nd.impl;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.NdArraySequence;
 import org.tensorflow.nio.nd.Shape;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 import org.tensorflow.nio.nd.impl.sequence.ElementSequence;
-import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArray<T> {
 
-  public abstract NdArrayCursor<T, U> cursor(int dimensionIdx);
+  public abstract U slice(long position, DimensionalSpace dimensions);
 
   public DimensionalSpace dimensions() {
     return dimensions;

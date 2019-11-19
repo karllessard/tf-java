@@ -17,16 +17,16 @@
 
 package org.tensorflow.nio.nd.impl.dimension;
 
-public class DimensionalSpaceWithOffset extends DimensionalSpace {
+public class DimensionalSpaceWithPosition extends DimensionalSpace {
 
-  public long offset() {
-    return offset;
+  public long position() {
+    return position;
   }
 
-  DimensionalSpaceWithOffset(Dimension[] dimensions, int segmentationIdx, long offset) {
+  DimensionalSpaceWithPosition(Dimension[] dimensions, int segmentationIdx, long position) {
     super(dimensions, segmentationIdx);
-    this.offset = offset;
+    this.position = position;
   }
 
-  private long offset;
+  private long position;
 }

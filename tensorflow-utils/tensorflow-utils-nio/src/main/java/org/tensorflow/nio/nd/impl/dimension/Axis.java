@@ -28,7 +28,7 @@ final class Axis extends AbstractDimension {
     if (coord >= numElements) {
       throw new IndexOutOfBoundsException();
     }
-    return stride * coord;
+    return elementSize * coord;
   }
 
   @Override
@@ -37,8 +37,8 @@ final class Axis extends AbstractDimension {
   }
 
   @Override
-  public long stride() {
-    return stride;
+  public long elementSize() {
+    return elementSize;
   }
   
   @Override
@@ -46,11 +46,11 @@ final class Axis extends AbstractDimension {
     return String.valueOf(numElements);
   }
 
-  Axis(long numElements, long stride) {
+  Axis(long numElements, long elementSize) {
     this.numElements = numElements;
-    this.stride = stride;
+    this.elementSize = elementSize;
   }
 
   private final long numElements;
-  private final long stride;
+  private final long elementSize;
 }

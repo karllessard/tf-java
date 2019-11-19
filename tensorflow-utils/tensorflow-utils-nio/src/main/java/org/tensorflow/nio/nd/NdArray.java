@@ -19,7 +19,6 @@ package org.tensorflow.nio.nd;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.nd.impl.dense.transfer.DataTransfer;
 import org.tensorflow.nio.nd.index.Index;
 
 /**

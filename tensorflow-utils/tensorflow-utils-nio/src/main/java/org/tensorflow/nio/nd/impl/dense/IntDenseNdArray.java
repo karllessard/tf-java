@@ -19,15 +19,10 @@ package org.tensorflow.nio.nd.impl.dense;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.DataBuffers;
 import org.tensorflow.nio.buffer.IntDataBuffer;
-import org.tensorflow.nio.buffer.IntDataBuffer;
-import org.tensorflow.nio.nd.IntNdArray;
 import org.tensorflow.nio.nd.IntNdArray;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.Shape;
-import org.tensorflow.nio.nd.impl.dense.mutable.IntMutableDataBuffer;
-import org.tensorflow.nio.nd.impl.dense.transfer.IntDataTransfer;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.sequence.NdArrayCursor;
 
 public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
     implements IntNdArray {
@@ -64,8 +59,8 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
   public IntNdArray copyTo(NdArray<Integer> dst) {
     Validator.copyToNdArrayArgs(this, dst);
     if (dst instanceof IntDenseNdArray) {
-      IntDenseNdArray floatDst = (IntDenseNdArray)dst;
-      IntDataTransfer.execute(buffer, dimensions(), floatDst.buffer, floatDst.dimensions());
+      IntDenseNdArray intDst = (IntDenseNdArray)dst;
+      DataTransfer.execute(buffer, dimensions(), intDst.buffer, intDst.dimensions(), DataTransfer::ofInt);
     } else {
       slowCopyTo(dst);
     }
@@ -75,22 +70,15 @@ public class IntDenseNdArray extends AbstractDenseNdArray<Integer, IntNdArray>
   @Override
   public IntNdArray read(IntDataBuffer dst) {
     Validator.readToBufferArgs(this, dst);
-    IntDataTransfer.execute(buffer, dimensions(), dst, null);
+    DataTransfer.execute(buffer, dimensions(), dst, DataTransfer::ofInt);
     return this;
   }
 
   @Override
   public IntNdArray write(IntDataBuffer src) {
     Validator.writeFromBufferArgs(this, src);
-    IntDataTransfer.execute(src, null, buffer, dimensions());
+    DataTransfer.execute(src, buffer, dimensions(), DataTransfer::ofInt);
     return this;
-  }
-
-  @Override
-  public NdArrayCursor<Integer, IntNdArray> cursor(int dimensionIdx) {
-    IntDataBuffer mutableBuffer = IntMutableDataBuffer.create(buffer());
-    IntDenseNdArray mutableElement = new IntDenseNdArray(mutableBuffer, dimensions().from(dimensionIdx));
-    return new DenseNdArrayCursor<>(mutableElement, dimensions());
   }
 
   protected IntDenseNdArray(IntDataBuffer buffer, Shape shape) {

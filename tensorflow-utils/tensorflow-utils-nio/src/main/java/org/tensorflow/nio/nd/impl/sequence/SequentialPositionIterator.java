@@ -1,14 +1,12 @@
 package org.tensorflow.nio.nd.impl.sequence;
 
-import java.util.PrimitiveIterator;
-import org.tensorflow.nio.nd.impl.dimension.Dimension;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
 
-public class SequentialPositionIterator implements PrimitiveIterator.OfLong {
+class SequentialPositionIterator implements PositionIterator {
 
   @Override
   public boolean hasNext() {
-    return index <= maxIndex;
+    return index < end;
   }
 
   @Override
@@ -16,12 +14,21 @@ public class SequentialPositionIterator implements PrimitiveIterator.OfLong {
     return stride * index++;
   }
 
-  public SequentialPositionIterator(long stride, long maxIndex) {
+  SequentialPositionIterator(DimensionalSpace dimensions, int dimensionIdx) {
+    long size = 1;
+    for (int i = 0; i <= dimensionIdx; ++i) {
+      size *= dimensions.get(i).size();
+    }
+    this.stride = dimensions.get(dimensionIdx).elementSize();
+    this.end = size;
+  }
+
+  SequentialPositionIterator(long stride, long end) {
     this.stride = stride;
-    this.maxIndex = maxIndex;
+    this.end = end;
   }
 
   private final long stride;
-  private final long maxIndex;
+  private final long end;
   private long index;
 }
