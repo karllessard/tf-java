@@ -2,6 +2,7 @@ package org.tensorflow.impl.buffer;
 
 import org.tensorflow.impl.c_api.TF_Tensor;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
+import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.buffer.impl.Validator;
 
 public class ByteTensorBuffer extends AbstractUnsafeBuffer<Byte, ByteDataBuffer>
@@ -12,59 +13,45 @@ public class ByteTensorBuffer extends AbstractUnsafeBuffer<Byte, ByteDataBuffer>
   }
 
   @Override
-  public byte getByte() {
-    Validator.get(this);
-    return unsafe.getByte(nextAddress());
-  }
-
-  @Override
   public byte getByte(long index) {
     Validator.getArgs(this, index);
     return unsafe.getByte(addressAt(index));
   }
 
   @Override
-  public ByteDataBuffer get(byte[] dst, int offset, int length) {
-    Validator.readArgs(this, dst.length, offset, length);
-    long effectiveLength = Math.min(length, remaining());
-    unsafe.copyMemory(null, currentAddress(), dst, arrayOffset(offset), effectiveLength);
-    movePosition(effectiveLength);
-    return this;
-  }
-
-  @Override
-  public ByteDataBuffer putByte(byte value) {
-    Validator.put(this);
-    unsafe.putByte(nextAddress(), value);
-    return this;
-  }
-
-  @Override
-  public ByteDataBuffer putByte(long index, byte value) {
-    Validator.copyToArgs(this, index);
+  public ByteDataBuffer setByte(byte value, long index) {
+    Validator.putArgs(this, index);
     unsafe.putByte(addressAt(index), value);
     return this;
   }
 
   @Override
-  public ByteDataBuffer put(byte[] src, int offset, int length) {
-    Validator.writeArgs(this, src.length, offset, length);
-    unsafe.copyMemory(src, arrayOffset(offset), null, currentAddress(), length);
-    movePosition(length);
+  public ByteDataBuffer read(byte[] dst, int offset, int length) {
+    Validator.readArgs(this, dst.length, offset, length);
+    long effectiveLength = Math.min(length, size());
+    unsafe.copyMemory(null, 0, dst, arrayOffset(offset), effectiveLength);
     return this;
   }
 
   @Override
-  public ByteDataBuffer duplicate() {
-    return new ByteTensorBuffer(memory, isReadOnly(), position(), limit());
+  public ByteDataBuffer write(byte[] src, int offset, int length) {
+    Validator.writeArgs(this, src.length, offset, length);
+    unsafe.copyMemory(src, arrayOffset(offset), null, 0, length);
+    return this;
+  }
+
+  @Override
+  public ByteDataBuffer offset(long index) {
+    return new ByteTensorBuffer(memory.segment(index, size() - index), isReadOnly());
+  }
+
+  @Override
+  public ByteDataBuffer narrow(long size) {
+    return new ByteTensorBuffer(memory.segment(0, size), isReadOnly());
   }
 
   ByteTensorBuffer(TensorMemory memory, boolean readOnly) {
     super(BYTE_INFO, memory, readOnly);
-  }
-
-  private ByteTensorBuffer(TensorMemory memory, boolean readOnly, long position, long limit) {
-    super(BYTE_INFO, memory, readOnly, position, limit);
   }
 
   private static final TypeInfo BYTE_INFO = new TypeInfo(

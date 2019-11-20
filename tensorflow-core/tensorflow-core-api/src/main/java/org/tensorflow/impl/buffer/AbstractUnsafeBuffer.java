@@ -3,19 +3,28 @@ package org.tensorflow.impl.buffer;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
 import org.tensorflow.nio.buffer.DataBuffer;
-import org.tensorflow.nio.buffer.impl.AbstractBoundDataBuffer;
+import org.tensorflow.nio.buffer.impl.AbstractDataBuffer;
 import sun.misc.Unsafe;
 
-abstract class AbstractUnsafeBuffer<T, B extends DataBuffer<T>> extends AbstractBoundDataBuffer<T, B> {
+abstract class AbstractUnsafeBuffer<T, B extends DataBuffer<T>> extends AbstractDataBuffer<T> {
+
+  public long size() {
+    return memory.length / typeInfo.sizeInBytes;
+  }
 
   @Override
-  public long capacity() {
-    return memory.length / typeInfo.sizeInBytes;
+  public boolean isReadOnly() {
+    return readOnly;
   }
 
   @Override
   public Stream<T> stream() {
     throw new UnsupportedOperationException(); // TODO (karllessard)
+  }
+
+  @Override
+  public DataBuffer<T> copyTo(DataBuffer<T> dst, long size) {
+    return null; // TODO!
   }
 
   static class TypeInfo {
@@ -47,14 +56,6 @@ abstract class AbstractUnsafeBuffer<T, B extends DataBuffer<T>> extends Abstract
   final TypeInfo typeInfo;
   final TensorMemory memory;
 
-  long nextAddress() {
-    return memory.address + nextPosition() * typeInfo.sizeInBytes;
-  }
-
-  long currentAddress() {
-    return memory.address + position() * typeInfo.sizeInBytes;
-  }
-
   long addressAt(long index) {
     return memory.address + index * typeInfo.sizeInBytes;
   }
@@ -64,12 +65,10 @@ abstract class AbstractUnsafeBuffer<T, B extends DataBuffer<T>> extends Abstract
   }
 
   AbstractUnsafeBuffer(TypeInfo typeInfo, TensorMemory memory, boolean readOnly) {
-    this(typeInfo, memory, readOnly, 0, memory.length / typeInfo.sizeInBytes);
-  }
-
-  AbstractUnsafeBuffer(TypeInfo typeInfo, TensorMemory memory, boolean readOnly, long position, long limit) {
-    super(readOnly, position, limit);
+    this.readOnly = readOnly;
     this.typeInfo = typeInfo;
     this.memory = memory;
   }
+
+  private boolean readOnly;
 }

@@ -13,8 +13,8 @@ class TensorMemory {
     return new TensorMemory(address, length);
   }
 
-  TensorMemory segment(long startOffset, long endOffset) {
-    return new TensorMemory(address + startOffset, endOffset - startOffset);
+  TensorMemory segment(long offset, long length) {
+    return new TensorMemory(address + offset, length);
   }
 
   final long address;

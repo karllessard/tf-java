@@ -12,64 +12,50 @@ public class FloatTensorBuffer extends AbstractUnsafeBuffer<Float, FloatDataBuff
   }
 
   @Override
-  public float getFloat() {
-    Validator.get(this);
-    return unsafe.getFloat(nextAddress());
-  }
-
-  @Override
   public float getFloat(long index) {
     Validator.getArgs(this, index);
     return unsafe.getFloat(addressAt(index));
   }
 
   @Override
-  public FloatDataBuffer get(float[] dst, int offset, int length) {
-    Validator.readArgs(this, dst.length, offset, length);
-    long effectiveLength = Math.min(length, remaining());
-    unsafe.copyMemory(null, currentAddress(), dst, arrayOffset(offset), effectiveLength);
-    movePosition(effectiveLength);
-    return this;
-  }
-
-  @Override
-  public FloatDataBuffer putFloat(float value) {
-    Validator.put(this);
-    unsafe.putFloat(nextAddress(), value);
-    return this;
-  }
-
-  @Override
-  public FloatDataBuffer putFloat(long index, float value) {
-    Validator.copyToArgs(this, index);
+  public FloatDataBuffer setFloat(float value, long index) {
+    Validator.putArgs(this, index);
     unsafe.putFloat(addressAt(index), value);
     return this;
   }
 
   @Override
-  public FloatDataBuffer put(float[] src, int offset, int length) {
-    Validator.writeArgs(this, src.length, offset, length);
-    unsafe.copyMemory(src, arrayOffset(offset), null, currentAddress(), length);
-    movePosition(length);
+  public FloatDataBuffer read(float[] dst, int offset, int length) {
+    Validator.readArgs(this, dst.length, offset, length);
+    long effectiveLength = Math.min(length, size());
+    unsafe.copyMemory(null, 0, dst, arrayOffset(offset), effectiveLength);
     return this;
   }
 
   @Override
-  public FloatDataBuffer duplicate() {
-    return new FloatTensorBuffer(memory, isReadOnly(), position(), limit());
+  public FloatDataBuffer write(float[] src, int offset, int length) {
+    Validator.writeArgs(this, src.length, offset, length);
+    unsafe.copyMemory(src, arrayOffset(offset), null, 0, length);
+    return this;
   }
 
-  private FloatTensorBuffer(TensorMemory memory, boolean readOnly) {
-    super(FLOAT_INFO, memory, readOnly);
+  @Override
+  public FloatDataBuffer offset(long index) {
+    return new FloatTensorBuffer(memory.segment(index, size() - index), isReadOnly());
   }
 
-  private FloatTensorBuffer(TensorMemory memory, boolean readOnly, long position, long limit) {
-    super(FLOAT_INFO, memory, readOnly, position, limit);
+  @Override
+  public FloatDataBuffer narrow(long size) {
+    return new FloatTensorBuffer(memory.segment(0, size), isReadOnly());
   }
 
-  private static final TypeInfo FLOAT_INFO = new TypeInfo(
-    Float.BYTES,
-    unsafe.arrayBaseOffset(int[].class),
-    unsafe.arrayIndexScale(int[].class)
+  FloatTensorBuffer(TensorMemory memory, boolean readOnly) {
+    super(TYPE_INFO, memory, readOnly);
+  }
+
+  private static final TypeInfo TYPE_INFO = new TypeInfo(
+      Float.BYTES,
+      unsafe.arrayBaseOffset(int[].class),
+      unsafe.arrayIndexScale(int[].class)
   );
 }

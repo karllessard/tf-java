@@ -14,13 +14,7 @@ public class DoubleTensorBuffer extends AbstractUnsafeBuffer<Double, DoubleDataB
 
   @Override
   public DoubleStream doubleStream() {
-    throw new UnsupportedOperationException(); // TODO (karllessard)
-  }
-
-  @Override
-  public double getDouble() {
-    Validator.get(this);
-    return unsafe.getDouble(nextAddress());
+    return null; // TODO!
   }
 
   @Override
@@ -30,52 +24,44 @@ public class DoubleTensorBuffer extends AbstractUnsafeBuffer<Double, DoubleDataB
   }
 
   @Override
-  public DoubleDataBuffer get(double[] dst, int offset, int length) {
-    Validator.readArgs(this, dst.length, offset, length);
-    long effectiveLength = Math.min(length, remaining());
-    unsafe.copyMemory(null, currentAddress(), dst, arrayOffset(offset), effectiveLength);
-    movePosition(effectiveLength);
-    return this;
-  }
-
-  @Override
-  public DoubleDataBuffer putDouble(double value) {
-    Validator.put(this);
-    unsafe.putDouble(nextAddress(), value);
-    return this;
-  }
-
-  @Override
-  public DoubleDataBuffer putDouble(long index, double value) {
-    Validator.copyToArgs(this, index);
+  public DoubleDataBuffer setDouble(double value, long index) {
+    Validator.putArgs(this, index);
     unsafe.putDouble(addressAt(index), value);
     return this;
   }
 
   @Override
-  public DoubleDataBuffer put(double[] src, int offset, int length) {
-    Validator.writeArgs(this, src.length, offset, length);
-    unsafe.copyMemory(src, arrayOffset(offset), null, currentAddress(), length);
-    movePosition(length);
+  public DoubleDataBuffer read(double[] dst, int offset, int length) {
+    Validator.readArgs(this, dst.length, offset, length);
+    long effectiveLength = Math.min(length, size());
+    unsafe.copyMemory(null, 0, dst, arrayOffset(offset), effectiveLength);
     return this;
   }
 
   @Override
-  public DoubleDataBuffer duplicate() {
-    return new DoubleTensorBuffer(memory, isReadOnly(), position(), limit());
+  public DoubleDataBuffer write(double[] src, int offset, int length) {
+    Validator.writeArgs(this, src.length, offset, length);
+    unsafe.copyMemory(src, arrayOffset(offset), null, 0, length);
+    return this;
   }
 
-  private DoubleTensorBuffer(TensorMemory memory, boolean readOnly) {
-    super(DOUBLE_INFO, memory, readOnly);
+  @Override
+  public DoubleDataBuffer offset(long index) {
+    return new DoubleTensorBuffer(memory.segment(index, size() - index), isReadOnly());
   }
 
-  private DoubleTensorBuffer(TensorMemory memory, boolean readOnly, long position, long limit) {
-    super(DOUBLE_INFO, memory, readOnly, position, limit);
+  @Override
+  public DoubleDataBuffer narrow(long size) {
+    return new DoubleTensorBuffer(memory.segment(0, size), isReadOnly());
   }
 
-  private static final TypeInfo DOUBLE_INFO = new TypeInfo(
-    Double.BYTES,
-    unsafe.arrayBaseOffset(int[].class),
-    unsafe.arrayIndexScale(int[].class)
+  DoubleTensorBuffer(TensorMemory memory, boolean readOnly) {
+    super(TYPE_INFO, memory, readOnly);
+  }
+
+  private static final TypeInfo TYPE_INFO = new TypeInfo(
+      Double.BYTES,
+      unsafe.arrayBaseOffset(int[].class),
+      unsafe.arrayIndexScale(int[].class)
   );
 }

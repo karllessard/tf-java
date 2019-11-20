@@ -43,9 +43,11 @@ class TStringImpl extends DenseNdArray<String> implements TString {
 
     // Allocate the tensor of the right capacity and init its data from source array
     Tensor<TString> tensor = Tensor.allocate(TString.DTYPE, src.shape(), capacity.get());
+    /* FIXME!
     StringTensorBuffer buffer = ((TStringImpl)tensor.data()).buffer();
     StringTensorBuffer initBuffer = buffer.duplicateForInit();  // get a writeable buffer for initialization
     src.scalars().forEach(s -> initBuffer.put(s.getValue()));
+     */
     return tensor;
   }
 

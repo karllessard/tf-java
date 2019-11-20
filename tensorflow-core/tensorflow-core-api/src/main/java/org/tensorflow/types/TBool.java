@@ -52,13 +52,13 @@ class TBoolImpl extends BooleanDenseNdArray implements TBool {
   private static BooleanDataAdapter ADAPTER = new BooleanDataAdapter() {
 
     @Override
-    public void writeBoolean(ByteDataBuffer buffer, boolean value) {
-      buffer.put((byte)(value ? 1 : 0));
+    public void writeBoolean(ByteDataBuffer buffer, boolean value, long index) {
+      buffer.set((byte)(value ? 1 : 0), index);
     }
 
     @Override
-    public boolean readBoolean(ByteDataBuffer buffer) {
-      return buffer.get() > 0;
+    public boolean readBoolean(ByteDataBuffer buffer, long index) {
+      return buffer.get(index) > 0;
     }
 
     @Override

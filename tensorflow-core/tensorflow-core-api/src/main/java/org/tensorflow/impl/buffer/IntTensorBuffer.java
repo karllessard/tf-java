@@ -14,13 +14,7 @@ public class IntTensorBuffer extends AbstractUnsafeBuffer<Integer, IntDataBuffer
 
   @Override
   public IntStream intStream() {
-    throw new UnsupportedOperationException(); // TODO (karllessard)
-  }
-
-  @Override
-  public int getInt() {
-    Validator.get(this);
-    return unsafe.getInt(nextAddress());
+    return null; // TODO!
   }
 
   @Override
@@ -30,52 +24,44 @@ public class IntTensorBuffer extends AbstractUnsafeBuffer<Integer, IntDataBuffer
   }
 
   @Override
-  public IntDataBuffer get(int[] dst, int offset, int length) {
-    Validator.readArgs(this, dst.length, offset, length);
-    long effectiveLength = Math.min(length, remaining());
-    unsafe.copyMemory(null, currentAddress(), dst, arrayOffset(offset), effectiveLength);
-    movePosition(effectiveLength);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer putInt(int value) {
-    Validator.put(this);
-    unsafe.putInt(nextAddress(), value);
-    return this;
-  }
-
-  @Override
-  public IntDataBuffer putInt(long index, int value) {
-    Validator.copyToArgs(this, index);
+  public IntDataBuffer setInt(int value, long index) {
+    Validator.putArgs(this, index);
     unsafe.putInt(addressAt(index), value);
     return this;
   }
 
   @Override
-  public IntDataBuffer put(int[] src, int offset, int length) {
-    Validator.writeArgs(this, src.length, offset, length);
-    unsafe.copyMemory(src, arrayOffset(offset), null, currentAddress(), length);
-    movePosition(length);
+  public IntDataBuffer read(int[] dst, int offset, int length) {
+    Validator.readArgs(this, dst.length, offset, length);
+    long effectiveLength = Math.min(length, size());
+    unsafe.copyMemory(null, 0, dst, arrayOffset(offset), effectiveLength);
     return this;
   }
 
   @Override
-  public IntDataBuffer duplicate() {
-    return new IntTensorBuffer(memory, isReadOnly(), position(), limit());
+  public IntDataBuffer write(int[] src, int offset, int length) {
+    Validator.writeArgs(this, src.length, offset, length);
+    unsafe.copyMemory(src, arrayOffset(offset), null, 0, length);
+    return this;
   }
 
-  private IntTensorBuffer(TensorMemory memory, boolean readOnly) {
-    super(INT_INFO, memory, readOnly);
+  @Override
+  public IntDataBuffer offset(long index) {
+    return new IntTensorBuffer(memory.segment(index, size() - index), isReadOnly());
   }
 
-  private IntTensorBuffer(TensorMemory memory, boolean readOnly, long position, long limit) {
-    super(INT_INFO, memory, readOnly, position, limit);
+  @Override
+  public IntDataBuffer narrow(long size) {
+    return new IntTensorBuffer(memory.segment(0, size), isReadOnly());
   }
 
-  private static final TypeInfo INT_INFO = new TypeInfo(
-    Integer.BYTES,
-    unsafe.arrayBaseOffset(int[].class),
-    unsafe.arrayIndexScale(int[].class)
+  IntTensorBuffer(TensorMemory memory, boolean readOnly) {
+    super(TYPE_INFO, memory, readOnly);
+  }
+
+  private static final TypeInfo TYPE_INFO = new TypeInfo(
+      Integer.BYTES,
+      unsafe.arrayBaseOffset(int[].class),
+      unsafe.arrayIndexScale(int[].class)
   );
 }
