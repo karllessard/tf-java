@@ -14,19 +14,20 @@
  limitations under the License.
  =======================================================================
  */
+package org.tensorflow.nio.buffer.impl.heap;
 
-package org.tensorflow.nio.nd.impl.dimension;
+import org.tensorflow.nio.buffer.DoubleDataBuffer;
+import org.tensorflow.nio.buffer.DoubleDataBufferTestBase;
 
-public class DimensionalSpaceWithPosition extends DimensionalSpace {
+public class DoubleHeapDataBufferTest extends DoubleDataBufferTestBase {
 
-  public long position() {
-    return position;
+  @Override
+  protected long maxSize() {
+    return DoubleHeapDataBuffer.MAX_SIZE;
   }
 
-  DimensionalSpaceWithPosition(Dimension[] dimensions, int segmentationIdx, long position) {
-    super(dimensions, segmentationIdx);
-    this.position = position;
+  @Override
+  protected DoubleDataBuffer allocate(long size) {
+    return DoubleHeapDataBuffer.allocate(size);
   }
-
-  private long position;
 }

@@ -16,7 +16,6 @@
  */
 package org.tensorflow.nio.benchmark;
 
-import static org.tensorflow.nio.nd.NdArrays.vector;
 import static org.tensorflow.nio.nd.index.Indices.all;
 import static org.tensorflow.nio.nd.index.Indices.at;
 
@@ -65,14 +64,10 @@ public class NdArrayBenchmark {
 		for (int y = 0, pixelIdx = 0; y < image.getHeight(); ++y) {
 			for (int x = 0; x < image.getWidth(); ++x, ++pixelIdx) {
 				imageData.getPixel(x, y, pixel);
-				pixels.set(vector(pixel), pixelIdx);
-				channels
-						.setFloat(pixel[2], 0, pixelIdx)  // R
-						.setFloat(pixel[1], 1, pixelIdx)  // G
-						.setFloat(pixel[0], 2, pixelIdx); // B
+				pixels.get(pixelIdx).write(pixel);
+				channels.slice(all(), at(pixelIdx)).write(pixel);
 			}
 		}
-
 		array = NdArrays.ofFloats(Shape.make(BATCH_SIZE, 3, numPixels));
 	}
 
@@ -109,7 +104,7 @@ public class NdArrayBenchmark {
 	@Benchmark
 	public void writeAllPixelsBySlicing() {
 		array.elements(0).forEach(batch ->
-				pixels.elements(0).forEachIdx((coords, pixel) ->
+				pixels.elements(0).forEachIndexed((coords, pixel) ->
             batch.slice(all(), at(coords[0])).set(pixel)
 				)
 		);
@@ -127,7 +122,7 @@ public class NdArrayBenchmark {
 	@Benchmark
 	public void writeAllPixelsByIndex() {
 		array.elements(0).forEach(batch ->
-				pixels.elements(0).forEachIdx((coords, pixel) -> {
+				pixels.elements(0).forEachIndexed((coords, pixel) -> {
 				  long pixelIndex = coords[0];
 					batch
 							.setFloat(pixel.getFloat(0), 0, pixelIndex)

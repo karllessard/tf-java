@@ -16,7 +16,7 @@ class SingleElementSequence<T, U extends NdArray<T>> implements NdArraySequence<
   }
 
   @Override
-  public void forEachIdx(BiConsumer<long[], U> consumer) {
+  public void forEachIndexed(BiConsumer<long[], U> consumer) {
     throw new IllegalRankException("Single element has no coordinates to iterate on, use forEach()");
   }
 

@@ -95,7 +95,7 @@ public interface NdArray<T> {
    * </pre>
    *
    * <p>The returned cursor is used to visit each elements, either by calling
-   * {@link NdArraySequence#forEach(Consumer)} or {@link NdArraySequence#forEachIdx(BiConsumer)}.
+   * {@link NdArraySequence#forEach(Consumer)} or {@link NdArraySequence#forEachIndexed(BiConsumer)}.
    * <pre>{@code
    *    // Iterate matrix for initializing each of its vectors
    *    matrixOfFloats.elements(0).forEach(v -> {

@@ -22,7 +22,7 @@ public class ElementSequenceTest {
     @SuppressWarnings("unchecked")
     NdArraySequence<IntNdArray> sequence = ElementSequence.create((AbstractNdArray<Integer, IntNdArray>)array, 1);
     List<long[]> coords = new ArrayList<>((int)array.shape().size());
-    sequence.forEachIdx((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
+    sequence.forEachIndexed((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
 
     assertEquals(6, coords.size());
     assertArrayEquals(new long[] {0, 0}, coords.get(0));
@@ -40,7 +40,7 @@ public class ElementSequenceTest {
     @SuppressWarnings("unchecked")
     NdArraySequence<IntNdArray> cursor = ElementSequence.create((AbstractNdArray<Integer, IntNdArray>)array, 2);
     List<long[]> coords = new ArrayList<>((int)array.shape().size());
-    cursor.forEachIdx((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
+    cursor.forEachIndexed((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
 
     assertEquals(12, coords.size());
     assertArrayEquals(new long[] {0, 0, 0}, coords.get(0));

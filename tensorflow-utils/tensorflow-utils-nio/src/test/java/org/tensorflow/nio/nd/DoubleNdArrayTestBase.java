@@ -38,7 +38,7 @@ public abstract class DoubleNdArrayTestBase extends NdArrayTestBase<Double> {
     public void iteratePrimitiveElements() {
         DoubleNdArray matrix3d = allocate(Shape.make(5, 4, 5));
 
-        matrix3d.scalars().forEachIdx((coords, scalar) -> {
+        matrix3d.scalars().forEachIndexed((coords, scalar) -> {
             scalar.setDouble((double)coords[2]);
         });
 

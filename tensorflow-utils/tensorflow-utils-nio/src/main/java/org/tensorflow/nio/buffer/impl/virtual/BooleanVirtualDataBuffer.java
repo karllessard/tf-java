@@ -20,7 +20,7 @@ public class BooleanVirtualDataBuffer extends AbstractVirtualDataBuffer<Boolean,
 
   @Override
   public BooleanDataBuffer setBoolean(boolean value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeBoolean(physicalBuffer(), value, index * adapter.sizeInBytes());
     return this;
   }

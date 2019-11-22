@@ -23,6 +23,15 @@ import org.tensorflow.nio.buffer.DataBuffer;
 
 public class Validator {
 
+  public static void allocateArgs(long size, long maxSize) {
+    if (size < 0) {
+      throw new IllegalArgumentException("Size must be non-negative");
+    }
+    if (size > maxSize) {
+      throw new IllegalArgumentException("Buffer size must be no greater than maximum size allowed (" + maxSize + ")");
+    }
+  }
+
   public static <T> void getArgs(DataBuffer<T> buffer, long index) {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
@@ -32,7 +41,7 @@ public class Validator {
     }
   }
 
-  public static <T> void putArgs(DataBuffer<T> buffer, long index) {
+  public static <T> void setArgs(DataBuffer<T> buffer, long index) {
     if (index < 0) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
     }

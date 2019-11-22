@@ -74,7 +74,7 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
   }
 
   protected void slowCopyTo(NdArray<T> array) {
-    scalars().forEachIdx((coords, e) -> array.setValue(e.getValue(), coords));
+    scalars().forEachIndexed((coords, e) -> array.setValue(e.getValue(), coords));
   }
 
   private DimensionalSpace dimensions;

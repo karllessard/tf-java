@@ -26,7 +26,7 @@ public class IntVirtualDataBuffer extends AbstractVirtualDataBuffer<Integer, Int
 
   @Override
   public IntDataBuffer setInt(int value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeInt(physicalBuffer(), value, index * adapter.sizeInBytes());
     return this;
   }

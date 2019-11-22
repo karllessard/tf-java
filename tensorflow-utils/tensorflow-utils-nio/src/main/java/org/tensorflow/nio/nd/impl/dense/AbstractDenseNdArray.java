@@ -22,7 +22,7 @@ import org.tensorflow.nio.nd.IllegalRankException;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.impl.AbstractNdArray;
 import org.tensorflow.nio.nd.impl.dimension.DimensionalSpace;
-import org.tensorflow.nio.nd.impl.dimension.DimensionalSpaceWithPosition;
+import org.tensorflow.nio.nd.impl.dimension.RelativeDimensionalSpace;
 import org.tensorflow.nio.nd.index.Index;
 
 @SuppressWarnings("unchecked")
@@ -30,11 +30,7 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
 
   @Override
   public U slice(long position, DimensionalSpace dimensions) {
-    // FIXME! What about buffer size??!?
-    if (position > 0) {
-      return instantiate(buffer().offset(position), dimensions);
-    }
-    return instantiate(buffer(), dimensions);
+    return instantiate(buffer().offset(position), dimensions);
   }
 
   @Override
@@ -42,7 +38,7 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
     if (indices == null) {
       throw new IllegalArgumentException("Slicing requires at least one index");
     }
-    DimensionalSpaceWithPosition sliceDimensions = dimensions().mapTo(indices);
+    RelativeDimensionalSpace sliceDimensions = dimensions().mapTo(indices);
     return slice(sliceDimensions.position(), sliceDimensions);
   }
 

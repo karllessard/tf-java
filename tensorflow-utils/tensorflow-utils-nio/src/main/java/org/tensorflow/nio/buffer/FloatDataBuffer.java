@@ -143,6 +143,9 @@ public interface FloatDataBuffer extends DataBuffer<Float> {
   }
 
   @Override
+  FloatDataBuffer copyTo(DataBuffer<Float> dst, long size);
+
+  @Override
   FloatDataBuffer offset(long index);
 
   @Override

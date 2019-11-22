@@ -143,6 +143,9 @@ public interface ByteDataBuffer extends DataBuffer<Byte> {
   }
 
   @Override
+  ByteDataBuffer copyTo(DataBuffer<Byte> dst, long size);
+
+  @Override
   ByteDataBuffer offset(long index);
 
   @Override

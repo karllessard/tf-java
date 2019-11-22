@@ -20,7 +20,7 @@ public class ShortVirtualDataBuffer extends AbstractVirtualDataBuffer<Short, Sho
 
   @Override
   public ShortDataBuffer setShort(short value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeShort(physicalBuffer(), value, index * adapter.sizeInBytes());
     return this;
   }

@@ -84,7 +84,7 @@ public final class IntJdkDataBuffer extends AbstractJdkDataBuffer<Integer>
 
   @Override
   public IntDataBuffer setInt(int value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
@@ -109,7 +109,7 @@ public final class IntJdkDataBuffer extends AbstractJdkDataBuffer<Integer>
       IntBuffer srcBuf = (IntBuffer)buf.duplicate().limit((int)size);
       dstBuf.put(srcBuf);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

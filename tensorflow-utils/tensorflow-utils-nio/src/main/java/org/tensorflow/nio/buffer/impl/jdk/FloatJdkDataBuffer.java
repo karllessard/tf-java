@@ -74,7 +74,7 @@ public final class FloatJdkDataBuffer extends AbstractJdkDataBuffer<Float>
 
   @Override
   public FloatDataBuffer setFloat(float value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
@@ -99,7 +99,7 @@ public final class FloatJdkDataBuffer extends AbstractJdkDataBuffer<Float>
       FloatBuffer srcBuf = (FloatBuffer)buf.duplicate().limit((int)size);
       dstBuf.put(srcBuf);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

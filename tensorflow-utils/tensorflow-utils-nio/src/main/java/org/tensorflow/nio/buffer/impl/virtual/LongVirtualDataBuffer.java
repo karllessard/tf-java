@@ -26,7 +26,7 @@ public class LongVirtualDataBuffer extends AbstractVirtualDataBuffer<Long, LongD
 
   @Override
   public LongDataBuffer setLong(long value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeLong(physicalBuffer(), value, index * adapter.sizeInBytes());
     return this;
   }

@@ -34,7 +34,7 @@ public class DimensionalSpace {
     return new DimensionalSpace(dimensions, shape);
   }
 
-  public DimensionalSpaceWithPosition mapTo(Index[] indices) {
+  public RelativeDimensionalSpace mapTo(Index[] indices) {
     if (dimensions == null || indices.length > dimensions.length) {
       throw new ArrayIndexOutOfBoundsException();
     }
@@ -60,7 +60,8 @@ public class DimensionalSpace {
         if (newDimIdx == 0) {
           initialOffset = offset;
         } else {
-          newDimensions[newDimIdx - 1] = new OffsetDimension(offset, newDimensions[newDimIdx - 1]);
+          long reducedSize = dimensions[dimIdx - 1].elementSize();
+          newDimensions[newDimIdx - 1] = new ReducedDimension(newDimensions[newDimIdx - 1], offset, reducedSize);
           segmentationIdx = newDimIdx - 1;
         }
 
@@ -84,7 +85,7 @@ public class DimensionalSpace {
         segmentationIdx = newDimIdx;
       }
     }
-    return new DimensionalSpaceWithPosition(Arrays.copyOf(newDimensions, newDimIdx), segmentationIdx, initialOffset);
+    return new RelativeDimensionalSpace(Arrays.copyOf(newDimensions, newDimIdx), segmentationIdx, initialOffset);
   }
 
   public DimensionalSpace from(int dimensionStart) {

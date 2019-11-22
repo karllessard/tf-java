@@ -41,7 +41,7 @@ final class IndexedDimension extends AbstractDimension {
 
   @Override
   public long elementSize() {
-    return originalDimension.elementSize();
+    return originalDimension.elementSize(); // indices do not change the size of a inner element
   }
 
   @Override

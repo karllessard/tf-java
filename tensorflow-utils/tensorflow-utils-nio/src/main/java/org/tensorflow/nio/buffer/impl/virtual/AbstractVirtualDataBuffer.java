@@ -27,7 +27,7 @@ abstract class AbstractVirtualDataBuffer<T, B extends DataBuffer<T>> extends Abs
 
   @Override
   public B set(T value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeValue(physicalBuffer, value, index * adapter.sizeInBytes());
     return (B)this;
   }
@@ -35,7 +35,7 @@ abstract class AbstractVirtualDataBuffer<T, B extends DataBuffer<T>> extends Abs
   @Override
   public B copyTo(DataBuffer<T> dst, long size) {
     Validator.copyToArgs(this, dst, size);
-    slowCopyTo(dst); // FIXME anyway to speed up this?
+    slowCopyTo(dst, size); // FIXME anyway to speed up this?
     return (B)this;
   }
 

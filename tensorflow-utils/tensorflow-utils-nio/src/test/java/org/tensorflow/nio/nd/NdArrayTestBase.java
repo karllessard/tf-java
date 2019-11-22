@@ -113,7 +113,7 @@ public abstract class NdArrayTestBase<T> {
   public void iterateElements() {
     NdArray<T> matrix3d = allocate(Shape.make(5, 4, 5));
 
-    matrix3d.scalars().forEachIdx((coords, scalar) -> {
+    matrix3d.scalars().forEachIndexed((coords, scalar) -> {
       scalar.setValue(valueOf(coords[2]));
     });
 

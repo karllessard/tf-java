@@ -25,5 +25,5 @@ public interface NdArraySequence<T extends NdArray<?>> {
    *
    * @param consumer method to invoke for each elements
    */
-  void forEachIdx(BiConsumer<long[], T> consumer);
+  void forEachIndexed(BiConsumer<long[], T> consumer);
 }

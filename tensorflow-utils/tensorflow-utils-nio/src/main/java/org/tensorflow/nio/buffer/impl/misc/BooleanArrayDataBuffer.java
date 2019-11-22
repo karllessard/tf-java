@@ -45,7 +45,7 @@ public class BooleanArrayDataBuffer extends AbstractDataBuffer<Boolean> implemen
 
   @Override
   public BooleanDataBuffer setBoolean(boolean value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     values[(int)index + offset] = value;
     return this;
   }
@@ -57,7 +57,7 @@ public class BooleanArrayDataBuffer extends AbstractDataBuffer<Boolean> implemen
       BooleanArrayDataBuffer dstBuffer = (BooleanArrayDataBuffer)dst;
       System.arraycopy(values, offset, dstBuffer.values, dstBuffer.offset, length);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

@@ -84,7 +84,7 @@ public final class LongJdkDataBuffer extends AbstractJdkDataBuffer<Long>
 
   @Override
   public LongDataBuffer setLong(long value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
@@ -109,7 +109,7 @@ public final class LongJdkDataBuffer extends AbstractJdkDataBuffer<Long>
       LongBuffer srcBuf = (LongBuffer)buf.duplicate().limit((int)size);
       dstBuf.put(srcBuf);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

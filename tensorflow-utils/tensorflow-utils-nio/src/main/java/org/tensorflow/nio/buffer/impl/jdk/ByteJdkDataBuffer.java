@@ -74,7 +74,7 @@ public final class ByteJdkDataBuffer extends AbstractJdkDataBuffer<Byte>
 
   @Override
   public ByteDataBuffer setByte(byte value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
@@ -99,7 +99,7 @@ public final class ByteJdkDataBuffer extends AbstractJdkDataBuffer<Byte>
       ByteBuffer srcBuf = (ByteBuffer)buf.duplicate().limit((int)size);
       dstBuf.put(srcBuf);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

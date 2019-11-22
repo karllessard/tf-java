@@ -1,12 +1,12 @@
 /*
  Copyright 2019 The TensorFlow Authors. All Rights Reserved.
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
      http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,40 +14,25 @@
  limitations under the License.
  =======================================================================
  */
-package org.tensorflow.nio.nd.impl.dimension;
+package org.tensorflow.nio.buffer.impl.heap;
 
-final class OffsetDimension extends AbstractDimension {
+import org.tensorflow.nio.buffer.DataBuffer;
+import org.tensorflow.nio.buffer.DataBufferTestBase;
 
-  @Override
-  public long size() {
-    return originalDimension.size();
-  }
+public class StringHeapDataBufferTest extends DataBufferTestBase<String> {
 
   @Override
-  public long positionOf(long coord) {
-    return originalDimension.positionOf(coord) + offset;
+  protected long maxSize() {
+    return ObjectHeapDataBuffer.MAX_SIZE;
   }
 
   @Override
-  public boolean isSegmented() {
-    return true;
+  protected DataBuffer<String> allocate(long size) {
+    return ObjectHeapDataBuffer.allocate(String.class, size);
   }
 
   @Override
-  public long elementSize() {
-    return originalDimension.elementSize();
+  protected String valueOf(Long val) {
+    return val.toString();
   }
-
-  @Override
-  public String toString() {
-    return String.valueOf(size());
-  }
-
-  OffsetDimension(long offset, Dimension originalDimension) {
-    this.offset = offset;
-    this.originalDimension = originalDimension;
-  }
-
-  private final Dimension originalDimension;
-  private final long offset;
 }

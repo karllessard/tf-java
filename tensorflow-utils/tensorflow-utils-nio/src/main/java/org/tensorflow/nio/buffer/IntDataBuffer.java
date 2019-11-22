@@ -158,6 +158,9 @@ public interface IntDataBuffer extends DataBuffer<Integer> {
   }
 
   @Override
+  IntDataBuffer copyTo(DataBuffer<Integer> dst, long size);
+
+  @Override
   IntDataBuffer offset(long index);
 
   @Override

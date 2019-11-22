@@ -67,7 +67,7 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
 
   @Override
   public DataBuffer<T> set(T value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     values[(int)index + offset] = value;
     return this;
   }
@@ -79,7 +79,7 @@ public class ArrayDataBuffer<T> extends AbstractDataBuffer<T> {
       ArrayDataBuffer<T> dstBuffer = (ArrayDataBuffer<T>)dst;
       System.arraycopy(values, offset, dstBuffer.values, dstBuffer.offset, (int)size);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

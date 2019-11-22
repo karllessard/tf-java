@@ -20,7 +20,7 @@ public class FloatVirtualDataBuffer extends AbstractVirtualDataBuffer<Float, Flo
 
   @Override
   public FloatDataBuffer setFloat(float value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeFloat(physicalBuffer(), value, index * adapter.sizeInBytes());
     return this;
   }

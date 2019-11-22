@@ -158,6 +158,9 @@ public interface DoubleDataBuffer extends DataBuffer<Double> {
   }
 
   @Override
+  DoubleDataBuffer copyTo(DataBuffer<Double> dst, long size);
+
+  @Override
   DoubleDataBuffer offset(long index);
 
   @Override

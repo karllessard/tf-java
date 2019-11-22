@@ -26,7 +26,7 @@ public class DoubleVirtualDataBuffer extends AbstractVirtualDataBuffer<Double, D
 
   @Override
   public DoubleDataBuffer setDouble(double value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     adapter.writeDouble(physicalBuffer(), value, index * adapter.sizeInBytes());
     return this;
   }

@@ -38,7 +38,7 @@ public abstract class FloatNdArrayTestBase extends NdArrayTestBase<Float> {
     public void iteratePrimitiveElements() {
         FloatNdArray matrix3d = allocate(Shape.make(5, 4, 5));
 
-        matrix3d.scalars().forEachIdx((coords, scalar) -> {
+        matrix3d.scalars().forEachIndexed((coords, scalar) -> {
             scalar.setFloat((float)coords[2]);
         });
 

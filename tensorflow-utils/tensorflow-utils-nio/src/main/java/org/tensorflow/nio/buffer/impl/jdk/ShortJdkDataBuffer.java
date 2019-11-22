@@ -75,7 +75,7 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
 
   @Override
   public ShortDataBuffer setShort(short value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
@@ -100,7 +100,7 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
       ShortBuffer srcBuf = (ShortBuffer)buf.duplicate().limit((int)size);
       dstBuf.put(srcBuf);
     } else {
-      slowCopyTo(dst);
+      slowCopyTo(dst, size);
     }
     return this;
   }

@@ -25,6 +25,14 @@ import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.buffer.LongDataBuffer;
 import org.tensorflow.nio.buffer.ShortDataBuffer;
+import org.tensorflow.nio.buffer.impl.jdk.FloatJdkDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.FloatUnsafeDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.BooleanUnsafeDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.ByteUnsafeDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.DoubleUnsafeDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.IntUnsafeDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.LongUnsafeDataBuffer;
+import org.tensorflow.nio.buffer.impl.unsafe.ShortUnsafeDataBuffer;
 import org.tensorflow.nio.nd.impl.dense.BooleanDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.ByteDenseNdArray;
 import org.tensorflow.nio.nd.impl.dense.DenseNdArray;
@@ -78,7 +86,7 @@ public final class NdArrays {
     if (shape == null) {
       throw new IllegalArgumentException("Shape cannot be null");
     }
-    return wrap(DataBuffers.ofBytes(shape.size()), shape);
+    return wrap(ByteUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**
@@ -130,7 +138,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static LongNdArray ofLongs(Shape shape) {
-    return wrap(DataBuffers.ofLongs(shape.size()), shape);
+    return wrap(LongUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**
@@ -182,7 +190,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static IntNdArray ofInts(Shape shape) {
-    return wrap(DataBuffers.ofInts(shape.size()), shape);
+    return wrap(IntUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**
@@ -234,7 +242,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static ShortNdArray ofShorts(Shape shape) {
-    return wrap(DataBuffers.ofShorts(shape.size()), shape);
+    return wrap(ShortUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**
@@ -286,7 +294,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static FloatNdArray ofFloats(Shape shape) {
-    return wrap(DataBuffers.ofFloats(shape.size()), shape);
+    return wrap(FloatUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**
@@ -338,7 +346,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static DoubleNdArray ofDoubles(Shape shape) {
-    return wrap(DataBuffers.ofDoubles(shape.size()), shape);
+    return wrap(DoubleUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**
@@ -390,7 +398,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static BooleanNdArray ofBooleans(Shape shape) {
-    return wrap(DataBuffers.ofBooleans(shape.size()), shape);
+    return wrap(BooleanUnsafeDataBuffer.allocate(shape.size()), shape);
   }
 
   /**

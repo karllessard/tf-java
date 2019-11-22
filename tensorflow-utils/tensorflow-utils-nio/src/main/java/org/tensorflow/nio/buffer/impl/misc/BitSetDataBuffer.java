@@ -45,7 +45,7 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
 
   @Override
   public BooleanDataBuffer setBoolean(boolean value, long index) {
-    Validator.putArgs(this, index);
+    Validator.setArgs(this, index);
     bitSet.set((int)index + offset, value);
     return this;
   }
@@ -53,7 +53,7 @@ public class BitSetDataBuffer extends AbstractDataBuffer<Boolean> implements Boo
   @Override
   public BooleanDataBuffer copyTo(DataBuffer<Boolean> dst, long size) {
     Validator.copyToArgs(this, dst, size);
-    slowCopyTo(dst);
+    slowCopyTo(dst, size);
     return this;
   }
 

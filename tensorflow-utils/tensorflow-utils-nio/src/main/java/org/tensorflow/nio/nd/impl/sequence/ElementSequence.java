@@ -25,7 +25,7 @@ public class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence
   }
 
   @Override
-  public void forEachIdx(BiConsumer<long[], U> consumer) {
+  public void forEachIndexed(BiConsumer<long[], U> consumer) {
     DimensionalSpace elementDimensions = ndArray.dimensions().from(dimensionIdx + 1);
     PositionIterator.createIndexed(ndArray.dimensions(), dimensionIdx).forEachIndexed((long[] coords, long position) ->
         consumer.accept(coords, ndArray.slice(position, elementDimensions))

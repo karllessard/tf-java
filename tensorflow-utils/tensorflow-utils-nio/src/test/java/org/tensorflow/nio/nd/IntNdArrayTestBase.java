@@ -38,7 +38,7 @@ public abstract class IntNdArrayTestBase extends NdArrayTestBase<Integer> {
     public void iteratePrimitiveElements() {
         IntNdArray matrix3d = allocate(Shape.make(5, 4, 5));
 
-        matrix3d.scalars().forEachIdx((coords, scalar) -> {
+        matrix3d.scalars().forEachIndexed((coords, scalar) -> {
             scalar.setInt((int)coords[2]);
         });
 

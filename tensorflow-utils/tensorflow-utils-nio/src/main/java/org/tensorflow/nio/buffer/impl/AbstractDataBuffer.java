@@ -20,8 +20,8 @@ import org.tensorflow.nio.buffer.DataBuffer;
 
 public abstract class AbstractDataBuffer<T> implements DataBuffer<T> {
 
-  protected void slowCopyTo(DataBuffer<T> dst) {
-    for (long idx = 0; idx < Math.min(size(), dst.size()); ++idx) {
+  protected void slowCopyTo(DataBuffer<T> dst, long size) {
+    for (long idx = 0; idx < size; ++idx) {
       dst.set(get(idx), idx);
     }
   }

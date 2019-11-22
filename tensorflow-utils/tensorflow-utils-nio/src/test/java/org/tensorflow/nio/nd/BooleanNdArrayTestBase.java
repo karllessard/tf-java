@@ -39,7 +39,7 @@ public abstract class BooleanNdArrayTestBase extends NdArrayTestBase<Boolean> {
     public void iteratePrimitiveElements() {
         BooleanNdArray matrix3d = allocate(Shape.make(5, 4, 5));
 
-        matrix3d.scalars().forEachIdx((coords, scalar) -> {
+        matrix3d.scalars().forEachIndexed((coords, scalar) -> {
             scalar.setBoolean(coords[2] > 0);
         });
 

@@ -143,6 +143,9 @@ public interface ShortDataBuffer extends DataBuffer<Short> {
   }
 
   @Override
+  ShortDataBuffer copyTo(DataBuffer<Short> dst, long size);
+
+  @Override
   ShortDataBuffer offset(long index);
 
   @Override
