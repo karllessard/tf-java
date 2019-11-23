@@ -16,7 +16,7 @@ public class BooleanVirtualDataBufferTest extends BooleanDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ByteJdkDataBuffer.MAX_CAPACITY;
+    return ByteJdkDataBuffer.MAX_SIZE;
   }
 
   private static class TestBooleanAdapter implements BooleanDataAdapter {

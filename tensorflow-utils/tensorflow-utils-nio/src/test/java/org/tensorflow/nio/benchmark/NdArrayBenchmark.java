@@ -39,7 +39,7 @@ import org.tensorflow.nio.nd.Shape;
 
 @Fork(value = 1, jvmArgs = {"-Xms4G", "-Xmx4G"})
 @BenchmarkMode(Mode.AverageTime)
-@Warmup(iterations = 3)
+@Warmup(iterations = 0) //3)
 @Measurement(iterations = 5)
 @State(Scope.Benchmark)
 public class NdArrayBenchmark {
@@ -47,9 +47,10 @@ public class NdArrayBenchmark {
 	static final String TEST_IMAGE = "1500x916.jpg";
 	static final int BATCH_SIZE = 100;
 
-	private FloatNdArray array;
 	private FloatNdArray pixels;
 	private FloatNdArray channels;
+	private FloatNdArray batches;
+	private FloatNdArray firstBatch;
 
 	@Setup
 	public void setUp() throws IOException {
@@ -68,7 +69,8 @@ public class NdArrayBenchmark {
 				channels.slice(all(), at(pixelIdx)).write(pixel);
 			}
 		}
-		array = NdArrays.ofFloats(Shape.make(BATCH_SIZE, 3, numPixels));
+		batches = NdArrays.ofFloats(Shape.make(BATCH_SIZE, 3, numPixels));
+		firstBatch = batches.get(0);
 	}
 
 	@Benchmark
@@ -80,7 +82,7 @@ public class NdArrayBenchmark {
 	@Benchmark
 	@Measurement(batchSize = 1500 * 916)
 	public void slicing() {
-		array.slice(at(0), all(), at(0));
+		batches.slice(at(0), all(), at(0));
 	}
 
 	@Benchmark
@@ -89,8 +91,14 @@ public class NdArrayBenchmark {
 	}
 
 	@Benchmark
-	public void writeAllChannels() {
-	  array.elements(0).forEach(batch ->
+  @Measurement(batchSize = BATCH_SIZE)
+	public void writeFirstBatchChannels() {
+	  firstBatch.set(channels);
+	}
+
+	@Benchmark
+	public void writeAllBatchChannels() {
+	  batches.elements(0).forEach(batch ->
 			batch.set(channels)
 		);
 	}
@@ -98,12 +106,12 @@ public class NdArrayBenchmark {
 	@Benchmark
 	@Measurement(batchSize = 1500 * 916)
 	public void writeOnePixelBySlicing() {
-		array.slice(at(0), all(), at(0)).set(pixels.get(0));
+		batches.slice(at(0), all(), at(0)).set(pixels.get(0));
 	}
 
 	@Benchmark
 	public void writeAllPixelsBySlicing() {
-		array.elements(0).forEach(batch ->
+		batches.elements(0).forEach(batch ->
 				pixels.elements(0).forEachIndexed((coords, pixel) ->
             batch.slice(all(), at(coords[0])).set(pixel)
 				)
@@ -113,7 +121,7 @@ public class NdArrayBenchmark {
 	@Benchmark
 	@Measurement(batchSize = 1500 * 916)
 	public void writeOnePixelsByIndex() {
-		array
+		batches
 				.setFloat(pixels.getFloat(0, 0), 0, 0, 0)
 				.setFloat(pixels.getFloat(0, 1), 0, 1, 0)
 				.setFloat(pixels.getFloat(0, 2), 0, 2, 0);
@@ -121,7 +129,7 @@ public class NdArrayBenchmark {
 
 	@Benchmark
 	public void writeAllPixelsByIndex() {
-		array.elements(0).forEach(batch ->
+		batches.elements(0).forEach(batch ->
 				pixels.elements(0).forEachIndexed((coords, pixel) -> {
 				  long pixelIndex = coords[0];
 					batch

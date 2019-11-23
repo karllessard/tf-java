@@ -11,7 +11,7 @@ public class ShortVirtualDataBufferTest extends ShortDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ByteJdkDataBuffer.MAX_CAPACITY;
+    return ByteJdkDataBuffer.MAX_SIZE;
   }
 
   private static class TestShort8Adapter implements ShortDataAdapter {

@@ -21,7 +21,7 @@ import org.tensorflow.nio.nd.Shape;
 final class UnknownDimension extends AbstractDimension {
 
   @Override
-  public long size() {
+  public long numElements() {
     return Shape.UNKNOWN_SIZE;
   }
   

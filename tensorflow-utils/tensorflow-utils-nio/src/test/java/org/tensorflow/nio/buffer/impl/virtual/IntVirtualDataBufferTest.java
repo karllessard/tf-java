@@ -16,7 +16,7 @@ public class IntVirtualDataBufferTest extends IntDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ByteJdkDataBuffer.MAX_CAPACITY / 2;
+    return ByteJdkDataBuffer.MAX_SIZE / 2;
   }
 
   private static class TestIntAdapter implements IntDataAdapter {

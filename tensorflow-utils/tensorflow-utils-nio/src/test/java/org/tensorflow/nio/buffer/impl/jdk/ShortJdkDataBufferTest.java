@@ -23,7 +23,7 @@ public class ShortJdkDataBufferTest extends ShortDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ShortJdkDataBuffer.MAX_CAPACITY;
+    return ShortJdkDataBuffer.MAX_SIZE;
   }
 
   @Override

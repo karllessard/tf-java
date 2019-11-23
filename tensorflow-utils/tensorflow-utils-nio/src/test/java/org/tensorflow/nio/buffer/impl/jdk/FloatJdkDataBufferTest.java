@@ -18,13 +18,12 @@ package org.tensorflow.nio.buffer.impl.jdk;
 
 import org.tensorflow.nio.buffer.FloatDataBuffer;
 import org.tensorflow.nio.buffer.FloatDataBufferTestBase;
-import org.tensorflow.nio.buffer.impl.jdk.FloatJdkDataBuffer;
 
 public class FloatJdkDataBufferTest extends FloatDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return FloatJdkDataBuffer.MAX_CAPACITY;
+    return FloatJdkDataBuffer.MAX_SIZE;
   }
 
   @Override

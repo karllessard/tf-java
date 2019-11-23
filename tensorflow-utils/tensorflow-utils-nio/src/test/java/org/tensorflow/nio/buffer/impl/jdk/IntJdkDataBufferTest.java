@@ -18,13 +18,12 @@ package org.tensorflow.nio.buffer.impl.jdk;
 
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.buffer.IntDataBufferTestBase;
-import org.tensorflow.nio.buffer.impl.jdk.IntJdkDataBuffer;
 
 public class IntJdkDataBufferTest extends IntDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return IntJdkDataBuffer.MAX_CAPACITY;
+    return IntJdkDataBuffer.MAX_SIZE;
   }
 
   @Override

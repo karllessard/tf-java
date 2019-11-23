@@ -26,19 +26,11 @@ import org.tensorflow.nio.buffer.impl.Validator;
  * A buffer of bytes using a JDK {@link ShortBuffer} for storage.
  * <p>
  * Since JDK buffers supports only 32-bits indexation, the size of this buffer type cannot
- * exceed 2<sup>32</sup> - 1 (see {@link ShortJdkDataBuffer#MAX_CAPACITY} for the real maximum
+ * exceed 2<sup>32</sup> - 1 (see {@link ShortJdkDataBuffer#MAX_SIZE} for the real maximum
  * value supported).
  */
 public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
     implements ShortDataBuffer {
-
-  /**
-   * The maximum size for a buffer of this type, i.e. the maximum number of bytes it can store.
-   * <p>
-   * As the maximum size may vary depending on the JVM implementation and on the platform, this
-   * property returns a value that is safe for most of them.
-   */
-  public static long MAX_CAPACITY = AbstractJdkDataBuffer.MAX_CAPACITY;
 
   /**
    * Allocates a new byte buffer, initialized with zeroes.
@@ -46,13 +38,10 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
    * @param size the new buffer's size, in bytes
    * @return the new byte buffer
    * @throws IllegalArgumentException if the size is a negative integer or exceeds
-   *                                  {@link #MAX_CAPACITY}.
+   *                                  {@link #MAX_SIZE}.
    */
   public static ShortDataBuffer allocate(long size) {
-    if (size > MAX_CAPACITY) {
-      throw new IllegalArgumentException("Capacity of a JDK data buffer cannot exceeds "
-          + MAX_CAPACITY + " bytes, use ShortJoinDataBuffer instead");
-    }
+    Validator.allocateArgs(size, MAX_SIZE);
     return new ShortJdkDataBuffer(ShortBuffer.allocate((int)size));
   }
 
@@ -69,26 +58,24 @@ public final class ShortJdkDataBuffer extends AbstractJdkDataBuffer<Short>
 
   @Override
   public short getShort(long index) {
-    Validator.getArgs(this, index);
     return buf.get((int)index);
   }
 
   @Override
   public ShortDataBuffer setShort(short value, long index) {
-    Validator.setArgs(this, index);
     buf.put((int)index, value);
     return this;
   }
 
   @Override
   public ShortDataBuffer read(short[] dst, int offset, int length) {
-    buf.get(dst, offset, length).rewind();
+    buf.duplicate().get(dst, offset, length);
     return this;
   }
 
   @Override
   public ShortDataBuffer write(short[] src, int offset, int length) {
-    buf.put(src, offset, length).rewind();
+    buf.duplicate().put(src, offset, length);
     return this;
   }
 

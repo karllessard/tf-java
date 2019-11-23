@@ -23,7 +23,7 @@ abstract class AbstractDimension implements Dimension {
    */
   @Override
   public int hashCode() {
-    return (int) size();
+    return (int) numElements();
   }
 
   /**
@@ -36,7 +36,7 @@ abstract class AbstractDimension implements Dimension {
     }
     if (obj instanceof Dimension) {
       Dimension otherDimension = (Dimension) obj;
-      return size() == otherDimension.size();
+      return numElements() == otherDimension.numElements();
     }
     return false;
   }

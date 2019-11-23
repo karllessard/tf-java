@@ -29,7 +29,7 @@ public class DimensionalSpace {
     // Start from the last dimension, where all elements are continuous
     for (int i = dimensions.length - 1, elementSize = 1; i >= 0; --i) {
       dimensions[i] = new Axis(shape.size(i), elementSize);
-      elementSize *= dimensions[i].size();
+      elementSize *= dimensions[i].numElements();
     }
     return new DimensionalSpace(dimensions, shape);
   }
@@ -106,8 +106,12 @@ public class DimensionalSpace {
     return shape;
   }
 
-  public int size() {
+  public int numDimensions() {
     return dimensions.length;
+  }
+
+  public long numElements(int i) {
+    return dimensions[i].numElements();
   }
 
   public Dimension get(int i) {
@@ -158,7 +162,7 @@ public class DimensionalSpace {
     long[] shapeDimSizes = new long[dimensions.length];
     int i = 0;
     for (Dimension dimension : dimensions) {
-      shapeDimSizes[i++] = dimension.size();
+      shapeDimSizes[i++] = dimension.numElements();
     }
     return Shape.make(shapeDimSizes);
   }

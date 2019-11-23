@@ -24,7 +24,7 @@ class Even implements Index {
 
   @Override
   public long numElements(Dimension dim) {
-    return (dim.size() >> 1) + 1;
+    return (dim.numElements() >> 1) + 1;
   }
 
   @Override

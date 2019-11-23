@@ -16,7 +16,7 @@ public class DoubleVirtualDataBufferTest extends DoubleDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ByteJdkDataBuffer.MAX_CAPACITY / 3;
+    return ByteJdkDataBuffer.MAX_SIZE / 3;
   }
 
   private static class TestDoubleAdapter implements DoubleDataAdapter {

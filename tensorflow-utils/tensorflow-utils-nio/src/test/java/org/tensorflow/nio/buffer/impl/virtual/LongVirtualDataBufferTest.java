@@ -16,7 +16,7 @@ public class LongVirtualDataBufferTest extends LongDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ByteJdkDataBuffer.MAX_CAPACITY / 3;
+    return ByteJdkDataBuffer.MAX_SIZE / 3;
   }
 
   private static class TestLongAdapter implements LongDataAdapter {

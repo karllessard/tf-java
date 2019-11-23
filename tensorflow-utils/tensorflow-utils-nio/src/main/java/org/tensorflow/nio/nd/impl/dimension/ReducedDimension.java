@@ -19,8 +19,8 @@ package org.tensorflow.nio.nd.impl.dimension;
 final class ReducedDimension extends AbstractDimension {
 
   @Override
-  public long size() {
-    return originalDimension.size();
+  public long numElements() {
+    return originalDimension.numElements();
   }
 
   @Override
@@ -40,7 +40,7 @@ final class ReducedDimension extends AbstractDimension {
 
   @Override
   public String toString() {
-    return String.valueOf(size());
+    return String.valueOf(numElements());
   }
 
   ReducedDimension(Dimension originalDimension, long offset, long elementSize) {

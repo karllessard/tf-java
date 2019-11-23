@@ -90,10 +90,10 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
     if (coords == null || coords.length == 0) {
       return 0;
     }
-    if (coords.length > dimensions().size()) {
+    if (coords.length > dimensions().numDimensions()) {
       throw new IndexOutOfBoundsException();
     }
-    if (isValue && coords.length != dimensions().size()) {
+    if (isValue && coords.length != dimensions().numDimensions()) {
       throw new IllegalRankException("Not a scalar value");
     }
     return dimensions().positionOf(coords);

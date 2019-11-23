@@ -62,7 +62,7 @@ final class DataTransfer {
           valueTransfer
       );
     } else {
-      copy(srcBuffer, dstBuffer);
+      srcBuffer.copyTo(dstBuffer, srcDimensions.get(0).totalSize());
     }
   }
 
@@ -78,7 +78,7 @@ final class DataTransfer {
           valueTransfer
       );
     } else {
-      copy(srcBuffer, dstBuffer);
+      srcBuffer.copyTo(dstBuffer, dstDimensions.get(0).totalSize());
     }
   }
 
@@ -94,12 +94,8 @@ final class DataTransfer {
           valueTransfer
       );
     } else {
-      copy(srcBuffer, dstBuffer);
+      srcBuffer.copyTo(dstBuffer, srcDimensions.get(0).totalSize());
     }
-  }
-
-  private static <T, B extends DataBuffer<T>> void copy(B srcBuffer, B dstBuffer) {
-    srcBuffer.copyTo(dstBuffer, Math.min(srcBuffer.size(), dstBuffer.size()));  // FIXME are the buffers always the right size??
   }
 
   private static <T, B extends DataBuffer<T>> void copyByElement(

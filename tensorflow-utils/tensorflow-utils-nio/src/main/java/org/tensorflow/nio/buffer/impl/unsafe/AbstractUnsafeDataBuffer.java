@@ -54,7 +54,7 @@ abstract class AbstractUnsafeDataBuffer<T, B extends DataBuffer<T>> extends Abst
 
   protected static class ArrayInfo {
 
-    protected ArrayInfo(int baseOffset, int indexScale) {
+    ArrayInfo(int baseOffset, int indexScale) {
       this.baseOffset = baseOffset;
       this.indexScale = indexScale;
     }
@@ -99,16 +99,16 @@ abstract class AbstractUnsafeDataBuffer<T, B extends DataBuffer<T>> extends Abst
     unsafe.copyMemory(src, alignToBase(offset), object, this.offset, scale(length));
   }
 
-  long scale(long value) {
-    return value * arrayInfo().indexScale;
-  }
-
   long align(long index) {
     return offset + scale(index);
   }
 
-  private long alignToBase(long index) {
+  long alignToBase(long index) {
     return arrayInfo().baseOffset + scale(index);
+  }
+
+  long scale(long value) {
+    return value * arrayInfo().indexScale;
   }
 
   private final boolean readOnly;

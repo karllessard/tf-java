@@ -294,7 +294,7 @@ public final class NdArrays {
    * @throws IllegalArgumentException if shape is null or has unknown dimensions
    */
   public static FloatNdArray ofFloats(Shape shape) {
-    return wrap(FloatUnsafeDataBuffer.allocate(shape.size()), shape);
+    return wrap(FloatJdkDataBuffer.allocate(shape.size()), shape);
   }
 
   /**

@@ -32,7 +32,7 @@ class NdPositionIterator implements IndexedPositionIterator {
 
   static boolean increment(long[] coords, DimensionalSpace dimensions) {
     for (int i = coords.length - 1; i >= 0; --i) {
-      if ((coords[i] = (coords[i] + 1) % dimensions.get(i).size()) > 0) {
+      if ((coords[i] = (coords[i] + 1) % dimensions.get(i).numElements()) > 0) {
         return true;
       }
     }

@@ -24,9 +24,13 @@ public interface Dimension {
     return new IndexedDimension(index, this);
   }
 
-  long size();
+  long numElements();
 
   long elementSize();
+
+  default long totalSize() {
+    return numElements() * elementSize();
+  }
 
   long positionOf(long coord);
 

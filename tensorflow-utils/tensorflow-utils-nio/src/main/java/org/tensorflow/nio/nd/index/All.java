@@ -24,7 +24,7 @@ class All implements Index {
 
   @Override
   public long numElements(Dimension dim) {
-    return dim.size();
+    return dim.numElements();
   }
 
   @Override

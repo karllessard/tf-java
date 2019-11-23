@@ -18,13 +18,12 @@ package org.tensorflow.nio.buffer.impl.jdk;
 
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.buffer.ByteDataBufferTestBase;
-import org.tensorflow.nio.buffer.impl.jdk.ByteJdkDataBuffer;
 
 public class ByteJdkDataBufferTest extends ByteDataBufferTestBase {
 
   @Override
   protected long maxSize() {
-    return ByteJdkDataBuffer.MAX_CAPACITY;
+    return ByteJdkDataBuffer.MAX_SIZE;
   }
 
   @Override

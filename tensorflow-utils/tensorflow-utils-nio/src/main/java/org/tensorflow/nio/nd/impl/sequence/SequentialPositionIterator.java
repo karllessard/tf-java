@@ -17,7 +17,7 @@ class SequentialPositionIterator implements PositionIterator {
   SequentialPositionIterator(DimensionalSpace dimensions, int dimensionIdx) {
     long size = 1;
     for (int i = 0; i <= dimensionIdx; ++i) {
-      size *= dimensions.get(i).size();
+      size *= dimensions.get(i).numElements();
     }
     this.stride = dimensions.get(dimensionIdx).elementSize();
     this.end = size;

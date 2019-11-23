@@ -22,7 +22,7 @@ class Step implements Index {
 
   @Override
   public long numElements(Dimension dim) {
-    return (dim.size() / stepLength) + 1; // FIXME always include element 0?
+    return (dim.numElements() / stepLength) + 1; // FIXME always include element 0?
   }
 
   @Override

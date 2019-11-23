@@ -24,11 +24,11 @@ class Flip implements Index {
 
   @Override
   public long numElements(Dimension dim) {
-    return dim.size();
+    return dim.numElements();
   }
 
   @Override
   public long mapCoordinate(long coordinate, Dimension dim) {
-    return dim.size() - coordinate - 1;
+    return dim.numElements() - coordinate - 1;
   }
 }
