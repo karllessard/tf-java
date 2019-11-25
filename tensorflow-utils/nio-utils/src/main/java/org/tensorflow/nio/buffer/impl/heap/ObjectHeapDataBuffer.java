@@ -56,7 +56,7 @@ public class ObjectHeapDataBuffer<T> extends ObjectRawDataBuffer<T> {
   }
 
   private ObjectHeapDataBuffer(T[] data, boolean readOnly) {
-    super(data);
+    super(UnsafeProvider.UNSAFE, data);
     this.readOnly = readOnly;
   }
 

@@ -16,6 +16,6 @@ public class IntTensorBuffer extends IntRawDataBuffer  {
   }
 
   private IntTensorBuffer(long address, long size) {
-    super(address, size);
+    super(UnsafeProvider.UNSAFE, address, size);
   }
 }

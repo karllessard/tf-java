@@ -16,6 +16,6 @@ public class LongTensorBuffer extends LongRawDataBuffer {
   }
 
   LongTensorBuffer(long address, long size) {
-    super(address, size);
+    super(UnsafeProvider.UNSAFE, address, size);
   }
 }

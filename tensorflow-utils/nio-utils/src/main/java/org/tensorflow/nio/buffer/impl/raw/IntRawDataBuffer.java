@@ -1,6 +1,7 @@
 package org.tensorflow.nio.buffer.impl.raw;
 
 import org.tensorflow.nio.buffer.IntDataBuffer;
+import sun.misc.Unsafe;
 
 public class IntRawDataBuffer extends AbstractRawDataBuffer<Integer, IntDataBuffer>
     implements IntDataBuffer {
@@ -18,34 +19,34 @@ public class IntRawDataBuffer extends AbstractRawDataBuffer<Integer, IntDataBuff
 
   @Override
   public IntDataBuffer read(int[] dst) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst), dst.length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst), dst.length);
     return this;
   }
 
   @Override
   public IntDataBuffer read(int[] dst, int offset, int length) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst).offset(offset), length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst).offset(offset), length);
     return this;
   }
 
   @Override
   public IntDataBuffer write(int[] src) {
-    UnsafeMemoryHandle.of(src).copyTo(memory, src.length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).copyTo(memory, src.length);
     return this;
   }
 
   @Override
   public IntDataBuffer write(int[] src, int offset, int length) {
-    UnsafeMemoryHandle.of(src).offset(offset).copyTo(memory, length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).offset(offset).copyTo(memory, length);
     return this;
   }
 
-  protected IntRawDataBuffer(int[] data) {
-    this(UnsafeMemoryHandle.of(data));
+  protected IntRawDataBuffer(Unsafe unsafe, int[] data) {
+    this(UnsafeMemoryHandle.of(unsafe, data));
   }
 
-  protected IntRawDataBuffer(long address, long size) {
-    this(UnsafeMemoryHandle.of(address, size, Integer.BYTES));
+  protected IntRawDataBuffer(Unsafe unsafe, long address, long size) {
+    this(UnsafeMemoryHandle.of(unsafe, address, size, Integer.BYTES));
   }
 
   protected IntRawDataBuffer(UnsafeMemoryHandle memory) {

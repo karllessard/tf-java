@@ -73,7 +73,7 @@ public class ShortHeapDataBuffer extends ShortRawDataBuffer {
   }
 
   private ShortHeapDataBuffer(short[] data, boolean readOnly) {
-    super(data);
+    super(UnsafeProvider.UNSAFE, data);
     this.readOnly = readOnly;
   }
 

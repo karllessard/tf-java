@@ -1,6 +1,7 @@
 package org.tensorflow.nio.buffer.impl.raw;
 
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
+import sun.misc.Unsafe;
 
 public class DoubleRawDataBuffer extends AbstractRawDataBuffer<Double, DoubleDataBuffer>
     implements DoubleDataBuffer {
@@ -18,34 +19,34 @@ public class DoubleRawDataBuffer extends AbstractRawDataBuffer<Double, DoubleDat
 
   @Override
   public DoubleDataBuffer read(double[] dst) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst), dst.length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst), dst.length);
     return this;
   }
 
   @Override
   public DoubleDataBuffer read(double[] dst, int offset, int length) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst).offset(offset), length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst).offset(offset), length);
     return this;
   }
 
   @Override
   public DoubleDataBuffer write(double[] src) {
-    UnsafeMemoryHandle.of(src).copyTo(memory, src.length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).copyTo(memory, src.length);
     return this;
   }
 
   @Override
   public DoubleDataBuffer write(double[] src, int offset, int length) {
-    UnsafeMemoryHandle.of(src).offset(offset).copyTo(memory, length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).offset(offset).copyTo(memory, length);
     return this;
   }
 
-  protected DoubleRawDataBuffer(double[] data) {
-    this(UnsafeMemoryHandle.of(data));
+  protected DoubleRawDataBuffer(Unsafe unsafe, double[] data) {
+    this(UnsafeMemoryHandle.of(unsafe, data));
   }
 
-  protected DoubleRawDataBuffer(long address, long size) {
-    this(UnsafeMemoryHandle.of(address, size, Double.BYTES));
+  protected DoubleRawDataBuffer(Unsafe unsafe, long address, long size) {
+    this(UnsafeMemoryHandle.of(unsafe, address, size, Double.BYTES));
   }
 
   protected DoubleRawDataBuffer(UnsafeMemoryHandle memory) {

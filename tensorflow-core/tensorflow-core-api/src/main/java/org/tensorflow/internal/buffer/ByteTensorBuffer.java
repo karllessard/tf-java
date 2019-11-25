@@ -17,6 +17,6 @@ public class ByteTensorBuffer extends ByteRawDataBuffer {
   }
 
   ByteTensorBuffer(long address, long size) {
-    super(address, size);
+    super(UnsafeProvider.UNSAFE, address, size);
   }
 }

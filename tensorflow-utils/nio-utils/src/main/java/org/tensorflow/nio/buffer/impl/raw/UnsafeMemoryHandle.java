@@ -1,45 +1,46 @@
 package org.tensorflow.nio.buffer.impl.raw;
 
-import java.lang.reflect.Field;
 import sun.misc.Unsafe;
 
-public class UnsafeMemoryHandle {
+public final class UnsafeMemoryHandle {
 
-  static UnsafeMemoryHandle of(byte[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_BYTE_BASE_OFFSET, array.length, Unsafe.ARRAY_BYTE_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, byte[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_BYTE_BASE_OFFSET, array.length, Unsafe.ARRAY_BYTE_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(boolean[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_BOOLEAN_BASE_OFFSET, array.length, Unsafe.ARRAY_BOOLEAN_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, boolean[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_BOOLEAN_BASE_OFFSET, array.length, Unsafe.ARRAY_BOOLEAN_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(short[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_SHORT_BASE_OFFSET, array.length, Unsafe.ARRAY_SHORT_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, short[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_SHORT_BASE_OFFSET, array.length, Unsafe.ARRAY_SHORT_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(int[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_INT_BASE_OFFSET, array.length, Unsafe.ARRAY_INT_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, int[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_INT_BASE_OFFSET, array.length, Unsafe.ARRAY_INT_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(float[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_FLOAT_BASE_OFFSET, array.length, Unsafe.ARRAY_FLOAT_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, float[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_FLOAT_BASE_OFFSET, array.length, Unsafe.ARRAY_FLOAT_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(double[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_DOUBLE_BASE_OFFSET, array.length, Unsafe.ARRAY_DOUBLE_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, double[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_DOUBLE_BASE_OFFSET, array.length, Unsafe.ARRAY_DOUBLE_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(long[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_LONG_BASE_OFFSET, array.length, Unsafe.ARRAY_LONG_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, long[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_LONG_BASE_OFFSET, array.length, Unsafe.ARRAY_LONG_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(Object[] array) {
-    return new UnsafeMemoryHandle(array, Unsafe.ARRAY_OBJECT_BASE_OFFSET, array.length, Unsafe.ARRAY_OBJECT_INDEX_SCALE);
+  static UnsafeMemoryHandle of(Unsafe unsafe, Object[] array) {
+    return new UnsafeMemoryHandle(unsafe, array, Unsafe.ARRAY_OBJECT_BASE_OFFSET, array.length, Unsafe.ARRAY_OBJECT_INDEX_SCALE);
   }
 
-  static UnsafeMemoryHandle of(long address, long length, long scale) {
-    return new UnsafeMemoryHandle(null, address, length, scale);
+  static UnsafeMemoryHandle of(Unsafe unsafe, long address, long length, long scale) {
+    return new UnsafeMemoryHandle(unsafe, null, address, length, scale);
   }
+
+  final Unsafe unsafe;
 
   long size() {
     return size;
@@ -123,24 +124,11 @@ public class UnsafeMemoryHandle {
   }
 
   UnsafeMemoryHandle offset(long index) {
-    return new UnsafeMemoryHandle(object, this.byteOffset + scale(index), size - index, scale);
+    return new UnsafeMemoryHandle(unsafe, object, this.byteOffset + scale(index), size - index, scale);
   }
 
   UnsafeMemoryHandle narrow(long size) {
-    return new UnsafeMemoryHandle(object, byteOffset, size, scale);
-  }
-
-  // Important: Keep this package-private, do not expose publicly!
-  private static final Unsafe unsafe;
-
-  static {
-    try {
-      Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-      theUnsafe.setAccessible(true);
-      unsafe = (Unsafe) theUnsafe.get(null);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
+    return new UnsafeMemoryHandle(unsafe, object, byteOffset, size, scale);
   }
 
   private final Object object;
@@ -148,7 +136,8 @@ public class UnsafeMemoryHandle {
   private final long size;
   private final long scale;
 
-  private UnsafeMemoryHandle(Object object, long byteOffset, long size, long scale) {
+  private UnsafeMemoryHandle(Unsafe unsafe, Object object, long byteOffset, long size, long scale) {
+    this.unsafe = unsafe;
     this.object = object;
     this.byteOffset = byteOffset;
     this.size = size; // unscaled

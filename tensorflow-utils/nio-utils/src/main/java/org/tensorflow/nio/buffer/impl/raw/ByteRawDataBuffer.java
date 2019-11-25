@@ -1,6 +1,7 @@
 package org.tensorflow.nio.buffer.impl.raw;
 
 import org.tensorflow.nio.buffer.ByteDataBuffer;
+import sun.misc.Unsafe;
 
 public class ByteRawDataBuffer extends AbstractRawDataBuffer<Byte, ByteDataBuffer>
     implements ByteDataBuffer {
@@ -18,34 +19,34 @@ public class ByteRawDataBuffer extends AbstractRawDataBuffer<Byte, ByteDataBuffe
 
   @Override
   public ByteDataBuffer read(byte[] dst) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst), dst.length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst), dst.length);
     return this;
   }
 
   @Override
   public ByteDataBuffer read(byte[] dst, int offset, int length) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst).offset(offset), length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst).offset(offset), length);
     return this;
   }
 
   @Override
   public ByteDataBuffer write(byte[] src) {
-    UnsafeMemoryHandle.of(src).copyTo(memory, src.length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).copyTo(memory, src.length);
     return this;
   }
 
   @Override
   public ByteDataBuffer write(byte[] src, int offset, int length) {
-    UnsafeMemoryHandle.of(src).offset(offset).copyTo(memory, length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).offset(offset).copyTo(memory, length);
     return this;
   }
 
-  protected ByteRawDataBuffer(byte[] data) {
-    this(UnsafeMemoryHandle.of(data));
+  protected ByteRawDataBuffer(Unsafe unsafe, byte[] data) {
+    this(UnsafeMemoryHandle.of(unsafe, data));
   }
 
-  protected ByteRawDataBuffer(long address, long size) {
-    this(UnsafeMemoryHandle.of(address, size, Byte.BYTES));
+  protected ByteRawDataBuffer(Unsafe unsafe, long address, long size) {
+    this(UnsafeMemoryHandle.of(unsafe, address, size, Byte.BYTES));
   }
 
   protected ByteRawDataBuffer(UnsafeMemoryHandle memory) {

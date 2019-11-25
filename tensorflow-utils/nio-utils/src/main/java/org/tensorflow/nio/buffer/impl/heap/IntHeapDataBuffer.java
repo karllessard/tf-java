@@ -78,7 +78,7 @@ public class IntHeapDataBuffer extends IntRawDataBuffer {
   }
 
   private IntHeapDataBuffer(int[] data, boolean readOnly) {
-    super(data);
+    super(UnsafeProvider.UNSAFE, data);
     this.readOnly = readOnly;
   }
 

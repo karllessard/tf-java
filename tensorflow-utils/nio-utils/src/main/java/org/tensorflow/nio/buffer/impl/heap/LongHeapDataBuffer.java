@@ -78,7 +78,7 @@ public class LongHeapDataBuffer extends LongRawDataBuffer {
   }
 
   private LongHeapDataBuffer(long[] data, boolean readOnly) {
-    super(data);
+    super(UnsafeProvider.UNSAFE, data);
     this.readOnly = readOnly;
   }
 

@@ -1,6 +1,7 @@
 package org.tensorflow.nio.buffer.impl.raw;
 
 import org.tensorflow.nio.buffer.BooleanDataBuffer;
+import sun.misc.Unsafe;
 
 public class BooleanRawDataBuffer extends AbstractRawDataBuffer<Boolean, BooleanDataBuffer>
     implements BooleanDataBuffer {
@@ -18,34 +19,34 @@ public class BooleanRawDataBuffer extends AbstractRawDataBuffer<Boolean, Boolean
 
   @Override
   public BooleanDataBuffer read(boolean[] dst) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst), dst.length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst), dst.length);
     return this;
   }
 
   @Override
   public BooleanDataBuffer read(boolean[] dst, int offset, int length) {
-    memory.copyTo(UnsafeMemoryHandle.of(dst).offset(offset), length);
+    memory.copyTo(UnsafeMemoryHandle.of(memory.unsafe, dst).offset(offset), length);
     return this;
   }
 
   @Override
   public BooleanDataBuffer write(boolean[] src) {
-    UnsafeMemoryHandle.of(src).copyTo(memory, src.length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).copyTo(memory, src.length);
     return this;
   }
 
   @Override
   public BooleanDataBuffer write(boolean[] src, int offset, int length) {
-    UnsafeMemoryHandle.of(src).offset(offset).copyTo(memory, length);
+    UnsafeMemoryHandle.of(memory.unsafe, src).offset(offset).copyTo(memory, length);
     return this;
   }
 
-  protected BooleanRawDataBuffer(boolean[] data) {
-    this(UnsafeMemoryHandle.of(data));
+  protected BooleanRawDataBuffer(Unsafe unsafe, boolean[] data) {
+    this(UnsafeMemoryHandle.of(unsafe, data));
   }
 
-  protected BooleanRawDataBuffer(long address, long size) {
-    this(UnsafeMemoryHandle.of(address, size, BOOLEAN_BYTES));
+  protected BooleanRawDataBuffer(Unsafe unsafe, long address, long size) {
+    this(UnsafeMemoryHandle.of(unsafe, address, size, BOOLEAN_BYTES));
   }
 
   protected BooleanRawDataBuffer(UnsafeMemoryHandle memory) {

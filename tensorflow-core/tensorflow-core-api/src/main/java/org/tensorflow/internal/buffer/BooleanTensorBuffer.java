@@ -16,6 +16,6 @@ public class BooleanTensorBuffer extends BooleanRawDataBuffer {
   }
 
   private BooleanTensorBuffer(long address, long size) {
-    super(address, size);
+    super(UnsafeProvider.UNSAFE, address, size);
   }
 }

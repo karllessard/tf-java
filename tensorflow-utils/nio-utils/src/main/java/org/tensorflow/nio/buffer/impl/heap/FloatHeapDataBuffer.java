@@ -78,7 +78,7 @@ public class FloatHeapDataBuffer extends FloatRawDataBuffer {
   }
 
   private FloatHeapDataBuffer(float[] data, boolean readOnly) {
-    super(data);
+    super(UnsafeProvider.UNSAFE, data);
     this.readOnly = readOnly;
   }
 

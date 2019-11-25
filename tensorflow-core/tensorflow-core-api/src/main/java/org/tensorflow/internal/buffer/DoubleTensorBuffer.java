@@ -16,6 +16,6 @@ public class DoubleTensorBuffer extends DoubleRawDataBuffer  {
   }
 
   private DoubleTensorBuffer(long address, long size) {
-    super(address, size);
+    super(UnsafeProvider.UNSAFE, address, size);
   }
 }

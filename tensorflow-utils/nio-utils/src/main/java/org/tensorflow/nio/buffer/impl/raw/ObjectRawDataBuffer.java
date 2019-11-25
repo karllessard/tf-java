@@ -1,6 +1,7 @@
 package org.tensorflow.nio.buffer.impl.raw;
 
 import org.tensorflow.nio.buffer.DataBuffer;
+import sun.misc.Unsafe;
 
 public class ObjectRawDataBuffer<T> extends AbstractRawDataBuffer<T, DataBuffer<T>>
     implements DataBuffer<T> {
@@ -38,8 +39,8 @@ public class ObjectRawDataBuffer<T> extends AbstractRawDataBuffer<T, DataBuffer<
     return this;
   }
 
-  protected ObjectRawDataBuffer(T[] data) {
-    this(UnsafeMemoryHandle.of(data));
+  protected ObjectRawDataBuffer(Unsafe unsafe, T[] data) {
+    this(UnsafeMemoryHandle.of(unsafe, data));
   }
 
   protected ObjectRawDataBuffer(UnsafeMemoryHandle memory) {

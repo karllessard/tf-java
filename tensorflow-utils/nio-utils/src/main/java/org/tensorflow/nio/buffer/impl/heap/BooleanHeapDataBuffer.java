@@ -78,7 +78,7 @@ public class BooleanHeapDataBuffer extends BooleanRawDataBuffer {
   }
 
   private BooleanHeapDataBuffer(boolean[] array, boolean readOnly) {
-    super(array);
+    super(UnsafeProvider.UNSAFE, array);
     this.readOnly = readOnly;
   }
 

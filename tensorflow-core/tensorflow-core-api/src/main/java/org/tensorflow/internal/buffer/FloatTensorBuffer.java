@@ -16,6 +16,6 @@ public class FloatTensorBuffer extends FloatRawDataBuffer  {
   }
 
   private FloatTensorBuffer(long address, long size) {
-    super(address, size);
+    super(UnsafeProvider.UNSAFE, address, size);
   }
 }
