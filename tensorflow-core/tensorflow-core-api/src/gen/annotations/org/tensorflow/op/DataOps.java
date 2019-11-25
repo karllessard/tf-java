@@ -10,12 +10,16 @@ import org.tensorflow.op.data.IteratorGetNext;
 import org.tensorflow.op.data.IteratorGetNextAsOptional;
 import org.tensorflow.op.data.IteratorGetNextSync;
 import org.tensorflow.op.data.IteratorToStringHandle;
+import org.tensorflow.op.data.KafkaDataset;
 import org.tensorflow.op.data.MakeIterator;
 import org.tensorflow.op.data.OptionalFromValue;
 import org.tensorflow.op.data.OptionalGetValue;
 import org.tensorflow.op.data.OptionalHasValue;
 import org.tensorflow.op.data.OptionalNone;
 import org.tensorflow.op.data.SerializeIterator;
+import org.tensorflow.types.TBool;
+import org.tensorflow.types.TInt64;
+import org.tensorflow.types.TString;
 
 /**
  * An API for building {@code data} operations as {@link Op Op}s
@@ -44,6 +48,50 @@ public final class DataOps {
   }
 
   /**
+   * Builds an {@link KafkaDataset} operation
+   *
+   * @param topics A `tf.string` tensor containing one or more subscriptions,
+   * @param servers A list of bootstrap servers.
+   * @param group The consumer group id.
+   * @param eof If True, the kafka reader will stop on EOF.
+   * @param timeout The timeout value for the Kafka Consumer to wait
+   * @param configGlobal A `tf.string` tensor containing global configuration
+   * @param configTopic A `tf.string` tensor containing topic configuration
+   * @return a new instance of KafkaDataset
+   * @see org.tensorflow.op.data.KafkaDataset
+   */
+  public KafkaDataset kafkaDataset(Operand<TString> topics, Operand<TString> servers,
+      Operand<TString> group, Operand<TBool> eof, Operand<TInt64> timeout,
+      Operand<TString> configGlobal, Operand<TString> configTopic) {
+    return KafkaDataset.create(scope, topics, servers, group, eof, timeout, configGlobal, configTopic);
+  }
+
+  /**
+   * Builds an {@link AnonymousIterator} operation
+   *
+   * @param outputTypes 
+   * @param outputShapes 
+   * @return a new instance of AnonymousIterator
+   * @see org.tensorflow.op.data.AnonymousIterator
+   */
+  public AnonymousIterator anonymousIterator(List<DataType<?>> outputTypes,
+      List<Shape> outputShapes) {
+    return AnonymousIterator.create(scope, outputTypes, outputShapes);
+  }
+
+  /**
+   * Builds an {@link DeserializeIterator} operation
+   *
+   * @param resourceHandle A handle to an iterator resource.
+   * @param serialized A variant tensor storing the state of the iterator contained in the
+   * @return a new instance of DeserializeIterator
+   * @see org.tensorflow.op.data.DeserializeIterator
+   */
+  public DeserializeIterator deserializeIterator(Operand<?> resourceHandle, Operand<?> serialized) {
+    return DeserializeIterator.create(scope, resourceHandle, serialized);
+  }
+
+  /**
    * Builds an {@link OptionalNone} operation
    *
    * @return a new instance of OptionalNone
@@ -68,6 +116,17 @@ public final class DataOps {
   }
 
   /**
+   * Builds an {@link OptionalFromValue} operation
+   *
+   * @param components 
+   * @return a new instance of OptionalFromValue
+   * @see org.tensorflow.op.data.OptionalFromValue
+   */
+  public OptionalFromValue optionalFromValue(Iterable<Operand<?>> components) {
+    return OptionalFromValue.create(scope, components);
+  }
+
+  /**
    * Builds an {@link IteratorGetNextSync} operation
    *
    * @param iterator 
@@ -79,17 +138,6 @@ public final class DataOps {
   public IteratorGetNextSync iteratorGetNextSync(Operand<?> iterator, List<DataType<?>> outputTypes,
       List<Shape> outputShapes) {
     return IteratorGetNextSync.create(scope, iterator, outputTypes, outputShapes);
-  }
-
-  /**
-   * Builds an {@link OptionalFromValue} operation
-   *
-   * @param components 
-   * @return a new instance of OptionalFromValue
-   * @see org.tensorflow.op.data.OptionalFromValue
-   */
-  public OptionalFromValue optionalFromValue(Iterable<Operand<?>> components) {
-    return OptionalFromValue.create(scope, components);
   }
 
   /**
@@ -129,15 +177,14 @@ public final class DataOps {
   }
 
   /**
-   * Builds an {@link DeserializeIterator} operation
+   * Builds an {@link SerializeIterator} operation
    *
    * @param resourceHandle A handle to an iterator resource.
-   * @param serialized A variant tensor storing the state of the iterator contained in the
-   * @return a new instance of DeserializeIterator
-   * @see org.tensorflow.op.data.DeserializeIterator
+   * @return a new instance of SerializeIterator
+   * @see org.tensorflow.op.data.SerializeIterator
    */
-  public DeserializeIterator deserializeIterator(Operand<?> resourceHandle, Operand<?> serialized) {
-    return DeserializeIterator.create(scope, resourceHandle, serialized);
+  public SerializeIterator serializeIterator(Operand<?> resourceHandle) {
+    return SerializeIterator.create(scope, resourceHandle);
   }
 
   /**
@@ -150,29 +197,5 @@ public final class DataOps {
    */
   public MakeIterator makeIterator(Operand<?> dataset, Operand<?> iterator) {
     return MakeIterator.create(scope, dataset, iterator);
-  }
-
-  /**
-   * Builds an {@link AnonymousIterator} operation
-   *
-   * @param outputTypes 
-   * @param outputShapes 
-   * @return a new instance of AnonymousIterator
-   * @see org.tensorflow.op.data.AnonymousIterator
-   */
-  public AnonymousIterator anonymousIterator(List<DataType<?>> outputTypes,
-      List<Shape> outputShapes) {
-    return AnonymousIterator.create(scope, outputTypes, outputShapes);
-  }
-
-  /**
-   * Builds an {@link SerializeIterator} operation
-   *
-   * @param resourceHandle A handle to an iterator resource.
-   * @return a new instance of SerializeIterator
-   * @see org.tensorflow.op.data.SerializeIterator
-   */
-  public SerializeIterator serializeIterator(Operand<?> resourceHandle) {
-    return SerializeIterator.create(scope, resourceHandle);
   }
 }

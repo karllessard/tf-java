@@ -222,6 +222,18 @@ public final class IoOps {
   }
 
   /**
+   * Builds an {@link WriteFile} operation
+   *
+   * @param filename scalar. The name of the file to which we write the contents.
+   * @param contents scalar. The content to be written to the output file.
+   * @return a new instance of WriteFile
+   * @see org.tensorflow.op.io.WriteFile
+   */
+  public WriteFile writeFile(Operand<TString> filename, Operand<TString> contents) {
+    return WriteFile.create(scope, filename, contents);
+  }
+
+  /**
    * Builds an {@link ReaderNumRecordsProduced} operation
    *
    * @param readerHandle Handle to a Reader.
@@ -244,18 +256,6 @@ public final class IoOps {
   public QueueEnqueue queueEnqueue(Operand<?> handle, Iterable<Operand<?>> components,
       QueueEnqueue.Options... options) {
     return QueueEnqueue.create(scope, handle, components, options);
-  }
-
-  /**
-   * Builds an {@link WriteFile} operation
-   *
-   * @param filename scalar. The name of the file to which we write the contents.
-   * @param contents scalar. The content to be written to the output file.
-   * @return a new instance of WriteFile
-   * @see org.tensorflow.op.io.WriteFile
-   */
-  public WriteFile writeFile(Operand<TString> filename, Operand<TString> contents) {
-    return WriteFile.create(scope, filename, contents);
   }
 
   /**
@@ -560,6 +560,17 @@ public final class IoOps {
   }
 
   /**
+   * Builds an {@link QueueIsClosed} operation
+   *
+   * @param handle The handle to a queue.
+   * @return a new instance of QueueIsClosed
+   * @see org.tensorflow.op.io.QueueIsClosed
+   */
+  public QueueIsClosed queueIsClosed(Operand<?> handle) {
+    return QueueIsClosed.create(scope, handle);
+  }
+
+  /**
    * Builds an {@link DecodeCompressed} operation
    *
    * @param bytes A Tensor of string which is compressed.
@@ -573,14 +584,14 @@ public final class IoOps {
   }
 
   /**
-   * Builds an {@link QueueIsClosed} operation
+   * Builds an {@link QueueSize} operation
    *
    * @param handle The handle to a queue.
-   * @return a new instance of QueueIsClosed
-   * @see org.tensorflow.op.io.QueueIsClosed
+   * @return a new instance of QueueSize
+   * @see org.tensorflow.op.io.QueueSize
    */
-  public QueueIsClosed queueIsClosed(Operand<?> handle) {
-    return QueueIsClosed.create(scope, handle);
+  public QueueSize queueSize(Operand<?> handle) {
+    return QueueSize.create(scope, handle);
   }
 
   /**
@@ -594,17 +605,6 @@ public final class IoOps {
   public <T> DeserializeManySparse<T> deserializeManySparse(Operand<TString> serializedSparse,
       DataType<T> dtype) {
     return DeserializeManySparse.create(scope, serializedSparse, dtype);
-  }
-
-  /**
-   * Builds an {@link QueueSize} operation
-   *
-   * @param handle The handle to a queue.
-   * @return a new instance of QueueSize
-   * @see org.tensorflow.op.io.QueueSize
-   */
-  public QueueSize queueSize(Operand<?> handle) {
-    return QueueSize.create(scope, handle);
   }
 
   /**

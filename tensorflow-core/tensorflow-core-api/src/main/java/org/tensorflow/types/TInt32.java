@@ -2,8 +2,8 @@ package org.tensorflow.types;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.impl.c_api.TF_Tensor;
-import org.tensorflow.impl.buffer.IntTensorBuffer;
+import org.tensorflow.internal.c_api.TF_Tensor;
+import org.tensorflow.internal.buffer.IntTensorBuffer;
 import org.tensorflow.nio.buffer.IntDataBuffer;
 import org.tensorflow.nio.nd.IntNdArray;
 import org.tensorflow.nio.nd.Shape;
@@ -45,4 +45,3 @@ class TInt32Impl extends IntDenseNdArray implements TInt32 {
     super(buffer, shape);
   }
 }
-

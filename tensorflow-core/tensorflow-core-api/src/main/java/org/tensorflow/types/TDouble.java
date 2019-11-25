@@ -2,8 +2,8 @@ package org.tensorflow.types;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.impl.c_api.TF_Tensor;
-import org.tensorflow.impl.buffer.DoubleTensorBuffer;
+import org.tensorflow.internal.c_api.TF_Tensor;
+import org.tensorflow.internal.buffer.DoubleTensorBuffer;
 import org.tensorflow.nio.buffer.DoubleDataBuffer;
 import org.tensorflow.nio.nd.DoubleNdArray;
 import org.tensorflow.nio.nd.Shape;

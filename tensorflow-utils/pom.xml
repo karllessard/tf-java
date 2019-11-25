@@ -15,7 +15,7 @@
   <description>Parent POM for TensorFlow utility artifacts</description>
 
   <modules>
-    <module>tensorflow-utils-nio</module>
+    <module>nio-utils</module>
   </modules>
 
 </project>

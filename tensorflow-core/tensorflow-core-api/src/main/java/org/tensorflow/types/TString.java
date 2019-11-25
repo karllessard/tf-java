@@ -4,8 +4,8 @@ import com.google.common.base.Charsets;
 import java.util.concurrent.atomic.AtomicLong;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.impl.c_api.TF_Tensor;
-import org.tensorflow.impl.buffer.StringTensorBuffer;
+import org.tensorflow.internal.c_api.TF_Tensor;
+import org.tensorflow.internal.buffer.StringTensorBuffer;
 import org.tensorflow.nio.buffer.DataBuffer;
 import org.tensorflow.nio.nd.NdArray;
 import org.tensorflow.nio.nd.NdArrays;
@@ -35,19 +35,17 @@ class TStringImpl extends DenseNdArray<String> implements TString {
   static Tensor<TString> createTensor(NdArray<String> src) {
 
     // First, compute the capacity of the tensor to create
-    AtomicLong capacity = new AtomicLong(src.size() * 8);  // add space to store 64-bits offsets
+    AtomicLong size = new AtomicLong(src.size() * 8);  // add space to store 64-bits offsets
     src.scalars().forEach(s -> {
       byte[] bytes = s.getValue().getBytes(Charsets.UTF_8);
-      capacity.addAndGet(bytes.length + varintLength(bytes.length));  // add space to store value + length
+      size.addAndGet(bytes.length + varintLength(bytes.length));  // add space to store value + length
     });
 
     // Allocate the tensor of the right capacity and init its data from source array
-    Tensor<TString> tensor = Tensor.allocate(TString.DTYPE, src.shape(), capacity.get());
-    /* FIXME!
-    StringTensorBuffer buffer = ((TStringImpl)tensor.data()).buffer();
-    StringTensorBuffer initBuffer = buffer.duplicateForInit();  // get a writeable buffer for initialization
-    src.scalars().forEach(s -> initBuffer.put(s.getValue()));
-     */
+    Tensor<TString> tensor = Tensor.allocate(TString.DTYPE, src.shape(), size.get());
+    StringTensorBuffer buffer = (StringTensorBuffer)(((TStringImpl)tensor.data()).buffer());
+    buffer.init(src);
+
     return tensor;
   }
 

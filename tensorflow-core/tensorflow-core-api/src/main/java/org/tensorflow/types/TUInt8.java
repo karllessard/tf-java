@@ -2,8 +2,8 @@ package org.tensorflow.types;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
-import org.tensorflow.impl.c_api.TF_Tensor;
-import org.tensorflow.impl.buffer.ByteTensorBuffer;
+import org.tensorflow.internal.c_api.TF_Tensor;
+import org.tensorflow.internal.buffer.ByteTensorBuffer;
 import org.tensorflow.nio.buffer.ByteDataBuffer;
 import org.tensorflow.nio.nd.ByteNdArray;
 import org.tensorflow.nio.nd.Shape;

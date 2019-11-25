@@ -15,7 +15,7 @@ limitations under the License.
 
 package org.tensorflow;
 
-import org.tensorflow.impl.c_api.TF_Tensor;
+import org.tensorflow.internal.c_api.TF_Tensor;
 import org.tensorflow.nio.nd.Shape;
 
 /** Represents a type of elements in a {@link Tensor} */
