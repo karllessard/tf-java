@@ -1,5 +1,5 @@
 /*
- *  Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+ *  Copyright 2020 The TensorFlow Authors. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,8 +15,20 @@
  *  =======================================================================
  */
 
-package org.tensorflow.types.family;
+package org.tensorflow.types;
 
-public interface TDecimal extends TNumber {
+import org.tensorflow.Tensor;
+import org.tensorflow.tools.Shape;
 
+public class TBFloat16Test extends NumericTypesTestBase<TBFloat16, Float> {
+
+  @Override
+  Tensor<TBFloat16> allocateTensor(Shape shape) {
+    return TBFloat16.ofShape(shape);
+  }
+
+  @Override
+  Float valueOf(Integer value) {
+    return value.floatValue();
+  }
 }

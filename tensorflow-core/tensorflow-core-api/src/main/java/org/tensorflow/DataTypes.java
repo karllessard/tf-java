@@ -19,9 +19,11 @@ package org.tensorflow;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.tensorflow.types.TBFloat16;
 import org.tensorflow.types.TBool;
 import org.tensorflow.types.TDouble;
 import org.tensorflow.types.TFloat;
+import org.tensorflow.types.THalf;
 import org.tensorflow.types.TInt32;
 import org.tensorflow.types.TInt64;
 import org.tensorflow.types.TString;
@@ -56,10 +58,12 @@ final class DataTypes {
     register(TBool.DTYPE);
     register(TDouble.DTYPE);
     register(TFloat.DTYPE);
+    register(THalf.DTYPE);
     register(TInt32.DTYPE);
     register(TInt64.DTYPE);
     register(TString.DTYPE);
     register(TUInt8.DTYPE);
+    register(TBFloat16.DTYPE);
   }
 
   // TODO (karllessard): Right now this method is private but we might want to expose it

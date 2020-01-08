@@ -1,5 +1,5 @@
 /*
- *  Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+ *  Copyright 2020 The TensorFlow Authors. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,18 +23,28 @@ import org.tensorflow.internal.buffer.TensorBuffers;
 import org.tensorflow.internal.c_api.TF_Tensor;
 import org.tensorflow.tools.Shape;
 import org.tensorflow.tools.buffer.FloatDataBuffer;
+import org.tensorflow.tools.buffer.layout.DataLayouts;
 import org.tensorflow.tools.ndarray.FloatNdArray;
 import org.tensorflow.tools.ndarray.NdArray;
 import org.tensorflow.tools.ndarray.impl.dense.FloatDenseNdArray;
 import org.tensorflow.types.family.TNumber;
 
 /**
- * IEEE-754 single-precision 32-bit float tensor type.
+ * IEEE-754 half-precision 16-bit float tensor type.
+ *
+ * <p>Since there is no floating-point type that fits in 16 bits in Java, a conversion (with potentially
+ * a precision loss) is required for each 32 bits value written or read on a tensor of this type from
+ * the JVM. Therefore, if a lot of I/O operations are to be expected on a tensor, performances will be
+ * improved by working with {@link TFloat} or {@link TDouble} data types whenever possible.
+ *
+ * <p>Also, {@code THalf} tensors normally perform better if they are located in GPU memory since most
+ * CPUs do not support this format natively. For CPU computation on 16-bit floats, the {@link TBFloat16}
+ * tensor type might be a better option.
  */
-public interface TFloat extends FloatNdArray, TNumber {
+public interface THalf extends FloatNdArray, TNumber {
 
   /** Type metadata */
-  DataType<TFloat> DTYPE = DataType.create("FLOAT", 1, 4, TFloatImpl::mapTensor);
+  DataType<THalf> DTYPE = DataType.create("FLOAT16", 19, 2, THalfImpl::mapTensor);
 
   /**
    * Allocates a new tensor for storing a single float value.
@@ -42,8 +52,8 @@ public interface TFloat extends FloatNdArray, TNumber {
    * @param value float to store in the new tensor
    * @return the new tensor
    */
-  static Tensor<TFloat> scalarOf(float value) {
-    Tensor<TFloat> t = ofShape();
+  static Tensor<THalf> scalarOf(float value) {
+    Tensor<THalf> t = ofShape();
     t.data().setFloat(value);
     return t;
   }
@@ -54,8 +64,8 @@ public interface TFloat extends FloatNdArray, TNumber {
    * @param values floats to store in the new tensor
    * @return the new tensor
    */
-  static Tensor<TFloat> vectorOf(float... values) {
-    Tensor<TFloat> t = ofShape(values.length);
+  static Tensor<THalf> vectorOf(float... values) {
+    Tensor<THalf> t = ofShape(values.length);
     t.data().write(values);
     return t;
   }
@@ -66,7 +76,7 @@ public interface TFloat extends FloatNdArray, TNumber {
    * @param shape shape of the tensor to allocate
    * @return the new tensor
    */
-  static Tensor<TFloat> ofShape(Shape shape) {
+  static Tensor<THalf> ofShape(Shape shape) {
     return Tensor.allocate(DTYPE, shape);
   }
 
@@ -78,7 +88,7 @@ public interface TFloat extends FloatNdArray, TNumber {
    * @param dimensionSizes dimension sizes that defines the shape of the tensor to allocate
    * @return the new tensor
    */
-  static Tensor<TFloat> ofShape(long... dimensionSizes) {
+  static Tensor<THalf> ofShape(long... dimensionSizes) {
     return Tensor.allocate(DTYPE, Shape.make(dimensionSizes));
   }
 
@@ -90,23 +100,23 @@ public interface TFloat extends FloatNdArray, TNumber {
    * @param src the source array giving the shape and data to the new tensor
    * @return the new tensor
    */
-  static Tensor<TFloat> copyOf(NdArray<Float> src) {
-    Tensor<TFloat> t = Tensor.allocate(DTYPE, src.shape());
+  static Tensor<THalf> copyOf(NdArray<Float> src) {
+    Tensor<THalf> t = Tensor.allocate(DTYPE, src.shape());
     src.copyTo(t.data());
     return t;
   }
 }
 
 /**
- * Hidden implementation of a {@code TFloat}
+ * Hidden implementation of a {@code THalf}
  */
-class TFloatImpl extends FloatDenseNdArray implements TFloat {
+class THalfImpl extends FloatDenseNdArray implements THalf {
 
-  static TFloat mapTensor(TF_Tensor nativeTensor, Shape shape) {
-    return new TFloatImpl(TensorBuffers.toFloats(nativeTensor), shape);
+  static THalf mapTensor(TF_Tensor nativeTensor, Shape shape) {
+    return new THalfImpl(DataLayouts.FLOAT16.applyTo(TensorBuffers.toShorts(nativeTensor)), shape);
   }
 
-  private TFloatImpl(FloatDataBuffer buffer, Shape shape) {
+  private THalfImpl(FloatDataBuffer buffer, Shape shape) {
     super(buffer, shape);
   }
 }
