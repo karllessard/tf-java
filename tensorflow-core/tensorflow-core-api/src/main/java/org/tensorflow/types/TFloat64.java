@@ -22,45 +22,40 @@ import org.tensorflow.Tensor;
 import org.tensorflow.internal.buffer.TensorBuffers;
 import org.tensorflow.internal.c_api.TF_Tensor;
 import org.tensorflow.tools.Shape;
-import org.tensorflow.tools.buffer.BooleanDataBuffer;
-import org.tensorflow.tools.ndarray.BooleanNdArray;
+import org.tensorflow.tools.buffer.DoubleDataBuffer;
+import org.tensorflow.tools.ndarray.DoubleNdArray;
 import org.tensorflow.tools.ndarray.NdArray;
-import org.tensorflow.tools.ndarray.impl.dense.BooleanDenseNdArray;
-import org.tensorflow.types.family.TType;
+import org.tensorflow.tools.ndarray.impl.dense.DoubleDenseNdArray;
+import org.tensorflow.types.family.TNumber;
 
 /**
- * Boolean tensor type.
- *
- * <p>If direct memory mapping is not available in the JVM, tensors of this type might require an
- * explicit mapping between Java boolean values and byte buffers using the
- * {@link org.tensorflow.tools.buffer.layout.DataLayouts#BOOL BOOL} layout, which may impact I/O
- * performances.
+ * IEEE-754 double-precision 64-bit float tensor type.
  */
-public interface TBool extends BooleanNdArray, TType {
+public interface TFloat64 extends DoubleNdArray, TNumber {
 
   /** Type metadata */
-  DataType<TBool> DTYPE = DataType.create("BOOL", 10, 1, TBoolImpl::mapTensor);
+  DataType<TFloat64> DTYPE = DataType.create("DOUBLE", 2, 8, TFloat64Impl::mapTensor);
 
   /**
-   * Allocates a new tensor for storing a single boolean value.
+   * Allocates a new tensor for storing a single double value.
    *
-   * @param value boolean to store in the new tensor
+   * @param value double to store in the new tensor
    * @return the new tensor
    */
-  static Tensor<TBool> scalarOf(boolean value) {
-    Tensor<TBool> t = ofShape();
-    t.data().setBoolean(value);
+  static Tensor<TFloat64> scalarOf(double value) {
+    Tensor<TFloat64> t = ofShape();
+    t.data().setDouble(value);
     return t;
   }
 
   /**
-   * Allocates a new tensor for storing a vector of booleans.
+   * Allocates a new tensor for storing a vector of doubles.
    *
-   * @param values booleans to store in the new tensor
+   * @param values doubles to store in the new tensor
    * @return the new tensor
    */
-  static Tensor<TBool> vectorOf(boolean... values) {
-    Tensor<TBool> t = ofShape(values.length);
+  static Tensor<TFloat64> vectorOf(double... values) {
+    Tensor<TFloat64> t = ofShape(values.length);
     t.data().write(values);
     return t;
   }
@@ -71,7 +66,7 @@ public interface TBool extends BooleanNdArray, TType {
    * @param shape shape of the tensor to allocate
    * @return the new tensor
    */
-  static Tensor<TBool> ofShape(Shape shape) {
+  static Tensor<TFloat64> ofShape(Shape shape) {
     return Tensor.allocate(DTYPE, shape);
   }
 
@@ -83,35 +78,35 @@ public interface TBool extends BooleanNdArray, TType {
    * @param dimensionSizes dimension sizes that defines the shape of the tensor to allocate
    * @return the new tensor
    */
-  static Tensor<TBool> ofShape(long... dimensionSizes) {
+  static Tensor<TFloat64> ofShape(long... dimensionSizes) {
     return Tensor.allocate(DTYPE, Shape.make(dimensionSizes));
   }
 
   /**
-   * Allocates a new tensor which is a copy of a given array of booleans.
+   * Allocates a new tensor which is a copy of a given array of doubles.
    *
    * <p>The tensor will have the same shape as the source array and its data will be copied.
    *
    * @param src the source array giving the shape and data to the new tensor
    * @return the new tensor
    */
-  static Tensor<TBool> copyOf(NdArray<Boolean> src) {
-    Tensor<TBool> t = Tensor.allocate(DTYPE, src.shape());
+  static Tensor<TFloat64> copyOf(NdArray<Double> src) {
+    Tensor<TFloat64> t = Tensor.allocate(DTYPE, src.shape());
     src.copyTo(t.data());
     return t;
   }
 }
 
 /**
- * Hidden implementation of a {@code TBool}
+ * Hidden implementation of a {@code TFloat64}
  */
-class TBoolImpl extends BooleanDenseNdArray implements TBool {
+class TFloat64Impl extends DoubleDenseNdArray implements TFloat64 {
 
-  static TBool mapTensor(TF_Tensor nativeTensor, Shape shape) {
-    return new TBoolImpl(TensorBuffers.toBooleans(nativeTensor), shape);
+  static TFloat64 mapTensor(TF_Tensor nativeTensor, Shape shape) {
+    return new TFloat64Impl(TensorBuffers.toDoubles(nativeTensor), shape);
   }
 
-  private TBoolImpl(BooleanDataBuffer buffer, Shape shape) {
+  private TFloat64Impl(DoubleDataBuffer buffer, Shape shape) {
     super(buffer, shape);
   }
 }

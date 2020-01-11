@@ -25,8 +25,8 @@ package org.tensorflow.types.family;
  * between operands of a computation at compile-time. For example:
  *
  * <pre>{@code
- * Tensor<TFloat> tensor1 = TFloat.ofShape(2, 3, 2);
- * Tensor<TFloat> tensor2 = TFloat.ofShape(2, 3, 2);
+ * Tensor<TFloat32> tensor1 = TFloat32.ofShape(2, 3, 2);
+ * Tensor<TFloat32> tensor2 = TFloat32.ofShape(2, 3, 2);
  * Tensor<TInt32> tensor3 = TInt32.ofShape(2, 3, 2);
  *
  * Ops tf = Ops.create();

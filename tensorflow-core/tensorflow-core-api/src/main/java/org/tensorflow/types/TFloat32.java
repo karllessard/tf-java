@@ -22,40 +22,40 @@ import org.tensorflow.Tensor;
 import org.tensorflow.internal.buffer.TensorBuffers;
 import org.tensorflow.internal.c_api.TF_Tensor;
 import org.tensorflow.tools.Shape;
-import org.tensorflow.tools.buffer.DoubleDataBuffer;
-import org.tensorflow.tools.ndarray.DoubleNdArray;
+import org.tensorflow.tools.buffer.FloatDataBuffer;
+import org.tensorflow.tools.ndarray.FloatNdArray;
 import org.tensorflow.tools.ndarray.NdArray;
-import org.tensorflow.tools.ndarray.impl.dense.DoubleDenseNdArray;
+import org.tensorflow.tools.ndarray.impl.dense.FloatDenseNdArray;
 import org.tensorflow.types.family.TNumber;
 
 /**
- * IEEE-754 double-precision 64-bit float tensor type.
+ * IEEE-754 single-precision 32-bit float tensor type.
  */
-public interface TDouble extends DoubleNdArray, TNumber {
+public interface TFloat32 extends FloatNdArray, TNumber {
 
   /** Type metadata */
-  DataType<TDouble> DTYPE = DataType.create("DOUBLE", 2, 8, TDoubleImpl::mapTensor);
+  DataType<TFloat32> DTYPE = DataType.create("FLOAT", 1, 4, TFloat32Impl::mapTensor);
 
   /**
-   * Allocates a new tensor for storing a single double value.
+   * Allocates a new tensor for storing a single float value.
    *
-   * @param value double to store in the new tensor
+   * @param value float to store in the new tensor
    * @return the new tensor
    */
-  static Tensor<TDouble> scalarOf(double value) {
-    Tensor<TDouble> t = ofShape();
-    t.data().setDouble(value);
+  static Tensor<TFloat32> scalarOf(float value) {
+    Tensor<TFloat32> t = ofShape();
+    t.data().setFloat(value);
     return t;
   }
 
   /**
-   * Allocates a new tensor for storing a vector of doubles.
+   * Allocates a new tensor for storing a vector of floats.
    *
-   * @param values doubles to store in the new tensor
+   * @param values floats to store in the new tensor
    * @return the new tensor
    */
-  static Tensor<TDouble> vectorOf(double... values) {
-    Tensor<TDouble> t = ofShape(values.length);
+  static Tensor<TFloat32> vectorOf(float... values) {
+    Tensor<TFloat32> t = ofShape(values.length);
     t.data().write(values);
     return t;
   }
@@ -66,7 +66,7 @@ public interface TDouble extends DoubleNdArray, TNumber {
    * @param shape shape of the tensor to allocate
    * @return the new tensor
    */
-  static Tensor<TDouble> ofShape(Shape shape) {
+  static Tensor<TFloat32> ofShape(Shape shape) {
     return Tensor.allocate(DTYPE, shape);
   }
 
@@ -78,35 +78,36 @@ public interface TDouble extends DoubleNdArray, TNumber {
    * @param dimensionSizes dimension sizes that defines the shape of the tensor to allocate
    * @return the new tensor
    */
-  static Tensor<TDouble> ofShape(long... dimensionSizes) {
+  static Tensor<TFloat32> ofShape(long... dimensionSizes) {
     return Tensor.allocate(DTYPE, Shape.make(dimensionSizes));
   }
 
   /**
-   * Allocates a new tensor which is a copy of a given array of doubles.
+   * Allocates a new tensor which is a copy of a given array of floats.
    *
    * <p>The tensor will have the same shape as the source array and its data will be copied.
    *
    * @param src the source array giving the shape and data to the new tensor
    * @return the new tensor
    */
-  static Tensor<TDouble> copyOf(NdArray<Double> src) {
-    Tensor<TDouble> t = Tensor.allocate(DTYPE, src.shape());
+  static Tensor<TFloat32> copyOf(NdArray<Float> src) {
+    Tensor<TFloat32> t = Tensor.allocate(DTYPE, src.shape());
     src.copyTo(t.data());
     return t;
   }
 }
 
 /**
- * Hidden implementation of a {@code TDouble}
+ * Hidden implementation of a {@code TFloat32}
  */
-class TDoubleImpl extends DoubleDenseNdArray implements TDouble {
+class TFloat32Impl extends FloatDenseNdArray implements TFloat32 {
 
-  static TDouble mapTensor(TF_Tensor nativeTensor, Shape shape) {
-    return new TDoubleImpl(TensorBuffers.toDoubles(nativeTensor), shape);
+  static TFloat32 mapTensor(TF_Tensor nativeTensor, Shape shape) {
+    return new TFloat32Impl(TensorBuffers.toFloats(nativeTensor), shape);
   }
 
-  private TDoubleImpl(DoubleDataBuffer buffer, Shape shape) {
+  private TFloat32Impl(FloatDataBuffer buffer, Shape shape) {
     super(buffer, shape);
   }
 }
+

@@ -32,14 +32,14 @@ import org.tensorflow.types.family.TNumber;
 /**
  * Brain 16-bit float tensor type.
  *
- * <p>This type differs from {@link THalf} as it truncates the mantissa of a 32-bit float and
+ * <p>This type differs from {@link TFloat16} as it truncates the mantissa of a 32-bit float and
  * preserve all exponent bits for faster conversion, while the latter shrink the exponent and have
  * a longer mantissa for more precision.
  *
  * <p>Since there is no floating-point type that fits in 16 bits in Java, a conversion (with potentially
  * a precision loss) is required for each 32 bits value written or read on a tensor of this type from
  * the JVM. Therefore, if a lot of I/O operations are to be expected on a tensor, performances will be
- * improved by working with {@link TFloat} or {@link TDouble} data types whenever possible.
+ * improved by working with {@link TFloat32} or {@link TFloat64} data types whenever possible.
  *
  * <p>Note that some CPUs support the BFloat16 format natively for faster computation.
  */

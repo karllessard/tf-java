@@ -24,7 +24,7 @@ package org.tensorflow.types.family;
  * types for these operands to be bound to this interface. For example:
  *
  * <pre>{@code
- * TInt32 tensor1 = TInt32.vectorOf(1, 2, 3);
+ * TFloat32 tensor1 = TFloat32.vectorOf(1, 2, 3);
  * TBool tensor2 = TBool.vectorOf(true, false, true);
  *
  * Ops tf = Ops.create();

@@ -20,11 +20,11 @@ package org.tensorflow.types;
 import org.tensorflow.Tensor;
 import org.tensorflow.tools.Shape;
 
-public class THalfTest extends NumericTypesTestBase<THalf, Float> {
+public class TFloat16Test extends NumericTypesTestBase<TFloat16, Float> {
 
   @Override
-  Tensor<THalf> allocateTensor(Shape shape) {
-    return THalf.ofShape(shape);
+  Tensor<TFloat16> allocateTensor(Shape shape) {
+    return TFloat16.ofShape(shape);
   }
 
   @Override
