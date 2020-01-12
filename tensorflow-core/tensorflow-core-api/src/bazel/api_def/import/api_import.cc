@@ -26,7 +26,6 @@
 #include "tensorflow/core/platform/file_system.h"
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/util/command_line_flags.h"
-#include "tensorflow/java/src/gen/cc/op_generator.h"
 #include "tensorflow/tools/api/lib/api_objects.pb.h"
 
 namespace tensorflow {
@@ -135,42 +134,51 @@ using namespace tensorflow;
 
 int main(int argc, char* argv[]) {
   string java_api_dir = "";
-  string python_api_dir = "";
-  string golden_api_dir = "";
+  string tf_src_dir = "";
   std::vector<Flag> flag_list = {
       Flag(
           "java_api_dir", &java_api_dir,
-          "Root directory where generated Java API definitions are imported"),
+          "Root directory where generated Java API definitions are exported"),
       Flag(
-          "python_api_dir", &python_api_dir,
-          "Root directory where resides Python API definitions to import"),
-      Flag(
-          "golden_api_dir", &golden_api_dir,
-          "Root directory where resides Golden Pyhton API definitions to import")};
+          "tf_src_dir", &tf_src_dir,
+          "Root directory of TensorFlow sources")};
   string usage = java::kUsageHeader;
   usage += Flags::Usage(argv[0], flag_list);
   bool parsed_flags_ok = Flags::Parse(&argc, argv, flag_list);
   port::InitMain(usage.c_str(), &argc, &argv);
-  QCHECK(parsed_flags_ok && !java_api_dir.empty() && !python_api_dir.empty() && !golden_api_dir.empty()) << usage;
+  QCHECK(parsed_flags_ok && !java_api_dir.empty() && !tf_src_dir.empty()) << usage;
   OpList op_defs;
   OpRegistry::Global()->Export(false, &op_defs);
   ApiDefMap python_api_map(op_defs);
   Env* env = Env::Default();
 
   // Load Python API defs
-  vector<string> python_api_files;
-  TF_CHECK_OK(env->GetChildren(python_api_dir, &python_api_files));
-  for (const auto& filename : python_api_files) {
+  string base_api_dir = tf_src_dir + "/tensorflow/core/api_def/base_api";
+  string python_api_dir = tf_src_dir + "/tensorflow/core/api_def/python_api";
+  vector<string> api_files;
+  TF_CHECK_OK(env->GetChildren(base_api_dir, &api_files));
+  LOG(INFO) << "Loading " << api_files.size() << " Base API definition files";
+  for (const auto& filename : api_files) {
+      TF_CHECK_OK(python_api_map.LoadFile(env, base_api_dir + "/" + filename)) << filename;
+  }
+  TF_CHECK_OK(env->GetChildren(python_api_dir, &api_files));
+  LOG(INFO) << "Loading " << api_files.size() << " Python API definition files";
+  for (const auto& filename : api_files) {
       TF_CHECK_OK(python_api_map.LoadFile(env, python_api_dir + "/" + filename)) << filename;
-
   }
   python_api_map.UpdateDocs();
 
   // Load golden API member names with their module path
+  string golden_api_dir = tf_src_dir + "/tensorflow/tools/api/golden/v1";
   vector<pair<string, string>> golden_api_names;
   vector<string> golden_api_files;
   TF_CHECK_OK(env->GetChildren(golden_api_dir, &golden_api_files));
+  LOG(INFO) << "Loading " << golden_api_files.size() << " Python API golden files";
   for (const auto& filename : golden_api_files) {
+    // Skip the raw_ops API, as it contains all op endpoints
+    if (filename == "tensorflow.raw_ops.pbtxt") {
+      continue;
+    }
     string contents;
     TF_CHECK_OK(ReadFileToString(env, golden_api_dir + "/" + filename, &contents));
     third_party::tensorflow::tools::api::TFAPIObject object;
@@ -194,16 +202,18 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  // Go through the whole list of registered ops and generate a Java API definition for those that
+  // are missing
   int unresolved_count = 0;
   for (const auto& op_def : op_defs.op()) {
     if (env->FileExists(java_api_dir + "/api_def_" + op_def.name() + ".pbtxt") == Status::OK()) {
       // LOG(INFO) << "Java API for " << op_def.name() << " already defined, skipping";
       continue;
     }
-    // Try to import python api def first
+    // Try to find this ops as a visible endpoint in the Python API definitions first
     auto python_api_def = python_api_map.GetApiDef(op_def.name());
-    if (python_api_def != nullptr && python_api_def->visibility() != ApiDef::HIDDEN) {
-      // LOG(INFO) << "Found " << op_def.name() << " in python API as " << python_api_def->endpoint(0).name();
+    if (python_api_def != nullptr && python_api_def->visibility() == ApiDef::VISIBLE) {
+      cout << endl << "Found: Op " << op_def.name() << " is visible in python API as " << python_api_def->endpoint(0).name() << endl;
       java::ImportApiDef(python_api_def, java_api_dir, env);
     } else {
       vector<pair<string, string>> matches;
@@ -217,6 +227,8 @@ int main(int argc, char* argv[]) {
         }
       }
       if (matches.size() == 1) {
+        cout << endl << "Found: Op " << op_def.name() << " matches a single endpoint in golden Python API as "
+          << matches.at(0).second << endl;
         java::ImportApiDef(op_def.name(), matches.at(0).second, java_api_dir, env);
       } else {
         int perfect_match_count = matches.size();
