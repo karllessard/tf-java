@@ -84,6 +84,17 @@ public final class ImageOps {
   }
 
   /**
+   * Builds an {@link DecodeGif} operation
+   *
+   * @param contents 0-D.  The GIF-encoded image.
+   * @return a new instance of DecodeGif
+   * @see org.tensorflow.op.image.DecodeGif
+   */
+  public DecodeGif decodeGif(Operand<TString> contents) {
+    return DecodeGif.create(scope, contents);
+  }
+
+  /**
    * Builds an {@link ResizeBilinear} operation
    *
    * @param images 4-D with shape `[batch, height, width, channels]`.
@@ -95,17 +106,6 @@ public final class ImageOps {
   public <T extends TNumber> ResizeBilinear resizeBilinear(Operand<T> images, Operand<TInt32> size,
       ResizeBilinear.Options... options) {
     return ResizeBilinear.create(scope, images, size, options);
-  }
-
-  /**
-   * Builds an {@link DecodeGif} operation
-   *
-   * @param contents 0-D.  The GIF-encoded image.
-   * @return a new instance of DecodeGif
-   * @see org.tensorflow.op.image.DecodeGif
-   */
-  public DecodeGif decodeGif(Operand<TString> contents) {
-    return DecodeGif.create(scope, contents);
   }
 
   /**
@@ -157,6 +157,20 @@ public final class ImageOps {
   }
 
   /**
+   * Builds an {@link RandomCrop} operation
+   *
+   * @param image 3-D of shape `[height, width, channels]`.
+   * @param size 1-D of length 2 containing: `crop_height`, `crop_width`..
+   * @param options carries optional attributes values
+   * @return a new instance of RandomCrop
+   * @see org.tensorflow.op.image.RandomCrop
+   */
+  public <T extends TNumber> RandomCrop<T> randomCrop(Operand<T> image, Operand<TInt64> size,
+      RandomCrop.Options... options) {
+    return RandomCrop.create(scope, image, size, options);
+  }
+
+  /**
    * Builds an {@link DecodePng} operation
    *
    * @param contents 0-D.  The PNG-encoded image.
@@ -171,17 +185,20 @@ public final class ImageOps {
   }
 
   /**
-   * Builds an {@link RandomCrop} operation
+   * Builds an {@link NonMaxSuppressionWithOverlaps} operation
    *
-   * @param image 3-D of shape `[height, width, channels]`.
-   * @param size 1-D of length 2 containing: `crop_height`, `crop_width`..
-   * @param options carries optional attributes values
-   * @return a new instance of RandomCrop
-   * @see org.tensorflow.op.image.RandomCrop
+   * @param overlaps A 2-D float tensor of shape `[num_boxes, num_boxes]` representing
+   * @param scores A 1-D float tensor of shape `[num_boxes]` representing a single
+   * @param maxOutputSize A scalar integer tensor representing the maximum number of
+   * @param overlapThreshold A 0-D float tensor representing the threshold for deciding whether
+   * @param scoreThreshold A 0-D float tensor representing the threshold for deciding when to remove
+   * @return a new instance of NonMaxSuppressionWithOverlaps
+   * @see org.tensorflow.op.image.NonMaxSuppressionWithOverlaps
    */
-  public <T extends TNumber> RandomCrop<T> randomCrop(Operand<T> image, Operand<TInt64> size,
-      RandomCrop.Options... options) {
-    return RandomCrop.create(scope, image, size, options);
+  public NonMaxSuppressionWithOverlaps nonMaxSuppressionWithOverlaps(Operand<TFloat32> overlaps,
+      Operand<TFloat32> scores, Operand<TInt32> maxOutputSize, Operand<TFloat32> overlapThreshold,
+      Operand<TFloat32> scoreThreshold) {
+    return NonMaxSuppressionWithOverlaps.create(scope, overlaps, scores, maxOutputSize, overlapThreshold, scoreThreshold);
   }
 
   /**
@@ -208,23 +225,6 @@ public final class ImageOps {
   public DecodeAndCropJpeg decodeAndCropJpeg(Operand<TString> contents, Operand<TInt32> cropWindow,
       DecodeAndCropJpeg.Options... options) {
     return DecodeAndCropJpeg.create(scope, contents, cropWindow, options);
-  }
-
-  /**
-   * Builds an {@link NonMaxSuppressionWithOverlaps} operation
-   *
-   * @param overlaps A 2-D float tensor of shape `[num_boxes, num_boxes]` representing
-   * @param scores A 1-D float tensor of shape `[num_boxes]` representing a single
-   * @param maxOutputSize A scalar integer tensor representing the maximum number of
-   * @param overlapThreshold A 0-D float tensor representing the threshold for deciding whether
-   * @param scoreThreshold A 0-D float tensor representing the threshold for deciding when to remove
-   * @return a new instance of NonMaxSuppressionWithOverlaps
-   * @see org.tensorflow.op.image.NonMaxSuppressionWithOverlaps
-   */
-  public NonMaxSuppressionWithOverlaps nonMaxSuppressionWithOverlaps(Operand<TFloat32> overlaps,
-      Operand<TFloat32> scores, Operand<TInt32> maxOutputSize, Operand<TFloat32> overlapThreshold,
-      Operand<TFloat32> scoreThreshold) {
-    return NonMaxSuppressionWithOverlaps.create(scope, overlaps, scores, maxOutputSize, overlapThreshold, scoreThreshold);
   }
 
   /**
@@ -276,19 +276,6 @@ public final class ImageOps {
   }
 
   /**
-   * Builds an {@link ExtractJpegShape} operation
-   *
-   * @param contents 0-D. The JPEG-encoded image.
-   * @param outputType (Optional) The output type of the operation (int32 or int64).
-   * @return a new instance of ExtractJpegShape
-   * @see org.tensorflow.op.image.ExtractJpegShape
-   */
-  public <T extends TNumber> ExtractJpegShape<T> extractJpegShape(Operand<TString> contents,
-      DataType<T> outputType) {
-    return ExtractJpegShape.create(scope, contents, outputType);
-  }
-
-  /**
    * Builds an {@link CombinedNonMaxSuppression} operation
    *
    * @param boxes A 4-D float tensor of shape `[batch_size, num_boxes, q, 4]`. If `q` is 1 then 
@@ -306,6 +293,19 @@ public final class ImageOps {
       Operand<TFloat32> iouThreshold, Operand<TFloat32> scoreThreshold,
       CombinedNonMaxSuppression.Options... options) {
     return CombinedNonMaxSuppression.create(scope, boxes, scores, maxOutputSizePerClass, maxTotalSize, iouThreshold, scoreThreshold, options);
+  }
+
+  /**
+   * Builds an {@link ExtractJpegShape} operation
+   *
+   * @param contents 0-D. The JPEG-encoded image.
+   * @param outputType (Optional) The output type of the operation (int32 or int64).
+   * @return a new instance of ExtractJpegShape
+   * @see org.tensorflow.op.image.ExtractJpegShape
+   */
+  public <T extends TNumber> ExtractJpegShape<T> extractJpegShape(Operand<TString> contents,
+      DataType<T> outputType) {
+    return ExtractJpegShape.create(scope, contents, outputType);
   }
 
   /**
@@ -352,19 +352,6 @@ public final class ImageOps {
   }
 
   /**
-   * Builds an {@link EncodeJpegVariableQuality} operation
-   *
-   * @param images Images to adjust.  At least 3-D.
-   * @param quality An int quality to encode to.
-   * @return a new instance of EncodeJpegVariableQuality
-   * @see org.tensorflow.op.image.EncodeJpegVariableQuality
-   */
-  public EncodeJpegVariableQuality encodeJpegVariableQuality(Operand<TUint8> images,
-      Operand<TInt32> quality) {
-    return EncodeJpegVariableQuality.create(scope, images, quality);
-  }
-
-  /**
    * Builds an {@link ScaleAndTranslate} operation
    *
    * @param images 
@@ -379,6 +366,19 @@ public final class ImageOps {
       Operand<TInt32> size, Operand<TFloat32> scale, Operand<TFloat32> translation,
       ScaleAndTranslate.Options... options) {
     return ScaleAndTranslate.create(scope, images, size, scale, translation, options);
+  }
+
+  /**
+   * Builds an {@link EncodeJpegVariableQuality} operation
+   *
+   * @param images Images to adjust.  At least 3-D.
+   * @param quality An int quality to encode to.
+   * @return a new instance of EncodeJpegVariableQuality
+   * @see org.tensorflow.op.image.EncodeJpegVariableQuality
+   */
+  public EncodeJpegVariableQuality encodeJpegVariableQuality(Operand<TUint8> images,
+      Operand<TInt32> quality) {
+    return EncodeJpegVariableQuality.create(scope, images, quality);
   }
 
   /**

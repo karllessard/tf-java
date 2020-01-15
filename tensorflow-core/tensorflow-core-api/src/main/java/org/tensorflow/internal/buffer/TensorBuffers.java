@@ -22,7 +22,9 @@ import static org.tensorflow.internal.c_api.global.tensorflow.TF_TensorData;
 
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.Iterator;
 import org.bytedeco.javacpp.Pointer;
+import org.tensorflow.Tensor;
 import org.tensorflow.internal.c_api.TF_Tensor;
 import org.tensorflow.tools.buffer.BooleanDataBuffer;
 import org.tensorflow.tools.buffer.ByteDataBuffer;
@@ -33,6 +35,8 @@ import org.tensorflow.tools.buffer.IntDataBuffer;
 import org.tensorflow.tools.buffer.LongDataBuffer;
 import org.tensorflow.tools.buffer.ShortDataBuffer;
 import org.tensorflow.tools.buffer.layout.DataLayouts;
+import org.tensorflow.tools.ndarray.NdArray;
+import org.tensorflow.types.TString;
 
 public final class TensorBuffers {
 
@@ -100,16 +104,15 @@ public final class TensorBuffers {
       return TensorRawDataBufferFactory.mapTensorToStrings(tensorMemory, numElements);
     }
     if (numElements > Integer.MAX_VALUE) {
-      throw new IllegalArgumentException("Cannot map string tensor of " + numElements + " elements");
+      throw new IllegalArgumentException("Cannot map memory of tensor of " + numElements + " elements");
     }
-    ByteBuffer dataBuffer = tensorMemory.asByteBuffer();
+    ByteBuffer tensorBuffer = tensorMemory.asByteBuffer();
 
-    LongBuffer offsetBuffer = dataBuffer.asLongBuffer();
+    LongBuffer offsetBuffer = tensorBuffer.asLongBuffer();
     offsetBuffer.limit((int)numElements);
     LongDataBuffer offsets = DataBuffers.from(offsetBuffer.slice());
-
-    dataBuffer.position((int)numElements * Long.BYTES);
-    ByteDataBuffer data = DataBuffers.from(dataBuffer.slice());
+    tensorBuffer.position((int)numElements * Long.BYTES);
+    ByteDataBuffer data = DataBuffers.from(tensorBuffer.slice());
 
     return new StringTensorBuffer(offsets, data);
   }

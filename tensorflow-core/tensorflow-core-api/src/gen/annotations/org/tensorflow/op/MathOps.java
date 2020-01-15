@@ -139,6 +139,18 @@ public final class MathOps {
   }
 
   /**
+   * Builds an {@link Polygamma} operation
+   *
+   * @param a 
+   * @param x 
+   * @return a new instance of Polygamma
+   * @see org.tensorflow.op.math.Polygamma
+   */
+  public <T extends TNumber> Polygamma<T> polygamma(Operand<T> a, Operand<T> x) {
+    return Polygamma.create(scope, a, x);
+  }
+
+  /**
    * Builds an {@link Bincount} operation
    *
    * @param arr int32 `Tensor`.
@@ -150,18 +162,6 @@ public final class MathOps {
   public <T extends TNumber> Bincount<T> bincount(Operand<TInt32> arr, Operand<TInt32> size,
       Operand<T> weights) {
     return Bincount.create(scope, arr, size, weights);
-  }
-
-  /**
-   * Builds an {@link Polygamma} operation
-   *
-   * @param a 
-   * @param x 
-   * @return a new instance of Polygamma
-   * @see org.tensorflow.op.math.Polygamma
-   */
-  public <T extends TNumber> Polygamma<T> polygamma(Operand<T> a, Operand<T> x) {
-    return Polygamma.create(scope, a, x);
   }
 
   /**
@@ -267,17 +267,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Real} operation
-   *
-   * @param input 
-   * @return a new instance of Real
-   * @see org.tensorflow.op.math.Real
-   */
-  public <T extends TType> Real<TFloat32> real(Operand<T> input) {
-    return Real.create(scope, input);
-  }
-
-  /**
    * Builds an {@link BesselI1e} operation
    *
    * @param x 
@@ -286,6 +275,17 @@ public final class MathOps {
    */
   public <T extends TNumber> BesselI1e<T> besselI1e(Operand<T> x) {
     return BesselI1e.create(scope, x);
+  }
+
+  /**
+   * Builds an {@link Real} operation
+   *
+   * @param input 
+   * @return a new instance of Real
+   * @see org.tensorflow.op.math.Real
+   */
+  public <T extends TType> Real<TFloat32> real(Operand<T> input) {
+    return Real.create(scope, input);
   }
 
   /**
@@ -348,17 +348,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Sign} operation
-   *
-   * @param x 
-   * @return a new instance of Sign
-   * @see org.tensorflow.op.math.Sign
-   */
-  public <T extends TType> Sign<T> sign(Operand<T> x) {
-    return Sign.create(scope, x);
-  }
-
-  /**
    * Builds an {@link Exp} operation
    *
    * @param x 
@@ -367,6 +356,17 @@ public final class MathOps {
    */
   public <T extends TType> Exp<T> exp(Operand<T> x) {
     return Exp.create(scope, x);
+  }
+
+  /**
+   * Builds an {@link Sign} operation
+   *
+   * @param x 
+   * @return a new instance of Sign
+   * @see org.tensorflow.op.math.Sign
+   */
+  public <T extends TType> Sign<T> sign(Operand<T> x) {
+    return Sign.create(scope, x);
   }
 
   /**
@@ -394,17 +394,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Log} operation
-   *
-   * @param x 
-   * @return a new instance of Log
-   * @see org.tensorflow.op.math.Log
-   */
-  public <T extends TType> Log<T> log(Operand<T> x) {
-    return Log.create(scope, x);
-  }
-
-  /**
    * Builds an {@link UnsortedSegmentMin} operation
    *
    * @param data 
@@ -416,6 +405,17 @@ public final class MathOps {
   public <T extends TNumber, U extends TNumber, V extends TNumber> UnsortedSegmentMin<T> unsortedSegmentMin(
       Operand<T> data, Operand<U> segmentIds, Operand<V> numSegments) {
     return UnsortedSegmentMin.create(scope, data, segmentIds, numSegments);
+  }
+
+  /**
+   * Builds an {@link Log} operation
+   *
+   * @param x 
+   * @return a new instance of Log
+   * @see org.tensorflow.op.math.Log
+   */
+  public <T extends TType> Log<T> log(Operand<T> x) {
+    return Log.create(scope, x);
   }
 
   /**
@@ -495,18 +495,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Maximum} operation
-   *
-   * @param x 
-   * @param y 
-   * @return a new instance of Maximum
-   * @see org.tensorflow.op.math.Maximum
-   */
-  public <T extends TNumber> Maximum<T> maximum(Operand<T> x, Operand<T> y) {
-    return Maximum.create(scope, x, y);
-  }
-
-  /**
    * Builds an {@link ArgMax} operation
    *
    * @param input 
@@ -518,6 +506,18 @@ public final class MathOps {
   public <V extends TNumber, T extends TType, U extends TNumber> ArgMax<V> argMax(Operand<T> input,
       Operand<U> dimension, DataType<V> outputType) {
     return ArgMax.create(scope, input, dimension, outputType);
+  }
+
+  /**
+   * Builds an {@link Maximum} operation
+   *
+   * @param x 
+   * @param y 
+   * @return a new instance of Maximum
+   * @see org.tensorflow.op.math.Maximum
+   */
+  public <T extends TNumber> Maximum<T> maximum(Operand<T> x, Operand<T> y) {
+    return Maximum.create(scope, x, y);
   }
 
   /**
@@ -591,18 +591,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link TruncateDiv} operation
-   *
-   * @param x 
-   * @param y 
-   * @return a new instance of TruncateDiv
-   * @see org.tensorflow.op.math.TruncateDiv
-   */
-  public <T extends TType> TruncateDiv<T> truncateDiv(Operand<T> x, Operand<T> y) {
-    return TruncateDiv.create(scope, x, y);
-  }
-
-  /**
    * Builds an {@link CheckNumerics} operation
    *
    * @param tensor 
@@ -612,6 +600,18 @@ public final class MathOps {
    */
   public <T extends TNumber> CheckNumerics<T> checkNumerics(Operand<T> tensor, String message) {
     return CheckNumerics.create(scope, tensor, message);
+  }
+
+  /**
+   * Builds an {@link TruncateDiv} operation
+   *
+   * @param x 
+   * @param y 
+   * @return a new instance of TruncateDiv
+   * @see org.tensorflow.op.math.TruncateDiv
+   */
+  public <T extends TType> TruncateDiv<T> truncateDiv(Operand<T> x, Operand<T> y) {
+    return TruncateDiv.create(scope, x, y);
   }
 
   /**
@@ -708,17 +708,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Asin} operation
-   *
-   * @param x 
-   * @return a new instance of Asin
-   * @see org.tensorflow.op.math.Asin
-   */
-  public <T extends TType> Asin<T> asin(Operand<T> x) {
-    return Asin.create(scope, x);
-  }
-
-  /**
    * Builds an {@link Log1p} operation
    *
    * @param x 
@@ -727,6 +716,17 @@ public final class MathOps {
    */
   public <T extends TType> Log1p<T> log1p(Operand<T> x) {
     return Log1p.create(scope, x);
+  }
+
+  /**
+   * Builds an {@link Asin} operation
+   *
+   * @param x 
+   * @return a new instance of Asin
+   * @see org.tensorflow.op.math.Asin
+   */
+  public <T extends TType> Asin<T> asin(Operand<T> x) {
+    return Asin.create(scope, x);
   }
 
   /**
@@ -764,17 +764,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Tanh} operation
-   *
-   * @param x 
-   * @return a new instance of Tanh
-   * @see org.tensorflow.op.math.Tanh
-   */
-  public <T extends TType> Tanh<T> tanh(Operand<T> x) {
-    return Tanh.create(scope, x);
-  }
-
-  /**
    * Builds an {@link Cumsum} operation
    *
    * @param x A `Tensor`. Must be one of the following types: `float32`, `float64`,
@@ -786,6 +775,17 @@ public final class MathOps {
   public <T extends TType, U extends TNumber> Cumsum<T> cumsum(Operand<T> x, Operand<U> axis,
       Cumsum.Options... options) {
     return Cumsum.create(scope, x, axis, options);
+  }
+
+  /**
+   * Builds an {@link Tanh} operation
+   *
+   * @param x 
+   * @return a new instance of Tanh
+   * @see org.tensorflow.op.math.Tanh
+   */
+  public <T extends TType> Tanh<T> tanh(Operand<T> x) {
+    return Tanh.create(scope, x);
   }
 
   /**
@@ -983,17 +983,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Sqrt} operation
-   *
-   * @param x 
-   * @return a new instance of Sqrt
-   * @see org.tensorflow.op.math.Sqrt
-   */
-  public <T extends TType> Sqrt<T> sqrt(Operand<T> x) {
-    return Sqrt.create(scope, x);
-  }
-
-  /**
    * Builds an {@link IsNan} operation
    *
    * @param x 
@@ -1002,6 +991,17 @@ public final class MathOps {
    */
   public <T extends TNumber> IsNan isNan(Operand<T> x) {
     return IsNan.create(scope, x);
+  }
+
+  /**
+   * Builds an {@link Sqrt} operation
+   *
+   * @param x 
+   * @return a new instance of Sqrt
+   * @see org.tensorflow.op.math.Sqrt
+   */
+  public <T extends TType> Sqrt<T> sqrt(Operand<T> x) {
+    return Sqrt.create(scope, x);
   }
 
   /**
@@ -1052,18 +1052,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Sub} operation
-   *
-   * @param x 
-   * @param y 
-   * @return a new instance of Sub
-   * @see org.tensorflow.op.math.Sub
-   */
-  public <T extends TType> Sub<T> sub(Operand<T> x, Operand<T> y) {
-    return Sub.create(scope, x, y);
-  }
-
-  /**
    * Builds an {@link AccumulateN} operation
    *
    * @param inputs A list of `Tensor` objects, each with same shape and type.
@@ -1073,6 +1061,18 @@ public final class MathOps {
    */
   public <T extends TType> AccumulateN<T> accumulateN(Iterable<Operand<T>> inputs, Shape shape) {
     return AccumulateN.create(scope, inputs, shape);
+  }
+
+  /**
+   * Builds an {@link Sub} operation
+   *
+   * @param x 
+   * @param y 
+   * @return a new instance of Sub
+   * @see org.tensorflow.op.math.Sub
+   */
+  public <T extends TType> Sub<T> sub(Operand<T> x, Operand<T> y) {
+    return Sub.create(scope, x, y);
   }
 
   /**
@@ -1090,17 +1090,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link InvertPermutation} operation
-   *
-   * @param x 1-D.
-   * @return a new instance of InvertPermutation
-   * @see org.tensorflow.op.math.InvertPermutation
-   */
-  public <T extends TNumber> InvertPermutation<T> invertPermutation(Operand<T> x) {
-    return InvertPermutation.create(scope, x);
-  }
-
-  /**
    * Builds an {@link IsFinite} operation
    *
    * @param x 
@@ -1109,6 +1098,17 @@ public final class MathOps {
    */
   public <T extends TNumber> IsFinite isFinite(Operand<T> x) {
     return IsFinite.create(scope, x);
+  }
+
+  /**
+   * Builds an {@link InvertPermutation} operation
+   *
+   * @param x 1-D.
+   * @return a new instance of InvertPermutation
+   * @see org.tensorflow.op.math.InvertPermutation
+   */
+  public <T extends TNumber> InvertPermutation<T> invertPermutation(Operand<T> x) {
+    return InvertPermutation.create(scope, x);
   }
 
   /**
@@ -1347,6 +1347,17 @@ public final class MathOps {
   }
 
   /**
+   * Builds an {@link Tan} operation
+   *
+   * @param x 
+   * @return a new instance of Tan
+   * @see org.tensorflow.op.math.Tan
+   */
+  public <T extends TType> Tan<T> tan(Operand<T> x) {
+    return Tan.create(scope, x);
+  }
+
+  /**
    * Builds an {@link Xdivy} operation
    *
    * @param x 
@@ -1356,17 +1367,6 @@ public final class MathOps {
    */
   public <T extends TType> Xdivy<T> xdivy(Operand<T> x, Operand<T> y) {
     return Xdivy.create(scope, x, y);
-  }
-
-  /**
-   * Builds an {@link Tan} operation
-   *
-   * @param x 
-   * @return a new instance of Tan
-   * @see org.tensorflow.op.math.Tan
-   */
-  public <T extends TType> Tan<T> tan(Operand<T> x) {
-    return Tan.create(scope, x);
   }
 
   /**
@@ -1408,18 +1408,6 @@ public final class MathOps {
   }
 
   /**
-   * Builds an {@link Zeta} operation
-   *
-   * @param x 
-   * @param q 
-   * @return a new instance of Zeta
-   * @see org.tensorflow.op.math.Zeta
-   */
-  public <T extends TNumber> Zeta<T> zeta(Operand<T> x, Operand<T> q) {
-    return Zeta.create(scope, x, q);
-  }
-
-  /**
    * Builds an {@link ComplexAbs} operation
    *
    * @param x 
@@ -1430,6 +1418,18 @@ public final class MathOps {
   public <U extends TNumber, T extends TType> ComplexAbs<U> complexAbs(Operand<T> x,
       DataType<U> Tout) {
     return ComplexAbs.create(scope, x, Tout);
+  }
+
+  /**
+   * Builds an {@link Zeta} operation
+   *
+   * @param x 
+   * @param q 
+   * @return a new instance of Zeta
+   * @see org.tensorflow.op.math.Zeta
+   */
+  public <T extends TNumber> Zeta<T> zeta(Operand<T> x, Operand<T> q) {
+    return Zeta.create(scope, x, q);
   }
 
   /**

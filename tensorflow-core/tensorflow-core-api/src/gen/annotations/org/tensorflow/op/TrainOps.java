@@ -468,6 +468,29 @@ public final class TrainOps {
   }
 
   /**
+   * Builds an {@link ResourceSparseApplyAdagradDa} operation
+   *
+   * @param var Should be from a Variable().
+   * @param gradientAccumulator Should be from a Variable().
+   * @param gradientSquaredAccumulator Should be from a Variable().
+   * @param grad The gradient.
+   * @param indices A vector of indices into the first dimension of var and accum.
+   * @param lr Learning rate. Must be a scalar.
+   * @param l1 L1 regularization. Must be a scalar.
+   * @param l2 L2 regularization. Must be a scalar.
+   * @param globalStep Training step number. Must be a scalar.
+   * @param options carries optional attributes values
+   * @return a new instance of ResourceSparseApplyAdagradDa
+   * @see org.tensorflow.op.train.ResourceSparseApplyAdagradDa
+   */
+  public <T extends TType, U extends TNumber> ResourceSparseApplyAdagradDa resourceSparseApplyAdagradDa(
+      Operand<?> var, Operand<?> gradientAccumulator, Operand<?> gradientSquaredAccumulator,
+      Operand<T> grad, Operand<U> indices, Operand<T> lr, Operand<T> l1, Operand<T> l2,
+      Operand<TInt64> globalStep, ResourceSparseApplyAdagradDa.Options... options) {
+    return ResourceSparseApplyAdagradDa.create(scope, var, gradientAccumulator, gradientSquaredAccumulator, grad, indices, lr, l1, l2, globalStep, options);
+  }
+
+  /**
    * Builds an {@link SparseApplyProximalGradientDescent} operation
    *
    * @param var Should be from a Variable().
@@ -497,29 +520,6 @@ public final class TrainOps {
   public <T extends TType> PreventGradient<T> preventGradient(Operand<T> input,
       PreventGradient.Options... options) {
     return PreventGradient.create(scope, input, options);
-  }
-
-  /**
-   * Builds an {@link ResourceSparseApplyAdagradDa} operation
-   *
-   * @param var Should be from a Variable().
-   * @param gradientAccumulator Should be from a Variable().
-   * @param gradientSquaredAccumulator Should be from a Variable().
-   * @param grad The gradient.
-   * @param indices A vector of indices into the first dimension of var and accum.
-   * @param lr Learning rate. Must be a scalar.
-   * @param l1 L1 regularization. Must be a scalar.
-   * @param l2 L2 regularization. Must be a scalar.
-   * @param globalStep Training step number. Must be a scalar.
-   * @param options carries optional attributes values
-   * @return a new instance of ResourceSparseApplyAdagradDa
-   * @see org.tensorflow.op.train.ResourceSparseApplyAdagradDa
-   */
-  public <T extends TType, U extends TNumber> ResourceSparseApplyAdagradDa resourceSparseApplyAdagradDa(
-      Operand<?> var, Operand<?> gradientAccumulator, Operand<?> gradientSquaredAccumulator,
-      Operand<T> grad, Operand<U> indices, Operand<T> lr, Operand<T> l1, Operand<T> l2,
-      Operand<TInt64> globalStep, ResourceSparseApplyAdagradDa.Options... options) {
-    return ResourceSparseApplyAdagradDa.create(scope, var, gradientAccumulator, gradientSquaredAccumulator, grad, indices, lr, l1, l2, globalStep, options);
   }
 
   /**
@@ -576,21 +576,6 @@ public final class TrainOps {
   }
 
   /**
-   * Builds an {@link Save} operation
-   *
-   * @param prefix Must have a single element. The prefix of the V2 checkpoint to which we
-   * @param tensorNames shape {N}. The names of the tensors to be saved.
-   * @param shapeAndSlices shape {N}.  The slice specs of the tensors to be saved.
-   * @param tensors `N` tensors to save.
-   * @return a new instance of Save
-   * @see org.tensorflow.op.train.Save
-   */
-  public Save save(Operand<TString> prefix, Operand<TString> tensorNames,
-      Operand<TString> shapeAndSlices, Iterable<Operand<?>> tensors) {
-    return Save.create(scope, prefix, tensorNames, shapeAndSlices, tensors);
-  }
-
-  /**
    * Builds an {@link ResourceApplyAddSign} operation
    *
    * @param var Should be from a Variable().
@@ -608,6 +593,21 @@ public final class TrainOps {
       Operand<T> lr, Operand<T> alpha, Operand<T> signDecay, Operand<T> beta, Operand<T> grad,
       ResourceApplyAddSign.Options... options) {
     return ResourceApplyAddSign.create(scope, var, m, lr, alpha, signDecay, beta, grad, options);
+  }
+
+  /**
+   * Builds an {@link Save} operation
+   *
+   * @param prefix Must have a single element. The prefix of the V2 checkpoint to which we
+   * @param tensorNames shape {N}. The names of the tensors to be saved.
+   * @param shapeAndSlices shape {N}.  The slice specs of the tensors to be saved.
+   * @param tensors `N` tensors to save.
+   * @return a new instance of Save
+   * @see org.tensorflow.op.train.Save
+   */
+  public Save save(Operand<TString> prefix, Operand<TString> tensorNames,
+      Operand<TString> shapeAndSlices, Iterable<Operand<?>> tensors) {
+    return Save.create(scope, prefix, tensorNames, shapeAndSlices, tensors);
   }
 
   /**
@@ -668,6 +668,17 @@ public final class TrainOps {
   }
 
   /**
+   * Builds an {@link AccumulatorNumAccumulated} operation
+   *
+   * @param handle The handle to an accumulator.
+   * @return a new instance of AccumulatorNumAccumulated
+   * @see org.tensorflow.op.train.AccumulatorNumAccumulated
+   */
+  public AccumulatorNumAccumulated accumulatorNumAccumulated(Operand<TString> handle) {
+    return AccumulatorNumAccumulated.create(scope, handle);
+  }
+
+  /**
    * Builds an {@link MergeV2Checkpoints} operation
    *
    * @param checkpointPrefixes prefixes of V2 checkpoints to merge.
@@ -679,17 +690,6 @@ public final class TrainOps {
   public MergeV2Checkpoints mergeV2Checkpoints(Operand<TString> checkpointPrefixes,
       Operand<TString> destinationPrefix, MergeV2Checkpoints.Options... options) {
     return MergeV2Checkpoints.create(scope, checkpointPrefixes, destinationPrefix, options);
-  }
-
-  /**
-   * Builds an {@link AccumulatorNumAccumulated} operation
-   *
-   * @param handle The handle to an accumulator.
-   * @return a new instance of AccumulatorNumAccumulated
-   * @see org.tensorflow.op.train.AccumulatorNumAccumulated
-   */
-  public AccumulatorNumAccumulated accumulatorNumAccumulated(Operand<TString> handle) {
-    return AccumulatorNumAccumulated.create(scope, handle);
   }
 
   /**
@@ -714,28 +714,6 @@ public final class TrainOps {
   }
 
   /**
-   * Builds an {@link SparseApplyAdadelta} operation
-   *
-   * @param var 
-   * @param accum Should be from a Variable().
-   * @param accumUpdate : Should be from a Variable().
-   * @param lr Learning rate. Must be a scalar.
-   * @param rho Decay factor. Must be a scalar.
-   * @param epsilon Constant factor. Must be a scalar.
-   * @param grad The gradient.
-   * @param indices A vector of indices into the first dimension of var and accum.
-   * @param options carries optional attributes values
-   * @return a new instance of SparseApplyAdadelta
-   * @see org.tensorflow.op.train.SparseApplyAdadelta
-   */
-  public <T extends TType, U extends TNumber> SparseApplyAdadelta<T> sparseApplyAdadelta(
-      Operand<T> var, Operand<T> accum, Operand<T> accumUpdate, Operand<T> lr, Operand<T> rho,
-      Operand<T> epsilon, Operand<T> grad, Operand<U> indices,
-      SparseApplyAdadelta.Options... options) {
-    return SparseApplyAdadelta.create(scope, var, accum, accumUpdate, lr, rho, epsilon, grad, indices, options);
-  }
-
-  /**
    * Builds an {@link SparseApplyCenteredRmsProp} operation
    *
    * @param var Should be from a Variable().
@@ -757,6 +735,28 @@ public final class TrainOps {
       Operand<T> momentum, Operand<T> epsilon, Operand<T> grad, Operand<U> indices,
       SparseApplyCenteredRmsProp.Options... options) {
     return SparseApplyCenteredRmsProp.create(scope, var, mg, ms, mom, lr, rho, momentum, epsilon, grad, indices, options);
+  }
+
+  /**
+   * Builds an {@link SparseApplyAdadelta} operation
+   *
+   * @param var 
+   * @param accum Should be from a Variable().
+   * @param accumUpdate : Should be from a Variable().
+   * @param lr Learning rate. Must be a scalar.
+   * @param rho Decay factor. Must be a scalar.
+   * @param epsilon Constant factor. Must be a scalar.
+   * @param grad The gradient.
+   * @param indices A vector of indices into the first dimension of var and accum.
+   * @param options carries optional attributes values
+   * @return a new instance of SparseApplyAdadelta
+   * @see org.tensorflow.op.train.SparseApplyAdadelta
+   */
+  public <T extends TType, U extends TNumber> SparseApplyAdadelta<T> sparseApplyAdadelta(
+      Operand<T> var, Operand<T> accum, Operand<T> accumUpdate, Operand<T> lr, Operand<T> rho,
+      Operand<T> epsilon, Operand<T> grad, Operand<U> indices,
+      SparseApplyAdadelta.Options... options) {
+    return SparseApplyAdadelta.create(scope, var, accum, accumUpdate, lr, rho, epsilon, grad, indices, options);
   }
 
   /**
@@ -1047,24 +1047,6 @@ public final class TrainOps {
   }
 
   /**
-   * Builds an {@link ResourceApplyMomentum} operation
-   *
-   * @param var Should be from a Variable().
-   * @param accum Should be from a Variable().
-   * @param lr Scaling factor. Must be a scalar.
-   * @param grad The gradient.
-   * @param momentum Momentum. Must be a scalar.
-   * @param options carries optional attributes values
-   * @return a new instance of ResourceApplyMomentum
-   * @see org.tensorflow.op.train.ResourceApplyMomentum
-   */
-  public <T extends TType> ResourceApplyMomentum resourceApplyMomentum(Operand<?> var,
-      Operand<?> accum, Operand<T> lr, Operand<T> grad, Operand<T> momentum,
-      ResourceApplyMomentum.Options... options) {
-    return ResourceApplyMomentum.create(scope, var, accum, lr, grad, momentum, options);
-  }
-
-  /**
    * Builds an {@link ResourceSparseApplyCenteredRmsProp} operation
    *
    * @param var Should be from a Variable().
@@ -1086,6 +1068,24 @@ public final class TrainOps {
       Operand<T> momentum, Operand<T> epsilon, Operand<T> grad, Operand<U> indices,
       ResourceSparseApplyCenteredRmsProp.Options... options) {
     return ResourceSparseApplyCenteredRmsProp.create(scope, var, mg, ms, mom, lr, rho, momentum, epsilon, grad, indices, options);
+  }
+
+  /**
+   * Builds an {@link ResourceApplyMomentum} operation
+   *
+   * @param var Should be from a Variable().
+   * @param accum Should be from a Variable().
+   * @param lr Scaling factor. Must be a scalar.
+   * @param grad The gradient.
+   * @param momentum Momentum. Must be a scalar.
+   * @param options carries optional attributes values
+   * @return a new instance of ResourceApplyMomentum
+   * @see org.tensorflow.op.train.ResourceApplyMomentum
+   */
+  public <T extends TType> ResourceApplyMomentum resourceApplyMomentum(Operand<?> var,
+      Operand<?> accum, Operand<T> lr, Operand<T> grad, Operand<T> momentum,
+      ResourceApplyMomentum.Options... options) {
+    return ResourceApplyMomentum.create(scope, var, accum, lr, grad, momentum, options);
   }
 
   /**
@@ -1182,6 +1182,20 @@ public final class TrainOps {
   }
 
   /**
+   * Builds an {@link AccumulatorTakeGradient} operation
+   *
+   * @param handle The handle to an accumulator.
+   * @param numRequired Number of gradients required before we return an aggregate.
+   * @param dtype The data type of accumulated gradients. Needs to correspond to the type
+   * @return a new instance of AccumulatorTakeGradient
+   * @see org.tensorflow.op.train.AccumulatorTakeGradient
+   */
+  public <T extends TType> AccumulatorTakeGradient<T> accumulatorTakeGradient(
+      Operand<TString> handle, Operand<TInt32> numRequired, DataType<T> dtype) {
+    return AccumulatorTakeGradient.create(scope, handle, numRequired, dtype);
+  }
+
+  /**
    * Builds an {@link SparseApplyMomentum} operation
    *
    * @param var Should be from a Variable().
@@ -1201,17 +1215,18 @@ public final class TrainOps {
   }
 
   /**
-   * Builds an {@link AccumulatorTakeGradient} operation
+   * Builds an {@link ApplyGradientDescent} operation
    *
-   * @param handle The handle to an accumulator.
-   * @param numRequired Number of gradients required before we return an aggregate.
-   * @param dtype The data type of accumulated gradients. Needs to correspond to the type
-   * @return a new instance of AccumulatorTakeGradient
-   * @see org.tensorflow.op.train.AccumulatorTakeGradient
+   * @param var Should be from a Variable().
+   * @param alpha Scaling factor. Must be a scalar.
+   * @param delta The change.
+   * @param options carries optional attributes values
+   * @return a new instance of ApplyGradientDescent
+   * @see org.tensorflow.op.train.ApplyGradientDescent
    */
-  public <T extends TType> AccumulatorTakeGradient<T> accumulatorTakeGradient(
-      Operand<TString> handle, Operand<TInt32> numRequired, DataType<T> dtype) {
-    return AccumulatorTakeGradient.create(scope, handle, numRequired, dtype);
+  public <T extends TType> ApplyGradientDescent<T> applyGradientDescent(Operand<T> var,
+      Operand<T> alpha, Operand<T> delta, ApplyGradientDescent.Options... options) {
+    return ApplyGradientDescent.create(scope, var, alpha, delta, options);
   }
 
   /**
@@ -1234,20 +1249,5 @@ public final class TrainOps {
       Operand<T> epsilon, Operand<T> grad, Operand<U> indices,
       ResourceSparseApplyAdadelta.Options... options) {
     return ResourceSparseApplyAdadelta.create(scope, var, accum, accumUpdate, lr, rho, epsilon, grad, indices, options);
-  }
-
-  /**
-   * Builds an {@link ApplyGradientDescent} operation
-   *
-   * @param var Should be from a Variable().
-   * @param alpha Scaling factor. Must be a scalar.
-   * @param delta The change.
-   * @param options carries optional attributes values
-   * @return a new instance of ApplyGradientDescent
-   * @see org.tensorflow.op.train.ApplyGradientDescent
-   */
-  public <T extends TType> ApplyGradientDescent<T> applyGradientDescent(Operand<T> var,
-      Operand<T> alpha, Operand<T> delta, ApplyGradientDescent.Options... options) {
-    return ApplyGradientDescent.create(scope, var, alpha, delta, options);
   }
 }

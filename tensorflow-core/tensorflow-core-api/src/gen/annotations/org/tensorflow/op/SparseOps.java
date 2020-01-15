@@ -65,21 +65,6 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link SparseDenseCwiseMul} operation
-   *
-   * @param spIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
-   * @param spValues 1-D.  `N` non-empty values corresponding to `sp_indices`.
-   * @param spShape 1-D.  Shape of the input SparseTensor.
-   * @param dense `R`-D.  The dense Tensor operand.
-   * @return a new instance of SparseDenseCwiseMul
-   * @see org.tensorflow.op.sparse.SparseDenseCwiseMul
-   */
-  public <T extends TType> SparseDenseCwiseMul<T> sparseDenseCwiseMul(Operand<TInt64> spIndices,
-      Operand<T> spValues, Operand<TInt64> spShape, Operand<T> dense) {
-    return SparseDenseCwiseMul.create(scope, spIndices, spValues, spShape, dense);
-  }
-
-  /**
    * Builds an {@link SparseSliceGrad} operation
    *
    * @param backpropValGrad 1-D. The gradient with respect to
@@ -92,6 +77,21 @@ public final class SparseOps {
   public <T extends TType> SparseSliceGrad<T> sparseSliceGrad(Operand<T> backpropValGrad,
       Operand<TInt64> inputIndices, Operand<TInt64> inputStart, Operand<TInt64> outputIndices) {
     return SparseSliceGrad.create(scope, backpropValGrad, inputIndices, inputStart, outputIndices);
+  }
+
+  /**
+   * Builds an {@link SparseDenseCwiseMul} operation
+   *
+   * @param spIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
+   * @param spValues 1-D.  `N` non-empty values corresponding to `sp_indices`.
+   * @param spShape 1-D.  Shape of the input SparseTensor.
+   * @param dense `R`-D.  The dense Tensor operand.
+   * @return a new instance of SparseDenseCwiseMul
+   * @see org.tensorflow.op.sparse.SparseDenseCwiseMul
+   */
+  public <T extends TType> SparseDenseCwiseMul<T> sparseDenseCwiseMul(Operand<TInt64> spIndices,
+      Operand<T> spValues, Operand<TInt64> spShape, Operand<T> dense) {
+    return SparseDenseCwiseMul.create(scope, spIndices, spValues, spShape, dense);
   }
 
   /**
@@ -200,6 +200,22 @@ public final class SparseOps {
   }
 
   /**
+   * Builds an {@link AddSparseToTensorsMap} operation
+   *
+   * @param sparseIndices 2-D.  The `indices` of the `SparseTensor`.
+   * @param sparseValues 1-D.  The `values` of the `SparseTensor`.
+   * @param sparseShape 1-D.  The `shape` of the `SparseTensor`.
+   * @param options carries optional attributes values
+   * @return a new instance of AddSparseToTensorsMap
+   * @see org.tensorflow.op.sparse.AddSparseToTensorsMap
+   */
+  public <T extends TType> AddSparseToTensorsMap addSparseToTensorsMap(
+      Operand<TInt64> sparseIndices, Operand<T> sparseValues, Operand<TInt64> sparseShape,
+      AddSparseToTensorsMap.Options... options) {
+    return AddSparseToTensorsMap.create(scope, sparseIndices, sparseValues, sparseShape, options);
+  }
+
+  /**
    * Builds an {@link SparseReshape} operation
    *
    * @param inputIndices 2-D.  `N x R_in` matrix with the indices of non-empty values in a
@@ -232,19 +248,17 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link AddSparseToTensorsMap} operation
+   * Builds an {@link SparseConditionalAccumulator} operation
    *
-   * @param sparseIndices 2-D.  The `indices` of the `SparseTensor`.
-   * @param sparseValues 1-D.  The `values` of the `SparseTensor`.
-   * @param sparseShape 1-D.  The `shape` of the `SparseTensor`.
+   * @param dtype The type of the value being accumulated.
+   * @param shape The shape of the values.
    * @param options carries optional attributes values
-   * @return a new instance of AddSparseToTensorsMap
-   * @see org.tensorflow.op.sparse.AddSparseToTensorsMap
+   * @return a new instance of SparseConditionalAccumulator
+   * @see org.tensorflow.op.sparse.SparseConditionalAccumulator
    */
-  public <T extends TType> AddSparseToTensorsMap addSparseToTensorsMap(
-      Operand<TInt64> sparseIndices, Operand<T> sparseValues, Operand<TInt64> sparseShape,
-      AddSparseToTensorsMap.Options... options) {
-    return AddSparseToTensorsMap.create(scope, sparseIndices, sparseValues, sparseShape, options);
+  public <T extends TType> SparseConditionalAccumulator sparseConditionalAccumulator(
+      DataType<T> dtype, Shape shape, SparseConditionalAccumulator.Options... options) {
+    return SparseConditionalAccumulator.create(scope, dtype, shape, options);
   }
 
   /**
@@ -260,20 +274,6 @@ public final class SparseOps {
   public <T extends TType> SparseDenseCwiseDiv<T> sparseDenseCwiseDiv(Operand<TInt64> spIndices,
       Operand<T> spValues, Operand<TInt64> spShape, Operand<T> dense) {
     return SparseDenseCwiseDiv.create(scope, spIndices, spValues, spShape, dense);
-  }
-
-  /**
-   * Builds an {@link SparseConditionalAccumulator} operation
-   *
-   * @param dtype The type of the value being accumulated.
-   * @param shape The shape of the values.
-   * @param options carries optional attributes values
-   * @return a new instance of SparseConditionalAccumulator
-   * @see org.tensorflow.op.sparse.SparseConditionalAccumulator
-   */
-  public <T extends TType> SparseConditionalAccumulator sparseConditionalAccumulator(
-      DataType<T> dtype, Shape shape, SparseConditionalAccumulator.Options... options) {
-    return SparseConditionalAccumulator.create(scope, dtype, shape, options);
   }
 
   /**
@@ -309,6 +309,21 @@ public final class SparseOps {
   }
 
   /**
+   * Builds an {@link SparseAddGrad} operation
+   *
+   * @param backpropValGrad 1-D with shape `[nnz(sum)]`.  The gradient with respect to
+   * @param aIndices 2-D.  The `indices` of the `SparseTensor` A, size `[nnz(A), ndims]`.
+   * @param bIndices 2-D.  The `indices` of the `SparseTensor` B, size `[nnz(B), ndims]`.
+   * @param sumIndices 2-D.  The `indices` of the sum `SparseTensor`, size
+   * @return a new instance of SparseAddGrad
+   * @see org.tensorflow.op.sparse.SparseAddGrad
+   */
+  public <T extends TType> SparseAddGrad<T> sparseAddGrad(Operand<T> backpropValGrad,
+      Operand<TInt64> aIndices, Operand<TInt64> bIndices, Operand<TInt64> sumIndices) {
+    return SparseAddGrad.create(scope, backpropValGrad, aIndices, bIndices, sumIndices);
+  }
+
+  /**
    * Builds an {@link SparseSplit} operation
    *
    * @param splitDim 0-D.  The dimension along which to split.  Must be in the range
@@ -322,21 +337,6 @@ public final class SparseOps {
   public <T extends TType> SparseSplit<T> sparseSplit(Operand<TInt64> splitDim,
       Operand<TInt64> indices, Operand<T> values, Operand<TInt64> shape, Long numSplit) {
     return SparseSplit.create(scope, splitDim, indices, values, shape, numSplit);
-  }
-
-  /**
-   * Builds an {@link SparseAddGrad} operation
-   *
-   * @param backpropValGrad 1-D with shape `[nnz(sum)]`.  The gradient with respect to
-   * @param aIndices 2-D.  The `indices` of the `SparseTensor` A, size `[nnz(A), ndims]`.
-   * @param bIndices 2-D.  The `indices` of the `SparseTensor` B, size `[nnz(B), ndims]`.
-   * @param sumIndices 2-D.  The `indices` of the sum `SparseTensor`, size
-   * @return a new instance of SparseAddGrad
-   * @see org.tensorflow.op.sparse.SparseAddGrad
-   */
-  public <T extends TType> SparseAddGrad<T> sparseAddGrad(Operand<T> backpropValGrad,
-      Operand<TInt64> aIndices, Operand<TInt64> bIndices, Operand<TInt64> sumIndices) {
-    return SparseAddGrad.create(scope, backpropValGrad, aIndices, bIndices, sumIndices);
   }
 
   /**
@@ -423,22 +423,6 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link AddManySparseToTensorsMap} operation
-   *
-   * @param sparseIndices 2-D.  The `indices` of the minibatch `SparseTensor`.
-   * @param sparseValues 1-D.  The `values` of the minibatch `SparseTensor`.
-   * @param sparseShape 1-D.  The `shape` of the minibatch `SparseTensor`.
-   * @param options carries optional attributes values
-   * @return a new instance of AddManySparseToTensorsMap
-   * @see org.tensorflow.op.sparse.AddManySparseToTensorsMap
-   */
-  public <T extends TType> AddManySparseToTensorsMap addManySparseToTensorsMap(
-      Operand<TInt64> sparseIndices, Operand<T> sparseValues, Operand<TInt64> sparseShape,
-      AddManySparseToTensorsMap.Options... options) {
-    return AddManySparseToTensorsMap.create(scope, sparseIndices, sparseValues, sparseShape, options);
-  }
-
-  /**
    * Builds an {@link SparseAdd} operation
    *
    * @param aIndices 2-D.  The `indices` of the first `SparseTensor`, size `[nnz, ndims]` Matrix.
@@ -455,6 +439,22 @@ public final class SparseOps {
       Operand<T> aValues, Operand<TInt64> aShape, Operand<TInt64> bIndices, Operand<T> bValues,
       Operand<TInt64> bShape, Operand<U> thresh) {
     return SparseAdd.create(scope, aIndices, aValues, aShape, bIndices, bValues, bShape, thresh);
+  }
+
+  /**
+   * Builds an {@link AddManySparseToTensorsMap} operation
+   *
+   * @param sparseIndices 2-D.  The `indices` of the minibatch `SparseTensor`.
+   * @param sparseValues 1-D.  The `values` of the minibatch `SparseTensor`.
+   * @param sparseShape 1-D.  The `shape` of the minibatch `SparseTensor`.
+   * @param options carries optional attributes values
+   * @return a new instance of AddManySparseToTensorsMap
+   * @see org.tensorflow.op.sparse.AddManySparseToTensorsMap
+   */
+  public <T extends TType> AddManySparseToTensorsMap addManySparseToTensorsMap(
+      Operand<TInt64> sparseIndices, Operand<T> sparseValues, Operand<TInt64> sparseShape,
+      AddManySparseToTensorsMap.Options... options) {
+    return AddManySparseToTensorsMap.create(scope, sparseIndices, sparseValues, sparseShape, options);
   }
 
   /**
@@ -503,23 +503,6 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link SparseReduceMax} operation
-   *
-   * @param inputIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
-   * @param inputValues 1-D.  `N` non-empty values corresponding to `input_indices`.
-   * @param inputShape 1-D.  Shape of the input SparseTensor.
-   * @param reductionAxes 1-D.  Length-`K` vector containing the reduction axes.
-   * @param options carries optional attributes values
-   * @return a new instance of SparseReduceMax
-   * @see org.tensorflow.op.sparse.SparseReduceMax
-   */
-  public <T extends TNumber> SparseReduceMax<T> sparseReduceMax(Operand<TInt64> inputIndices,
-      Operand<T> inputValues, Operand<TInt64> inputShape, Operand<TInt32> reductionAxes,
-      SparseReduceMax.Options... options) {
-    return SparseReduceMax.create(scope, inputIndices, inputValues, inputShape, reductionAxes, options);
-  }
-
-  /**
    * Builds an {@link SparseSparseMaximum} operation
    *
    * @param aIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
@@ -538,16 +521,20 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link DeserializeSparse} operation
+   * Builds an {@link SparseReduceMax} operation
    *
-   * @param serializedSparse The serialized `SparseTensor` objects. The last dimension
-   * @param dtype The `dtype` of the serialized `SparseTensor` objects.
-   * @return a new instance of DeserializeSparse
-   * @see org.tensorflow.op.sparse.DeserializeSparse
+   * @param inputIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
+   * @param inputValues 1-D.  `N` non-empty values corresponding to `input_indices`.
+   * @param inputShape 1-D.  Shape of the input SparseTensor.
+   * @param reductionAxes 1-D.  Length-`K` vector containing the reduction axes.
+   * @param options carries optional attributes values
+   * @return a new instance of SparseReduceMax
+   * @see org.tensorflow.op.sparse.SparseReduceMax
    */
-  public <U extends TType, T extends TType> DeserializeSparse<U> deserializeSparse(
-      Operand<T> serializedSparse, DataType<U> dtype) {
-    return DeserializeSparse.create(scope, serializedSparse, dtype);
+  public <T extends TNumber> SparseReduceMax<T> sparseReduceMax(Operand<TInt64> inputIndices,
+      Operand<T> inputValues, Operand<TInt64> inputShape, Operand<TInt32> reductionAxes,
+      SparseReduceMax.Options... options) {
+    return SparseReduceMax.create(scope, inputIndices, inputValues, inputShape, reductionAxes, options);
   }
 
   /**
@@ -563,6 +550,19 @@ public final class SparseOps {
       Operand<TInt64> sparseHandles, DataType<T> dtype,
       TakeManySparseFromTensorsMap.Options... options) {
     return TakeManySparseFromTensorsMap.create(scope, sparseHandles, dtype, options);
+  }
+
+  /**
+   * Builds an {@link DeserializeSparse} operation
+   *
+   * @param serializedSparse The serialized `SparseTensor` objects. The last dimension
+   * @param dtype The `dtype` of the serialized `SparseTensor` objects.
+   * @return a new instance of DeserializeSparse
+   * @see org.tensorflow.op.sparse.DeserializeSparse
+   */
+  public <U extends TType, T extends TType> DeserializeSparse<U> deserializeSparse(
+      Operand<T> serializedSparse, DataType<U> dtype) {
+    return DeserializeSparse.create(scope, serializedSparse, dtype);
   }
 
   /**
@@ -615,24 +615,6 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link SparseSparseMinimum} operation
-   *
-   * @param aIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
-   * @param aValues 1-D.  `N` non-empty values corresponding to `a_indices`.
-   * @param aShape 1-D.  Shape of the input SparseTensor.
-   * @param bIndices counterpart to `a_indices` for the other operand.
-   * @param bValues counterpart to `a_values` for the other operand; must be of the same dtype.
-   * @param bShape counterpart to `a_shape` for the other operand; the two shapes must be equal.
-   * @return a new instance of SparseSparseMinimum
-   * @see org.tensorflow.op.sparse.SparseSparseMinimum
-   */
-  public <T extends TType> SparseSparseMinimum<T> sparseSparseMinimum(Operand<TInt64> aIndices,
-      Operand<T> aValues, Operand<TInt64> aShape, Operand<TInt64> bIndices, Operand<T> bValues,
-      Operand<TInt64> bShape) {
-    return SparseSparseMinimum.create(scope, aIndices, aValues, aShape, bIndices, bValues, bShape);
-  }
-
-  /**
    * Builds an {@link SparseCross} operation
    *
    * @param indices 2-D.  Indices of each input `SparseTensor`.
@@ -652,6 +634,24 @@ public final class SparseOps {
       Iterable<Operand<TInt64>> shapes, Iterable<Operand<?>> denseInputs, Boolean hashedOutput,
       Long numBuckets, Long hashKey, DataType<T> outType, DataType<U> internalType) {
     return SparseCross.create(scope, indices, values, shapes, denseInputs, hashedOutput, numBuckets, hashKey, outType, internalType);
+  }
+
+  /**
+   * Builds an {@link SparseSparseMinimum} operation
+   *
+   * @param aIndices 2-D.  `N x R` matrix with the indices of non-empty values in a
+   * @param aValues 1-D.  `N` non-empty values corresponding to `a_indices`.
+   * @param aShape 1-D.  Shape of the input SparseTensor.
+   * @param bIndices counterpart to `a_indices` for the other operand.
+   * @param bValues counterpart to `a_values` for the other operand; must be of the same dtype.
+   * @param bShape counterpart to `a_shape` for the other operand; the two shapes must be equal.
+   * @return a new instance of SparseSparseMinimum
+   * @see org.tensorflow.op.sparse.SparseSparseMinimum
+   */
+  public <T extends TType> SparseSparseMinimum<T> sparseSparseMinimum(Operand<TInt64> aIndices,
+      Operand<T> aValues, Operand<TInt64> aShape, Operand<TInt64> bIndices, Operand<T> bValues,
+      Operand<TInt64> bShape) {
+    return SparseSparseMinimum.create(scope, aIndices, aValues, aShape, bIndices, bValues, bShape);
   }
 
   /**
@@ -713,20 +713,6 @@ public final class SparseOps {
   }
 
   /**
-   * Builds an {@link SparseSegmentSqrtN} operation
-   *
-   * @param data 
-   * @param indices A 1-D tensor. Has same rank as `segment_ids`.
-   * @param segmentIds A 1-D tensor. Values should be sorted and can be repeated.
-   * @return a new instance of SparseSegmentSqrtN
-   * @see org.tensorflow.op.sparse.SparseSegmentSqrtN
-   */
-  public <T extends TNumber, U extends TNumber> SparseSegmentSqrtN<T> sparseSegmentSqrtN(
-      Operand<T> data, Operand<U> indices, Operand<TInt32> segmentIds) {
-    return SparseSegmentSqrtN.create(scope, data, indices, segmentIds);
-  }
-
-  /**
    * Builds an {@link SparseTensorDenseAdd} operation
    *
    * @param aIndices 2-D.  The `indices` of the `SparseTensor`, with shape `[nnz, ndims]`.
@@ -739,5 +725,19 @@ public final class SparseOps {
   public <U extends TType, T extends TNumber> SparseTensorDenseAdd<U> sparseTensorDenseAdd(
       Operand<T> aIndices, Operand<U> aValues, Operand<T> aShape, Operand<U> b) {
     return SparseTensorDenseAdd.create(scope, aIndices, aValues, aShape, b);
+  }
+
+  /**
+   * Builds an {@link SparseSegmentSqrtN} operation
+   *
+   * @param data 
+   * @param indices A 1-D tensor. Has same rank as `segment_ids`.
+   * @param segmentIds A 1-D tensor. Values should be sorted and can be repeated.
+   * @return a new instance of SparseSegmentSqrtN
+   * @see org.tensorflow.op.sparse.SparseSegmentSqrtN
+   */
+  public <T extends TNumber, U extends TNumber> SparseSegmentSqrtN<T> sparseSegmentSqrtN(
+      Operand<T> data, Operand<U> indices, Operand<TInt32> segmentIds) {
+    return SparseSegmentSqrtN.create(scope, data, indices, segmentIds);
   }
 }

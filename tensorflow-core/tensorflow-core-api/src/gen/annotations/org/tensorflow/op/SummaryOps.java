@@ -81,6 +81,17 @@ public final class SummaryOps {
   }
 
   /**
+   * Builds an {@link MergeSummary} operation
+   *
+   * @param inputs Can be of any shape.  Each must contain serialized `Summary` protocol
+   * @return a new instance of MergeSummary
+   * @see org.tensorflow.op.summary.MergeSummary
+   */
+  public MergeSummary mergeSummary(Iterable<Operand<TString>> inputs) {
+    return MergeSummary.create(scope, inputs);
+  }
+
+  /**
    * Builds an {@link ScalarSummary} operation
    *
    * @param tags Tags for the summary.
@@ -90,16 +101,5 @@ public final class SummaryOps {
    */
   public <T extends TNumber> ScalarSummary scalarSummary(Operand<TString> tags, Operand<T> values) {
     return ScalarSummary.create(scope, tags, values);
-  }
-
-  /**
-   * Builds an {@link MergeSummary} operation
-   *
-   * @param inputs Can be of any shape.  Each must contain serialized `Summary` protocol
-   * @return a new instance of MergeSummary
-   * @see org.tensorflow.op.summary.MergeSummary
-   */
-  public MergeSummary mergeSummary(Iterable<Operand<TString>> inputs) {
-    return MergeSummary.create(scope, inputs);
   }
 }

@@ -147,6 +147,17 @@ public final class SignalOps {
   }
 
   /**
+   * Builds an {@link Fft} operation
+   *
+   * @param input A complex tensor.
+   * @return a new instance of Fft
+   * @see org.tensorflow.op.signal.Fft
+   */
+  public <T extends TType> Fft<T> fft(Operand<T> input) {
+    return Fft.create(scope, input);
+  }
+
+  /**
    * Builds an {@link Irfft2d} operation
    *
    * @param input A complex tensor.
@@ -156,17 +167,6 @@ public final class SignalOps {
    */
   public <T extends TType> Irfft2d<TFloat32> irfft2d(Operand<T> input, Operand<TInt32> fftLength) {
     return Irfft2d.create(scope, input, fftLength);
-  }
-
-  /**
-   * Builds an {@link Fft} operation
-   *
-   * @param input A complex tensor.
-   * @return a new instance of Fft
-   * @see org.tensorflow.op.signal.Fft
-   */
-  public <T extends TType> Fft<T> fft(Operand<T> input) {
-    return Fft.create(scope, input);
   }
 
   /**
@@ -193,6 +193,17 @@ public final class SignalOps {
   }
 
   /**
+   * Builds an {@link Ifft} operation
+   *
+   * @param input A complex tensor.
+   * @return a new instance of Ifft
+   * @see org.tensorflow.op.signal.Ifft
+   */
+  public <T extends TType> Ifft<T> ifft(Operand<T> input) {
+    return Ifft.create(scope, input);
+  }
+
+  /**
    * Builds an {@link Rfft} operation
    *
    * @param input A float32 tensor.
@@ -207,14 +218,14 @@ public final class SignalOps {
   }
 
   /**
-   * Builds an {@link Ifft} operation
+   * Builds an {@link Fft3d} operation
    *
    * @param input A complex tensor.
-   * @return a new instance of Ifft
-   * @see org.tensorflow.op.signal.Ifft
+   * @return a new instance of Fft3d
+   * @see org.tensorflow.op.signal.Fft3d
    */
-  public <T extends TType> Ifft<T> ifft(Operand<T> input) {
-    return Ifft.create(scope, input);
+  public <T extends TType> Fft3d<T> fft3d(Operand<T> input) {
+    return Fft3d.create(scope, input);
   }
 
   /**
@@ -229,17 +240,6 @@ public final class SignalOps {
   public <U extends TNumber, T extends TType> Irfft2d<U> irfft2d(Operand<T> input,
       Operand<TInt32> fftLength, DataType<U> Treal) {
     return Irfft2d.create(scope, input, fftLength, Treal);
-  }
-
-  /**
-   * Builds an {@link Fft3d} operation
-   *
-   * @param input A complex tensor.
-   * @return a new instance of Fft3d
-   * @see org.tensorflow.op.signal.Fft3d
-   */
-  public <T extends TType> Fft3d<T> fft3d(Operand<T> input) {
-    return Fft3d.create(scope, input);
   }
 
   /**

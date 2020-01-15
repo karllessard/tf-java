@@ -111,20 +111,6 @@ public final class LinalgSparseOps {
   }
 
   /**
-   * Builds an {@link SparseMatrixSparseCholesky} operation
-   *
-   * @param input A `CSRSparseMatrix`.
-   * @param permutation A fill-in reducing permutation matrix.
-   * @param type 
-   * @return a new instance of SparseMatrixSparseCholesky
-   * @see org.tensorflow.op.linalg.sparse.SparseMatrixSparseCholesky
-   */
-  public <T extends TType> SparseMatrixSparseCholesky sparseMatrixSparseCholesky(Operand<?> input,
-      Operand<TInt32> permutation, DataType<T> type) {
-    return SparseMatrixSparseCholesky.create(scope, input, permutation, type);
-  }
-
-  /**
    * Builds an {@link SparseTensorToCSRSparseMatrix} operation
    *
    * @param indices SparseTensor indices.
@@ -136,6 +122,20 @@ public final class LinalgSparseOps {
   public <T extends TType> SparseTensorToCSRSparseMatrix sparseTensorToCSRSparseMatrix(
       Operand<TInt64> indices, Operand<T> values, Operand<TInt64> denseShape) {
     return SparseTensorToCSRSparseMatrix.create(scope, indices, values, denseShape);
+  }
+
+  /**
+   * Builds an {@link SparseMatrixSparseCholesky} operation
+   *
+   * @param input A `CSRSparseMatrix`.
+   * @param permutation A fill-in reducing permutation matrix.
+   * @param type 
+   * @return a new instance of SparseMatrixSparseCholesky
+   * @see org.tensorflow.op.linalg.sparse.SparseMatrixSparseCholesky
+   */
+  public <T extends TType> SparseMatrixSparseCholesky sparseMatrixSparseCholesky(Operand<?> input,
+      Operand<TInt32> permutation, DataType<T> type) {
+    return SparseMatrixSparseCholesky.create(scope, input, permutation, type);
   }
 
   /**
@@ -193,6 +193,19 @@ public final class LinalgSparseOps {
   }
 
   /**
+   * Builds an {@link CSRSparseMatrixToSparseTensor} operation
+   *
+   * @param sparseMatrix A (possibly batched) CSRSparseMatrix.
+   * @param type 
+   * @return a new instance of CSRSparseMatrixToSparseTensor
+   * @see org.tensorflow.op.linalg.sparse.CSRSparseMatrixToSparseTensor
+   */
+  public <T extends TType> CSRSparseMatrixToSparseTensor<T> cSRSparseMatrixToSparseTensor(
+      Operand<?> sparseMatrix, DataType<T> type) {
+    return CSRSparseMatrixToSparseTensor.create(scope, sparseMatrix, type);
+  }
+
+  /**
    * Builds an {@link SparseMatrixTranspose} operation
    *
    * @param input A CSRSparseMatrix.
@@ -204,18 +217,5 @@ public final class LinalgSparseOps {
   public <T extends TType> SparseMatrixTranspose sparseMatrixTranspose(Operand<?> input,
       DataType<T> type, SparseMatrixTranspose.Options... options) {
     return SparseMatrixTranspose.create(scope, input, type, options);
-  }
-
-  /**
-   * Builds an {@link CSRSparseMatrixToSparseTensor} operation
-   *
-   * @param sparseMatrix A (possibly batched) CSRSparseMatrix.
-   * @param type 
-   * @return a new instance of CSRSparseMatrixToSparseTensor
-   * @see org.tensorflow.op.linalg.sparse.CSRSparseMatrixToSparseTensor
-   */
-  public <T extends TType> CSRSparseMatrixToSparseTensor<T> cSRSparseMatrixToSparseTensor(
-      Operand<?> sparseMatrix, DataType<T> type) {
-    return CSRSparseMatrixToSparseTensor.create(scope, sparseMatrix, type);
   }
 }
