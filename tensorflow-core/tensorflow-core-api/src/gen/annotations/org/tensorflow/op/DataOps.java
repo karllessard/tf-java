@@ -86,14 +86,15 @@ public final class DataOps {
   }
 
   /**
-   * Builds an {@link SerializeIterator} operation
+   * Builds an {@link DeserializeIterator} operation
    *
    * @param resourceHandle A handle to an iterator resource.
-   * @return a new instance of SerializeIterator
-   * @see org.tensorflow.op.data.SerializeIterator
+   * @param serialized A variant tensor storing the state of the iterator contained in the
+   * @return a new instance of DeserializeIterator
+   * @see org.tensorflow.op.data.DeserializeIterator
    */
-  public SerializeIterator serializeIterator(Operand<?> resourceHandle) {
-    return SerializeIterator.create(scope, resourceHandle);
+  public DeserializeIterator deserializeIterator(Operand<?> resourceHandle, Operand<?> serialized) {
+    return DeserializeIterator.create(scope, resourceHandle, serialized);
   }
 
   /**
@@ -109,18 +110,6 @@ public final class DataOps {
   }
 
   /**
-   * Builds an {@link DeserializeIterator} operation
-   *
-   * @param resourceHandle A handle to an iterator resource.
-   * @param serialized A variant tensor storing the state of the iterator contained in the
-   * @return a new instance of DeserializeIterator
-   * @see org.tensorflow.op.data.DeserializeIterator
-   */
-  public DeserializeIterator deserializeIterator(Operand<?> resourceHandle, Operand<?> serialized) {
-    return DeserializeIterator.create(scope, resourceHandle, serialized);
-  }
-
-  /**
    * Builds an {@link OptionalGetValue} operation
    *
    * @param optional 
@@ -132,6 +121,17 @@ public final class DataOps {
   public OptionalGetValue optionalGetValue(Operand<?> optional, List<DataType<?>> outputTypes,
       List<Shape> outputShapes) {
     return OptionalGetValue.create(scope, optional, outputTypes, outputShapes);
+  }
+
+  /**
+   * Builds an {@link SerializeIterator} operation
+   *
+   * @param resourceHandle A handle to an iterator resource.
+   * @return a new instance of SerializeIterator
+   * @see org.tensorflow.op.data.SerializeIterator
+   */
+  public SerializeIterator serializeIterator(Operand<?> resourceHandle) {
+    return SerializeIterator.create(scope, resourceHandle);
   }
 
   /**

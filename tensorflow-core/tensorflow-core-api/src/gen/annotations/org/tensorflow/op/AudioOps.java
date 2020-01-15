@@ -46,20 +46,6 @@ public final class AudioOps {
   }
 
   /**
-   * Builds an {@link Mfcc} operation
-   *
-   * @param spectrogram Typically produced by the Spectrogram op, with magnitude_squared
-   * @param sampleRate How many samples per second the source audio used.
-   * @param options carries optional attributes values
-   * @return a new instance of Mfcc
-   * @see org.tensorflow.op.audio.Mfcc
-   */
-  public Mfcc mfcc(Operand<TFloat32> spectrogram, Operand<TInt32> sampleRate,
-      Mfcc.Options... options) {
-    return Mfcc.create(scope, spectrogram, sampleRate, options);
-  }
-
-  /**
    * Builds an {@link AudioSpectrogram} operation
    *
    * @param input Float representation of audio data.
@@ -72,5 +58,19 @@ public final class AudioOps {
   public AudioSpectrogram audioSpectrogram(Operand<TFloat32> input, Long windowSize, Long stride,
       AudioSpectrogram.Options... options) {
     return AudioSpectrogram.create(scope, input, windowSize, stride, options);
+  }
+
+  /**
+   * Builds an {@link Mfcc} operation
+   *
+   * @param spectrogram Typically produced by the Spectrogram op, with magnitude_squared
+   * @param sampleRate How many samples per second the source audio used.
+   * @param options carries optional attributes values
+   * @return a new instance of Mfcc
+   * @see org.tensorflow.op.audio.Mfcc
+   */
+  public Mfcc mfcc(Operand<TFloat32> spectrogram, Operand<TInt32> sampleRate,
+      Mfcc.Options... options) {
+    return Mfcc.create(scope, spectrogram, sampleRate, options);
   }
 }

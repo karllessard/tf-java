@@ -192,6 +192,17 @@ public final class StringsOps {
   }
 
   /**
+   * Builds an {@link ToNumber} operation
+   *
+   * @param stringTensor 
+   * @return a new instance of ToNumber
+   * @see org.tensorflow.op.strings.ToNumber
+   */
+  public ToNumber<TFloat32> toNumber(Operand<TString> stringTensor) {
+    return ToNumber.create(scope, stringTensor);
+  }
+
+  /**
    * Builds an {@link StringSplit} operation
    *
    * @param input `1-D` string `Tensor`, the strings to split.
@@ -218,17 +229,6 @@ public final class StringsOps {
   }
 
   /**
-   * Builds an {@link ToNumber} operation
-   *
-   * @param stringTensor 
-   * @return a new instance of ToNumber
-   * @see org.tensorflow.op.strings.ToNumber
-   */
-  public ToNumber<TFloat32> toNumber(Operand<TString> stringTensor) {
-    return ToNumber.create(scope, stringTensor);
-  }
-
-  /**
    * Builds an {@link UnicodeScript} operation
    *
    * @param input A Tensor of int32 Unicode code points.
@@ -237,6 +237,20 @@ public final class StringsOps {
    */
   public UnicodeScript unicodeScript(Operand<TInt32> input) {
     return UnicodeScript.create(scope, input);
+  }
+
+  /**
+   * Builds an {@link ReduceJoin} operation
+   *
+   * @param inputs The input to be joined.  All reduced indices must have non-zero size.
+   * @param reductionIndices The dimensions to reduce over.  Dimensions are reduced in the
+   * @param options carries optional attributes values
+   * @return a new instance of ReduceJoin
+   * @see org.tensorflow.op.strings.ReduceJoin
+   */
+  public ReduceJoin reduceJoin(Operand<TString> inputs, Operand<TInt32> reductionIndices,
+      ReduceJoin.Options... options) {
+    return ReduceJoin.create(scope, inputs, reductionIndices, options);
   }
 
   /**
@@ -264,20 +278,6 @@ public final class StringsOps {
   public <T extends TNumber> ToNumber<T> toNumber(Operand<TString> stringTensor,
       DataType<T> outType) {
     return ToNumber.create(scope, stringTensor, outType);
-  }
-
-  /**
-   * Builds an {@link ReduceJoin} operation
-   *
-   * @param inputs The input to be joined.  All reduced indices must have non-zero size.
-   * @param reductionIndices The dimensions to reduce over.  Dimensions are reduced in the
-   * @param options carries optional attributes values
-   * @return a new instance of ReduceJoin
-   * @see org.tensorflow.op.strings.ReduceJoin
-   */
-  public ReduceJoin reduceJoin(Operand<TString> inputs, Operand<TInt32> reductionIndices,
-      ReduceJoin.Options... options) {
-    return ReduceJoin.create(scope, inputs, reductionIndices, options);
   }
 
   /**

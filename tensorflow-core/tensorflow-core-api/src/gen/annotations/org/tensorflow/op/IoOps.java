@@ -135,19 +135,6 @@ public final class IoOps {
   }
 
   /**
-   * Builds an {@link ParseTensor} operation
-   *
-   * @param serialized A scalar string containing a serialized TensorProto proto.
-   * @param outType The type of the serialized tensor.  The provided type must match the
-   * @return a new instance of ParseTensor
-   * @see org.tensorflow.op.io.ParseTensor
-   */
-  public <T extends TType> ParseTensor<T> parseTensor(Operand<TString> serialized,
-      DataType<T> outType) {
-    return ParseTensor.create(scope, serialized, outType);
-  }
-
-  /**
    * Builds an {@link SerializeSparse} operation
    *
    * @param sparseIndices 2-D.  The `indices` of the `SparseTensor`.
@@ -161,6 +148,19 @@ public final class IoOps {
       Operand<TInt64> sparseIndices, Operand<T> sparseValues, Operand<TInt64> sparseShape,
       DataType<U> outType) {
     return SerializeSparse.create(scope, sparseIndices, sparseValues, sparseShape, outType);
+  }
+
+  /**
+   * Builds an {@link ParseTensor} operation
+   *
+   * @param serialized A scalar string containing a serialized TensorProto proto.
+   * @param outType The type of the serialized tensor.  The provided type must match the
+   * @return a new instance of ParseTensor
+   * @see org.tensorflow.op.io.ParseTensor
+   */
+  public <T extends TType> ParseTensor<T> parseTensor(Operand<TString> serialized,
+      DataType<T> outType) {
+    return ParseTensor.create(scope, serialized, outType);
   }
 
   /**
@@ -261,6 +261,17 @@ public final class IoOps {
   }
 
   /**
+   * Builds an {@link ReaderNumRecordsProduced} operation
+   *
+   * @param readerHandle Handle to a Reader.
+   * @return a new instance of ReaderNumRecordsProduced
+   * @see org.tensorflow.op.io.ReaderNumRecordsProduced
+   */
+  public ReaderNumRecordsProduced readerNumRecordsProduced(Operand<?> readerHandle) {
+    return ReaderNumRecordsProduced.create(scope, readerHandle);
+  }
+
+  /**
    * Builds an {@link WriteFile} operation
    *
    * @param filename scalar. The name of the file to which we write the contents.
@@ -270,17 +281,6 @@ public final class IoOps {
    */
   public WriteFile writeFile(Operand<TString> filename, Operand<TString> contents) {
     return WriteFile.create(scope, filename, contents);
-  }
-
-  /**
-   * Builds an {@link ReaderNumRecordsProduced} operation
-   *
-   * @param readerHandle Handle to a Reader.
-   * @return a new instance of ReaderNumRecordsProduced
-   * @see org.tensorflow.op.io.ReaderNumRecordsProduced
-   */
-  public ReaderNumRecordsProduced readerNumRecordsProduced(Operand<?> readerHandle) {
-    return ReaderNumRecordsProduced.create(scope, readerHandle);
   }
 
   /**
@@ -415,6 +415,17 @@ public final class IoOps {
   }
 
   /**
+   * Builds an {@link TfRecordReader} operation
+   *
+   * @param options carries optional attributes values
+   * @return a new instance of TfRecordReader
+   * @see org.tensorflow.op.io.TfRecordReader
+   */
+  public TfRecordReader tfRecordReader(TfRecordReader.Options... options) {
+    return TfRecordReader.create(scope, options);
+  }
+
+  /**
    * Builds an {@link ShardedFilespec} operation
    *
    * @param basename 
@@ -424,17 +435,6 @@ public final class IoOps {
    */
   public ShardedFilespec shardedFilespec(Operand<TString> basename, Operand<TInt32> numShards) {
     return ShardedFilespec.create(scope, basename, numShards);
-  }
-
-  /**
-   * Builds an {@link TfRecordReader} operation
-   *
-   * @param options carries optional attributes values
-   * @return a new instance of TfRecordReader
-   * @see org.tensorflow.op.io.TfRecordReader
-   */
-  public TfRecordReader tfRecordReader(TfRecordReader.Options... options) {
-    return TfRecordReader.create(scope, options);
   }
 
   /**
@@ -609,17 +609,6 @@ public final class IoOps {
   }
 
   /**
-   * Builds an {@link QueueIsClosed} operation
-   *
-   * @param handle The handle to a queue.
-   * @return a new instance of QueueIsClosed
-   * @see org.tensorflow.op.io.QueueIsClosed
-   */
-  public QueueIsClosed queueIsClosed(Operand<?> handle) {
-    return QueueIsClosed.create(scope, handle);
-  }
-
-  /**
    * Builds an {@link DecodeCompressed} operation
    *
    * @param bytes A Tensor of string which is compressed.
@@ -630,6 +619,17 @@ public final class IoOps {
   public DecodeCompressed decodeCompressed(Operand<TString> bytes,
       DecodeCompressed.Options... options) {
     return DecodeCompressed.create(scope, bytes, options);
+  }
+
+  /**
+   * Builds an {@link QueueIsClosed} operation
+   *
+   * @param handle The handle to a queue.
+   * @return a new instance of QueueIsClosed
+   * @see org.tensorflow.op.io.QueueIsClosed
+   */
+  public QueueIsClosed queueIsClosed(Operand<?> handle) {
+    return QueueIsClosed.create(scope, handle);
   }
 
   /**
@@ -657,6 +657,17 @@ public final class IoOps {
   }
 
   /**
+   * Builds an {@link TextLineReader} operation
+   *
+   * @param options carries optional attributes values
+   * @return a new instance of TextLineReader
+   * @see org.tensorflow.op.io.TextLineReader
+   */
+  public TextLineReader textLineReader(TextLineReader.Options... options) {
+    return TextLineReader.create(scope, options);
+  }
+
+  /**
    * Builds an {@link QueueDequeue} operation
    *
    * @param handle The handle to a queue.
@@ -671,17 +682,6 @@ public final class IoOps {
   }
 
   /**
-   * Builds an {@link TextLineReader} operation
-   *
-   * @param options carries optional attributes values
-   * @return a new instance of TextLineReader
-   * @see org.tensorflow.op.io.TextLineReader
-   */
-  public TextLineReader textLineReader(TextLineReader.Options... options) {
-    return TextLineReader.create(scope, options);
-  }
-
-  /**
    * Builds an {@link FixedLengthRecordReader} operation
    *
    * @param recordBytes Number of bytes in the record.
@@ -692,21 +692,6 @@ public final class IoOps {
   public FixedLengthRecordReader fixedLengthRecordReader(Long recordBytes,
       FixedLengthRecordReader.Options... options) {
     return FixedLengthRecordReader.create(scope, recordBytes, options);
-  }
-
-  /**
-   * Builds an {@link DecodePaddedRaw} operation
-   *
-   * @param inputBytes Tensor of string to be decoded.
-   * @param fixedLength Length in bytes for each element of the decoded output. Must be a multiple
-   * @param outType 
-   * @param options carries optional attributes values
-   * @return a new instance of DecodePaddedRaw
-   * @see org.tensorflow.op.io.DecodePaddedRaw
-   */
-  public <T extends TNumber> DecodePaddedRaw<T> decodePaddedRaw(Operand<TString> inputBytes,
-      Operand<TInt32> fixedLength, DataType<T> outType, DecodePaddedRaw.Options... options) {
-    return DecodePaddedRaw.create(scope, inputBytes, fixedLength, outType, options);
   }
 
   /**
@@ -732,5 +717,20 @@ public final class IoOps {
   public PaddingFifoQueue paddingFifoQueue(List<DataType<?>> componentTypes,
       PaddingFifoQueue.Options... options) {
     return PaddingFifoQueue.create(scope, componentTypes, options);
+  }
+
+  /**
+   * Builds an {@link DecodePaddedRaw} operation
+   *
+   * @param inputBytes Tensor of string to be decoded.
+   * @param fixedLength Length in bytes for each element of the decoded output. Must be a multiple
+   * @param outType 
+   * @param options carries optional attributes values
+   * @return a new instance of DecodePaddedRaw
+   * @see org.tensorflow.op.io.DecodePaddedRaw
+   */
+  public <T extends TNumber> DecodePaddedRaw<T> decodePaddedRaw(Operand<TString> inputBytes,
+      Operand<TInt32> fixedLength, DataType<T> outType, DecodePaddedRaw.Options... options) {
+    return DecodePaddedRaw.create(scope, inputBytes, fixedLength, outType, options);
   }
 }

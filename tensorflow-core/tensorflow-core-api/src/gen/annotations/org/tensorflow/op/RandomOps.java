@@ -123,17 +123,18 @@ public final class RandomOps {
   }
 
   /**
-   * Builds an {@link StatelessTruncatedNormal} operation
+   * Builds an {@link Multinomial} operation
    *
-   * @param shape The shape of the output tensor.
-   * @param seed 2 seeds (shape [2]).
-   * @param dtype The type of the output.
-   * @return a new instance of StatelessTruncatedNormal
-   * @see org.tensorflow.op.random.StatelessTruncatedNormal
+   * @param logits 2-D Tensor with shape `[batch_size, num_classes]`.  Each slice `[i, :]`
+   * @param numSamples 0-D.  Number of independent samples to draw for each row slice.
+   * @param outputDtype 
+   * @param options carries optional attributes values
+   * @return a new instance of Multinomial
+   * @see org.tensorflow.op.random.Multinomial
    */
-  public <V extends TNumber, T extends TNumber, U extends TNumber> StatelessTruncatedNormal<V> statelessTruncatedNormal(
-      Operand<T> shape, Operand<U> seed, DataType<V> dtype) {
-    return StatelessTruncatedNormal.create(scope, shape, seed, dtype);
+  public <U extends TNumber, T extends TNumber> Multinomial<U> multinomial(Operand<T> logits,
+      Operand<TInt32> numSamples, DataType<U> outputDtype, Multinomial.Options... options) {
+    return Multinomial.create(scope, logits, numSamples, outputDtype, options);
   }
 
   /**
@@ -151,18 +152,17 @@ public final class RandomOps {
   }
 
   /**
-   * Builds an {@link Multinomial} operation
+   * Builds an {@link StatelessTruncatedNormal} operation
    *
-   * @param logits 2-D Tensor with shape `[batch_size, num_classes]`.  Each slice `[i, :]`
-   * @param numSamples 0-D.  Number of independent samples to draw for each row slice.
-   * @param outputDtype 
-   * @param options carries optional attributes values
-   * @return a new instance of Multinomial
-   * @see org.tensorflow.op.random.Multinomial
+   * @param shape The shape of the output tensor.
+   * @param seed 2 seeds (shape [2]).
+   * @param dtype The type of the output.
+   * @return a new instance of StatelessTruncatedNormal
+   * @see org.tensorflow.op.random.StatelessTruncatedNormal
    */
-  public <U extends TNumber, T extends TNumber> Multinomial<U> multinomial(Operand<T> logits,
-      Operand<TInt32> numSamples, DataType<U> outputDtype, Multinomial.Options... options) {
-    return Multinomial.create(scope, logits, numSamples, outputDtype, options);
+  public <V extends TNumber, T extends TNumber, U extends TNumber> StatelessTruncatedNormal<V> statelessTruncatedNormal(
+      Operand<T> shape, Operand<U> seed, DataType<V> dtype) {
+    return StatelessTruncatedNormal.create(scope, shape, seed, dtype);
   }
 
   /**
@@ -349,6 +349,20 @@ public final class RandomOps {
   }
 
   /**
+   * Builds an {@link StatelessRandomNormal} operation
+   *
+   * @param shape The shape of the output tensor.
+   * @param seed 2 seeds (shape [2]).
+   * @param dtype The type of the output.
+   * @return a new instance of StatelessRandomNormal
+   * @see org.tensorflow.op.random.StatelessRandomNormal
+   */
+  public <V extends TNumber, T extends TNumber, U extends TNumber> StatelessRandomNormal<V> statelessRandomNormal(
+      Operand<T> shape, Operand<U> seed, DataType<V> dtype) {
+    return StatelessRandomNormal.create(scope, shape, seed, dtype);
+  }
+
+  /**
    * Builds an {@link StatefulStandardNormal} operation
    *
    * @param resource The handle of the resource variable that stores the state of the RNG.
@@ -361,20 +375,6 @@ public final class RandomOps {
   public <U extends TType, T extends TType> StatefulStandardNormal<U> statefulStandardNormal(
       Operand<?> resource, Operand<TInt64> algorithm, Operand<T> shape, DataType<U> dtype) {
     return StatefulStandardNormal.create(scope, resource, algorithm, shape, dtype);
-  }
-
-  /**
-   * Builds an {@link StatelessRandomNormal} operation
-   *
-   * @param shape The shape of the output tensor.
-   * @param seed 2 seeds (shape [2]).
-   * @param dtype The type of the output.
-   * @return a new instance of StatelessRandomNormal
-   * @see org.tensorflow.op.random.StatelessRandomNormal
-   */
-  public <V extends TNumber, T extends TNumber, U extends TNumber> StatelessRandomNormal<V> statelessRandomNormal(
-      Operand<T> shape, Operand<U> seed, DataType<V> dtype) {
-    return StatelessRandomNormal.create(scope, shape, seed, dtype);
   }
 
   /**
@@ -409,20 +409,6 @@ public final class RandomOps {
   }
 
   /**
-   * Builds an {@link RandomStandardNormal} operation
-   *
-   * @param shape The shape of the output tensor.
-   * @param dtype The type of the output.
-   * @param options carries optional attributes values
-   * @return a new instance of RandomStandardNormal
-   * @see org.tensorflow.op.random.RandomStandardNormal
-   */
-  public <U extends TNumber, T extends TNumber> RandomStandardNormal<U> randomStandardNormal(
-      Operand<T> shape, DataType<U> dtype, RandomStandardNormal.Options... options) {
-    return RandomStandardNormal.create(scope, shape, dtype, options);
-  }
-
-  /**
    * Builds an {@link RandomUniform} operation
    *
    * @param shape The shape of the output tensor.
@@ -434,5 +420,19 @@ public final class RandomOps {
   public <U extends TNumber, T extends TNumber> RandomUniform<U> randomUniform(Operand<T> shape,
       DataType<U> dtype, RandomUniform.Options... options) {
     return RandomUniform.create(scope, shape, dtype, options);
+  }
+
+  /**
+   * Builds an {@link RandomStandardNormal} operation
+   *
+   * @param shape The shape of the output tensor.
+   * @param dtype The type of the output.
+   * @param options carries optional attributes values
+   * @return a new instance of RandomStandardNormal
+   * @see org.tensorflow.op.random.RandomStandardNormal
+   */
+  public <U extends TNumber, T extends TNumber> RandomStandardNormal<U> randomStandardNormal(
+      Operand<T> shape, DataType<U> dtype, RandomStandardNormal.Options... options) {
+    return RandomStandardNormal.create(scope, shape, dtype, options);
   }
 }
