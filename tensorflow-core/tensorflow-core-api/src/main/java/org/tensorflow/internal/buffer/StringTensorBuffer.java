@@ -29,10 +29,10 @@ import org.tensorflow.tools.ndarray.NdArray;
 public class StringTensorBuffer extends AbstractDataBuffer<byte[]> {
 
   public static <T> long computeSize(NdArray<T> src, Function<T, byte[]> toBytes) {
-    // reserve space to store 64-bit offsets
+    // reserve space to store one 64-bit offset of each value
     long size = src.size() * Long.BYTES;
 
-    // reserve space to store length and data of each values
+    // reserve space to store the length and data of each values
     for (NdArray<T> scalar : src.scalars()) {
       byte[] elementBytes = toBytes.apply(scalar.getObject());
       size += elementBytes.length + StringTensorBuffer.varintLength(elementBytes.length);
@@ -117,7 +117,7 @@ public class StringTensorBuffer extends AbstractDataBuffer<byte[]> {
     long offsetIndex = 0;
     long dataIndex = 0;
 
-    public void writeNext(byte[] bytes) {
+    void writeNext(byte[] bytes) {
       offsets.setLong(dataIndex, offsetIndex++);
 
       // Encode string length as a varint first
