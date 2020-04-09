@@ -1,124 +1,840 @@
-diff -ruN a/tensorflow/core/protobuf/bfc_memory_map.proto b/tensorflow/core/protobuf/bfc_memory_map.proto
---- a/tensorflow/core/protobuf/bfc_memory_map.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/bfc_memory_map.proto	2020-03-30 23:43:29.000000000 -0400
-@@ -3,6 +3,9 @@
+diff --git a/tensorflow/core/example/example.proto b/tensorflow/core/example/example.proto
+index e36e51d8d5..dbc4355e85 100644
+--- a/tensorflow/core/example/example.proto
++++ b/tensorflow/core/example/example.proto
+@@ -6,7 +6,7 @@ import "tensorflow/core/example/feature.proto";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ExampleProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.example";
++option java_package = "org.tensorflow.proto.example";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/example";
  package tensorflow;
  
- option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/core_protos_go_proto";
-+option java_outer_classname = "BfcMemoryMapProtos";
-+option java_multiple_files = true;
-+option java_package = "org.tensorflow.util";
+diff --git a/tensorflow/core/example/example_parser_configuration.proto b/tensorflow/core/example/example_parser_configuration.proto
+index b2c115d80e..84ba270c13 100644
+--- a/tensorflow/core/example/example_parser_configuration.proto
++++ b/tensorflow/core/example/example_parser_configuration.proto
+@@ -5,7 +5,7 @@ syntax = "proto3";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ExampleParserConfigurationProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.example";
++option java_package = "org.tensorflow.proto.example";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/example";
+ package tensorflow;
  
- // Some of the data from AllocatorStats
- message MemAllocatorStats {
-diff -ruN a/tensorflow/core/protobuf/data/experimental/snapshot.proto b/tensorflow/core/protobuf/data/experimental/snapshot.proto
---- a/tensorflow/core/protobuf/data/experimental/snapshot.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/data/experimental/snapshot.proto	2020-03-30 23:56:11.000000000 -0400
-@@ -6,6 +6,10 @@
+diff --git a/tensorflow/core/example/feature.proto b/tensorflow/core/example/feature.proto
+index 6d81974aac..a9e9af16eb 100644
+--- a/tensorflow/core/example/feature.proto
++++ b/tensorflow/core/example/feature.proto
+@@ -57,7 +57,7 @@ syntax = "proto3";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "FeatureProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.example";
++option java_package = "org.tensorflow.proto.example";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/example";
+ package tensorflow;
+ 
+diff --git a/tensorflow/core/framework/allocation_description.proto b/tensorflow/core/framework/allocation_description.proto
+index 64133b05e1..619db0ccd7 100644
+--- a/tensorflow/core/framework/allocation_description.proto
++++ b/tensorflow/core/framework/allocation_description.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "AllocationDescriptionProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ message AllocationDescription {
+diff --git a/tensorflow/core/framework/api_def.proto b/tensorflow/core/framework/api_def.proto
+index b0f852170b..8219d54679 100644
+--- a/tensorflow/core/framework/api_def.proto
++++ b/tensorflow/core/framework/api_def.proto
+@@ -7,7 +7,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ApiDefProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/attr_value.proto";
+ 
+diff --git a/tensorflow/core/framework/attr_value.proto b/tensorflow/core/framework/attr_value.proto
+index 054e3ec97c..db10c52185 100644
+--- a/tensorflow/core/framework/attr_value.proto
++++ b/tensorflow/core/framework/attr_value.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "AttrValueProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/tensor.proto";
+ import "tensorflow/core/framework/tensor_shape.proto";
+diff --git a/tensorflow/core/framework/cost_graph.proto b/tensorflow/core/framework/cost_graph.proto
+index cc6bc84d69..048ff742c8 100644
+--- a/tensorflow/core/framework/cost_graph.proto
++++ b/tensorflow/core/framework/cost_graph.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "CostGraphProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
  import "tensorflow/core/framework/tensor_shape.proto";
  import "tensorflow/core/framework/types.proto";
+diff --git a/tensorflow/core/framework/device_attributes.proto b/tensorflow/core/framework/device_attributes.proto
+index 44236ca979..bfa08460e4 100644
+--- a/tensorflow/core/framework/device_attributes.proto
++++ b/tensorflow/core/framework/device_attributes.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "DeviceAttributesProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ message InterconnectLink {
+diff --git a/tensorflow/core/framework/function.proto b/tensorflow/core/framework/function.proto
+index 71423f9168..f70f4416d1 100644
+--- a/tensorflow/core/framework/function.proto
++++ b/tensorflow/core/framework/function.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "FunctionProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/attr_value.proto";
+ import "tensorflow/core/framework/node_def.proto";
+diff --git a/tensorflow/core/framework/graph.proto b/tensorflow/core/framework/graph.proto
+index 76d358971d..bff05cfd1f 100644
+--- a/tensorflow/core/framework/graph.proto
++++ b/tensorflow/core/framework/graph.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "GraphProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/node_def.proto";
+ import "tensorflow/core/framework/function.proto";
+diff --git a/tensorflow/core/framework/graph_transfer_info.proto b/tensorflow/core/framework/graph_transfer_info.proto
+index 232297d460..b112616a93 100644
+--- a/tensorflow/core/framework/graph_transfer_info.proto
++++ b/tensorflow/core/framework/graph_transfer_info.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "GraphTransferInfoProto";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/types.proto";
+ 
+diff --git a/tensorflow/core/framework/kernel_def.proto b/tensorflow/core/framework/kernel_def.proto
+index 358621dc0f..09c2b6231c 100644
+--- a/tensorflow/core/framework/kernel_def.proto
++++ b/tensorflow/core/framework/kernel_def.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "KernelDefProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/attr_value.proto";
+ 
+diff --git a/tensorflow/core/framework/log_memory.proto b/tensorflow/core/framework/log_memory.proto
+index 7f37eadc3b..f2fe220ca3 100644
+--- a/tensorflow/core/framework/log_memory.proto
++++ b/tensorflow/core/framework/log_memory.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "LogMemoryProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/tensor_description.proto";
+ 
+diff --git a/tensorflow/core/framework/node_def.proto b/tensorflow/core/framework/node_def.proto
+index 3c89f78991..2c346bf5c9 100644
+--- a/tensorflow/core/framework/node_def.proto
++++ b/tensorflow/core/framework/node_def.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "NodeProto";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/attr_value.proto";
+ 
+diff --git a/tensorflow/core/framework/op_def.proto b/tensorflow/core/framework/op_def.proto
+index 9b65e23e55..93037fe18c 100644
+--- a/tensorflow/core/framework/op_def.proto
++++ b/tensorflow/core/framework/op_def.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "OpDefProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/attr_value.proto";
+ import "tensorflow/core/framework/types.proto";
+diff --git a/tensorflow/core/framework/reader_base.proto b/tensorflow/core/framework/reader_base.proto
+index 9e187cfa79..549d99b3c0 100644
+--- a/tensorflow/core/framework/reader_base.proto
++++ b/tensorflow/core/framework/reader_base.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ReaderBaseProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ // For serializing and restoring the state of ReaderBase, see
+diff --git a/tensorflow/core/framework/remote_fused_graph_execute_info.proto b/tensorflow/core/framework/remote_fused_graph_execute_info.proto
+index 10072724d2..59703c69f0 100644
+--- a/tensorflow/core/framework/remote_fused_graph_execute_info.proto
++++ b/tensorflow/core/framework/remote_fused_graph_execute_info.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "RemoteFusedGraphExecuteInfoProto";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/graph.proto";
+ import "tensorflow/core/framework/tensor_shape.proto";
+diff --git a/tensorflow/core/framework/resource_handle.proto b/tensorflow/core/framework/resource_handle.proto
+index 4a03fc7589..0f4ec75b17 100644
+--- a/tensorflow/core/framework/resource_handle.proto
++++ b/tensorflow/core/framework/resource_handle.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ResourceHandle";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ import "tensorflow/core/framework/tensor_shape.proto";
+diff --git a/tensorflow/core/framework/step_stats.proto b/tensorflow/core/framework/step_stats.proto
+index f8cab135ab..5b6a90e75f 100644
+--- a/tensorflow/core/framework/step_stats.proto
++++ b/tensorflow/core/framework/step_stats.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "StepStatsProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/allocation_description.proto";
+ import "tensorflow/core/framework/tensor_description.proto";
+diff --git a/tensorflow/core/framework/summary.proto b/tensorflow/core/framework/summary.proto
+index 532e4fcd87..a4cc961a65 100644
+--- a/tensorflow/core/framework/summary.proto
++++ b/tensorflow/core/framework/summary.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "SummaryProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/tensor.proto";
+ 
+diff --git a/tensorflow/core/framework/tensor.proto b/tensorflow/core/framework/tensor.proto
+index 55921af1d0..aad0e06bba 100644
+--- a/tensorflow/core/framework/tensor.proto
++++ b/tensorflow/core/framework/tensor.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TensorProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/resource_handle.proto";
+ import "tensorflow/core/framework/tensor_shape.proto";
+diff --git a/tensorflow/core/framework/tensor_description.proto b/tensorflow/core/framework/tensor_description.proto
+index 4c23c7e620..e402732e4f 100644
+--- a/tensorflow/core/framework/tensor_description.proto
++++ b/tensorflow/core/framework/tensor_description.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TensorDescriptionProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ import "tensorflow/core/framework/types.proto";
+ import "tensorflow/core/framework/tensor_shape.proto";
+diff --git a/tensorflow/core/framework/tensor_shape.proto b/tensorflow/core/framework/tensor_shape.proto
+index 286156a012..d964a30b7d 100644
+--- a/tensorflow/core/framework/tensor_shape.proto
++++ b/tensorflow/core/framework/tensor_shape.proto
+@@ -4,7 +4,7 @@ syntax = "proto3";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TensorShapeProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ package tensorflow;
+diff --git a/tensorflow/core/framework/tensor_slice.proto b/tensorflow/core/framework/tensor_slice.proto
+index a5c366ed60..9a340b4c12 100644
+--- a/tensorflow/core/framework/tensor_slice.proto
++++ b/tensorflow/core/framework/tensor_slice.proto
+@@ -4,7 +4,7 @@ syntax = "proto3";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TensorSliceProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ package tensorflow;
+diff --git a/tensorflow/core/framework/types.proto b/tensorflow/core/framework/types.proto
+index 5356f9f9c9..80d1463d25 100644
+--- a/tensorflow/core/framework/types.proto
++++ b/tensorflow/core/framework/types.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TypesProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ // (== suppress_warning documentation-presence ==)
+diff --git a/tensorflow/core/framework/variable.proto b/tensorflow/core/framework/variable.proto
+index b2978c75c3..0e86f2b0eb 100644
+--- a/tensorflow/core/framework/variable.proto
++++ b/tensorflow/core/framework/variable.proto
+@@ -5,7 +5,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "VariableProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+diff --git a/tensorflow/core/framework/versions.proto b/tensorflow/core/framework/versions.proto
+index dd2ec55238..14d0c14923 100644
+--- a/tensorflow/core/framework/versions.proto
++++ b/tensorflow/core/framework/versions.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "VersionsProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/framework";
+ 
+ // Version information for a piece of serialized data
+diff --git a/tensorflow/core/kernels/boosted_trees/boosted_trees.proto b/tensorflow/core/kernels/boosted_trees/boosted_trees.proto
+index 0c54b357c2..2b37e994c1 100644
+--- a/tensorflow/core/kernels/boosted_trees/boosted_trees.proto
++++ b/tensorflow/core/kernels/boosted_trees/boosted_trees.proto
+@@ -5,7 +5,7 @@ package tensorflow.boosted_trees;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "BoostedTreesProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ // Node describes a node in a tree.
+ message Node {
+diff --git a/tensorflow/core/lib/core/error_codes.proto b/tensorflow/core/lib/core/error_codes.proto
+index 7f88c9a2f2..b91d1c1001 100644
+--- a/tensorflow/core/lib/core/error_codes.proto
++++ b/tensorflow/core/lib/core/error_codes.proto
+@@ -1,3 +1,5 @@
+ syntax = "proto3";
+ 
++option java_package = "org.tensorflow.proto.framework";
++
+ import public "tensorflow/core/protobuf/error_codes.proto";
+diff --git a/tensorflow/core/profiler/protobuf/xplane.proto b/tensorflow/core/profiler/protobuf/xplane.proto
+index e1763a7f38..1ff0965a03 100644
+--- a/tensorflow/core/profiler/protobuf/xplane.proto
++++ b/tensorflow/core/profiler/protobuf/xplane.proto
+@@ -3,6 +3,9 @@ syntax = "proto3";
+ package tensorflow.profiler;
+ 
+ option cc_enable_arenas = true;
++option java_outer_classname = "XPlaneProtos";
++option java_multiple_files = true;
++option java_package = "org.tensorflow.proto.profiler";
+ 
+ // A container of parallel XPlanes, generated by one or more profiling sources.
+ // Next ID: 2
+diff --git a/tensorflow/core/protobuf/bfc_memory_map.proto b/tensorflow/core/protobuf/bfc_memory_map.proto
+index 202903d2bf..68b8831349 100644
+--- a/tensorflow/core/protobuf/bfc_memory_map.proto
++++ b/tensorflow/core/protobuf/bfc_memory_map.proto
+@@ -2,6 +2,10 @@ syntax = "proto3";
+ 
+ package tensorflow;
+ 
++option java_outer_classname = "BfcMemoryMapProtos";
++option java_multiple_files = true;
++option java_package = "org.tensorflow.proto.util";
++
+ // Some of the data from AllocatorStats
+ message MemAllocatorStats {
+   int64 num_allocs = 1;
+diff --git a/tensorflow/core/protobuf/cluster.proto b/tensorflow/core/protobuf/cluster.proto
+index c696d345e0..d9fa30c830 100644
+--- a/tensorflow/core/protobuf/cluster.proto
++++ b/tensorflow/core/protobuf/cluster.proto
+@@ -19,7 +19,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ClusterProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.distruntime";
++option java_package = "org.tensorflow.proto.distruntime";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+ // This file contains protos to be used when defining a TensorFlow
+diff --git a/tensorflow/core/protobuf/config.proto b/tensorflow/core/protobuf/config.proto
+index 4f9b0aa535..ff22301589 100644
+--- a/tensorflow/core/protobuf/config.proto
++++ b/tensorflow/core/protobuf/config.proto
+@@ -5,7 +5,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ConfigProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/framework/cost_graph.proto";
+diff --git a/tensorflow/core/protobuf/control_flow.proto b/tensorflow/core/protobuf/control_flow.proto
+index 5f44878c44..ee3c3a44df 100644
+--- a/tensorflow/core/protobuf/control_flow.proto
++++ b/tensorflow/core/protobuf/control_flow.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ControlFlowProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+ // Control flow context related protocol buffers.
+diff --git a/tensorflow/core/protobuf/critical_section.proto b/tensorflow/core/protobuf/critical_section.proto
+index 7954e7ba87..2ef872cdbb 100644
+--- a/tensorflow/core/protobuf/critical_section.proto
++++ b/tensorflow/core/protobuf/critical_section.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "CriticalSectionProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+ // Protocol buffer representing a CriticalSection.
+diff --git a/tensorflow/core/protobuf/data/experimental/snapshot.proto b/tensorflow/core/protobuf/data/experimental/snapshot.proto
+index 422602d376..134f3d2e5e 100644
+--- a/tensorflow/core/protobuf/data/experimental/snapshot.proto
++++ b/tensorflow/core/protobuf/data/experimental/snapshot.proto
+@@ -4,6 +4,10 @@ package tensorflow.data.experimental;
+ 
+ import "tensorflow/core/framework/tensor.proto";
  
 +option java_outer_classname = "SnapshotProtos";
 +option java_multiple_files = true;
-+option java_package = "org.tensorflow.util";
++option java_package = "org.tensorflow.proto.util";
 +
  // Each SnapshotRecord represents one batch of pre-processed input data. A batch
  // consists of a list of tensors that we encode as TensorProtos. This message
  // doesn't store the structure of the batch.
-diff -ruN a/tensorflow/core/protobuf/device_properties.proto b/tensorflow/core/protobuf/device_properties.proto
---- a/tensorflow/core/protobuf/device_properties.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/device_properties.proto	2020-03-30 23:44:22.000000000 -0400
-@@ -19,6 +19,8 @@
+diff --git a/tensorflow/core/protobuf/debug.proto b/tensorflow/core/protobuf/debug.proto
+index 3cfab170f0..0b80773748 100644
+--- a/tensorflow/core/protobuf/debug.proto
++++ b/tensorflow/core/protobuf/debug.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "DebugProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
  
+ // Option for watching a node in TensorFlow Debugger (tfdbg).
+diff --git a/tensorflow/core/protobuf/debug_event.proto b/tensorflow/core/protobuf/debug_event.proto
+index badd518fa6..832cf63404 100644
+--- a/tensorflow/core/protobuf/debug_event.proto
++++ b/tensorflow/core/protobuf/debug_event.proto
+@@ -8,7 +8,7 @@ import "tensorflow/core/protobuf/graph_debug_info.proto";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "DebugEventProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.util";
++option java_package = "org.tensorflow.proto.util";
+ 
+ // Available modes for extracting debugging information from a Tensor.
+ // TODO(cais): Document the detailed column names and semantics in a separate
+diff --git a/tensorflow/core/protobuf/device_properties.proto b/tensorflow/core/protobuf/device_properties.proto
+index 11e1258e75..de45235e04 100644
+--- a/tensorflow/core/protobuf/device_properties.proto
++++ b/tensorflow/core/protobuf/device_properties.proto
+@@ -18,6 +18,8 @@ syntax = "proto3";
+ package tensorflow;
  option cc_enable_arenas = true;
  option java_outer_classname = "DevicePropertiesProtos";
 +option java_multiple_files = true;
-+option java_package = "org.tensorflow.framework";
- option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/core_protos_go_proto";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
  
  message DeviceProperties {
-diff -ruN a/tensorflow/core/protobuf/saved_object_graph.proto b/tensorflow/core/protobuf/saved_object_graph.proto
---- a/tensorflow/core/protobuf/saved_object_graph.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/saved_object_graph.proto	2020-03-30 23:36:13.000000000 -0400
-@@ -11,6 +11,9 @@
+diff --git a/tensorflow/core/protobuf/error_codes.proto b/tensorflow/core/protobuf/error_codes.proto
+index 9ef59d79cc..4bf2a751b5 100644
+--- a/tensorflow/core/protobuf/error_codes.proto
++++ b/tensorflow/core/protobuf/error_codes.proto
+@@ -5,7 +5,7 @@ package tensorflow.error;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ErrorCodesProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+diff --git a/tensorflow/core/protobuf/graph_debug_info.proto b/tensorflow/core/protobuf/graph_debug_info.proto
+index a3e3b18d72..75b545fc05 100644
+--- a/tensorflow/core/protobuf/graph_debug_info.proto
++++ b/tensorflow/core/protobuf/graph_debug_info.proto
+@@ -5,7 +5,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "GraphDebugInfoProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ message GraphDebugInfo {
+   // This represents a file/line location in the source code.
+diff --git a/tensorflow/core/protobuf/master.proto b/tensorflow/core/protobuf/master.proto
+index ecb7057f91..4ca60e61da 100644
+--- a/tensorflow/core/protobuf/master.proto
++++ b/tensorflow/core/protobuf/master.proto
+@@ -20,7 +20,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "DistributedRuntimeProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.distruntime";
++option java_package = "org.tensorflow.proto.distruntime";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/framework/device_attributes.proto";
+diff --git a/tensorflow/core/protobuf/master_service.proto b/tensorflow/core/protobuf/master_service.proto
+index ce0e4f6435..8db201348b 100644
+--- a/tensorflow/core/protobuf/master_service.proto
++++ b/tensorflow/core/protobuf/master_service.proto
+@@ -18,7 +18,7 @@ syntax = "proto3";
+ package tensorflow.grpc;
+ option java_outer_classname = "MasterServiceProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.distruntime";
++option java_package = "org.tensorflow.proto.distruntime";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/protobuf/master.proto";
+ 
+diff --git a/tensorflow/core/protobuf/meta_graph.proto b/tensorflow/core/protobuf/meta_graph.proto
+index a3aed1f397..318c5371f2 100644
+--- a/tensorflow/core/protobuf/meta_graph.proto
++++ b/tensorflow/core/protobuf/meta_graph.proto
+@@ -5,7 +5,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "MetaGraphProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "google/protobuf/any.proto";
+diff --git a/tensorflow/core/protobuf/named_tensor.proto b/tensorflow/core/protobuf/named_tensor.proto
+index 6e2f7feee2..27cb37341e 100644
+--- a/tensorflow/core/protobuf/named_tensor.proto
++++ b/tensorflow/core/protobuf/named_tensor.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "NamedTensorProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/framework/tensor.proto";
+ 
+diff --git a/tensorflow/core/protobuf/queue_runner.proto b/tensorflow/core/protobuf/queue_runner.proto
+index c189ff3a57..ff52d5a1f7 100644
+--- a/tensorflow/core/protobuf/queue_runner.proto
++++ b/tensorflow/core/protobuf/queue_runner.proto
+@@ -5,7 +5,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "QueueRunnerProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/protobuf/error_codes.proto";
+diff --git a/tensorflow/core/protobuf/remote_tensor_handle.proto b/tensorflow/core/protobuf/remote_tensor_handle.proto
+index b8db44857c..f47197e200 100644
+--- a/tensorflow/core/protobuf/remote_tensor_handle.proto
++++ b/tensorflow/core/protobuf/remote_tensor_handle.proto
+@@ -8,7 +8,7 @@ import "tensorflow/core/framework/types.proto";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "RemoteTensorHandleProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ message ResourceDtypeAndShape {
+   DataType dtype = 1;
+diff --git a/tensorflow/core/protobuf/rewriter_config.proto b/tensorflow/core/protobuf/rewriter_config.proto
+index 54943eec07..6a9c7d1ea4 100644
+--- a/tensorflow/core/protobuf/rewriter_config.proto
++++ b/tensorflow/core/protobuf/rewriter_config.proto
+@@ -5,7 +5,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "RewriterConfigProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+diff --git a/tensorflow/core/protobuf/saved_model.proto b/tensorflow/core/protobuf/saved_model.proto
+index 03789d3df7..478be8c416 100644
+--- a/tensorflow/core/protobuf/saved_model.proto
++++ b/tensorflow/core/protobuf/saved_model.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "SavedModelProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/protobuf/meta_graph.proto";
+ 
+diff --git a/tensorflow/core/protobuf/saved_object_graph.proto b/tensorflow/core/protobuf/saved_object_graph.proto
+index 20074f3125..70d071b384 100644
+--- a/tensorflow/core/protobuf/saved_object_graph.proto
++++ b/tensorflow/core/protobuf/saved_object_graph.proto
+@@ -8,6 +8,9 @@ import "tensorflow/core/framework/versions.proto";
+ import "tensorflow/core/framework/variable.proto";
  
  option cc_enable_arenas = true;
- option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/core_protos_go_proto";
 +option java_outer_classname = "SavedObjectGraphProtos";
 +option java_multiple_files = true;
-+option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
  
- // A SavedObjectGraph is part of object-based SavedModels in TF 2.0. It
- // describes the directed graph of Python objects (or equivalent in other
-diff -ruN a/tensorflow/core/protobuf/struct.proto b/tensorflow/core/protobuf/struct.proto
---- a/tensorflow/core/protobuf/struct.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/struct.proto	2020-03-30 23:45:26.000000000 -0400
-@@ -6,6 +6,9 @@
+ package tensorflow;
+ 
+diff --git a/tensorflow/core/protobuf/saver.proto b/tensorflow/core/protobuf/saver.proto
+index 4245386145..925d249cdb 100644
+--- a/tensorflow/core/protobuf/saver.proto
++++ b/tensorflow/core/protobuf/saver.proto
+@@ -4,7 +4,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "SaverProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.util";
++option java_package = "org.tensorflow.proto.util";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+ // Protocol buffer representing the configuration of a Saver.
+diff --git a/tensorflow/core/protobuf/struct.proto b/tensorflow/core/protobuf/struct.proto
+index 8983db02ee..7237e41ed8 100644
+--- a/tensorflow/core/protobuf/struct.proto
++++ b/tensorflow/core/protobuf/struct.proto
+@@ -5,6 +5,10 @@ package tensorflow;
+ import "tensorflow/core/framework/tensor_shape.proto";
  import "tensorflow/core/framework/types.proto";
  
- option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/core_protos_go_proto";
 +option java_outer_classname = "StructProtos";
 +option java_multiple_files = true;
-+option java_package = "org.tensorflow.framework";
- 
++option java_package = "org.tensorflow.proto.framework";
++
  // `StructuredValue` represents a dynamically typed value representing various
  // data structures that are inspired by Python data structures typically used in
-diff -ruN a/tensorflow/core/protobuf/trackable_object_graph.proto b/tensorflow/core/protobuf/trackable_object_graph.proto
---- a/tensorflow/core/protobuf/trackable_object_graph.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/trackable_object_graph.proto	2020-03-30 23:51:22.000000000 -0400
-@@ -4,6 +4,9 @@
- 
+ // TensorFlow functions as inputs and outputs.
+diff --git a/tensorflow/core/protobuf/tensor_bundle.proto b/tensorflow/core/protobuf/tensor_bundle.proto
+index 681c01bbbd..bd4442147a 100644
+--- a/tensorflow/core/protobuf/tensor_bundle.proto
++++ b/tensorflow/core/protobuf/tensor_bundle.proto
+@@ -4,7 +4,7 @@ package tensorflow;
  option cc_enable_arenas = true;
- option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/core_protos_go_proto";
+ option java_outer_classname = "TensorBundleProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.util";
++option java_package = "org.tensorflow.proto.util";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/framework/tensor_shape.proto";
+ import "tensorflow/core/framework/tensor_slice.proto";
+diff --git a/tensorflow/core/protobuf/tensorflow_server.proto b/tensorflow/core/protobuf/tensorflow_server.proto
+index 6ff902cbc9..2fb0e3cd3b 100644
+--- a/tensorflow/core/protobuf/tensorflow_server.proto
++++ b/tensorflow/core/protobuf/tensorflow_server.proto
+@@ -22,7 +22,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "ServerProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.distruntime";
++option java_package = "org.tensorflow.proto.distruntime";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ // Defines the configuration of a single TensorFlow server.
+ message ServerDef {
+diff --git a/tensorflow/core/protobuf/trace_events.proto b/tensorflow/core/protobuf/trace_events.proto
+index 76b7300aea..f59ae9891f 100644
+--- a/tensorflow/core/protobuf/trace_events.proto
++++ b/tensorflow/core/protobuf/trace_events.proto
+@@ -5,7 +5,7 @@ package tensorflow.profiler;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TraceEventsProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ 
+ // A 'Trace' contains metadata for the individual traces of a system.
+ message Trace {
+diff --git a/tensorflow/core/protobuf/trackable_object_graph.proto b/tensorflow/core/protobuf/trackable_object_graph.proto
+index 02d852e6f3..418310f88d 100644
+--- a/tensorflow/core/protobuf/trackable_object_graph.proto
++++ b/tensorflow/core/protobuf/trackable_object_graph.proto
+@@ -4,6 +4,10 @@ option cc_enable_arenas = true;
+ 
+ package tensorflow;
+ 
 +option java_outer_classname = "TrackableObjectGraphProtos";
 +option java_multiple_files = true;
-+option java_package = "org.tensorflow.framework";
- 
++option java_package = "org.tensorflow.proto.framework";
++
  // A TensorBundle addition which saves extra information about the objects which
  // own variables, allowing for more robust checkpoint loading into modified
-diff -ruN a/tensorflow/core/protobuf/transport_options.proto b/tensorflow/core/protobuf/transport_options.proto
---- a/tensorflow/core/protobuf/transport_options.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/protobuf/transport_options.proto	2020-03-30 23:53:15.000000000 -0400
-@@ -3,6 +3,7 @@
+ // programs.
+diff --git a/tensorflow/core/protobuf/transport_options.proto b/tensorflow/core/protobuf/transport_options.proto
+index 1d32475e9b..e494354357 100644
+--- a/tensorflow/core/protobuf/transport_options.proto
++++ b/tensorflow/core/protobuf/transport_options.proto
+@@ -2,6 +2,8 @@ syntax = "proto3";
+ 
  package tensorflow;
  
- option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/core_protos_go_proto";
-+option java_package = "org.tensorflow.distruntime";
- 
++option java_package = "org.tensorflow.proto.distruntime";
++
  // Extra data needed on a non-RDMA RecvBufResponse.
  message RecvBufRespExtra {
-diff -ruN a/tensorflow/core/lib/core/error_codes.proto b/tensorflow/core/lib/core/error_codes.proto
---- a/tensorflow/core/lib/core/error_codes.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/lib/core/error_codes.proto	2020-03-30 23:44:22.000000000 -0400
-@@ -1,3 +1,5 @@
- syntax = "proto3";
-
-+option java_package = "org.tensorflow.framework";
-+
- import public "tensorflow/core/protobuf/error_codes.proto";
-diff -ruN a/tensorflow/core/profiler/protobuf/xplane.proto b/tensorflow/core/profiler/protobuf/xplane.proto
---- a/tensorflow/core/profiler/protobuf/xplane.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/profiler/protobuf/xplane.proto	2020-03-30 23:44:22.000000000 -0400
-@@ -3,6 +3,9 @@
- package tensorflow.profiler;
-
+   repeated bytes tensor_content = 1;
+diff --git a/tensorflow/core/protobuf/verifier_config.proto b/tensorflow/core/protobuf/verifier_config.proto
+index 5a1373b1cc..eee03dfe9b 100644
+--- a/tensorflow/core/protobuf/verifier_config.proto
++++ b/tensorflow/core/protobuf/verifier_config.proto
+@@ -4,7 +4,7 @@ package tensorflow;
  option cc_enable_arenas = true;
-+option java_outer_classname = "XPlaneProtos";
-+option java_multiple_files = true;
-+option java_package = "org.tensorflow.profiler";
-
- // A container of parallel XPlanes, generated by one or more profiling sources.
- // Next ID: 2
-diff -ruN a/tensorflow/core/util/memmapped_file_system.proto b/tensorflow/core/util/memmapped_file_system.proto
---- a/tensorflow/core/util/memmapped_file_system.proto	2020-03-31 00:00:24.000000000 -0400
-+++ b/tensorflow/core/util/memmapped_file_system.proto	2020-03-30 23:44:22.000000000 -0400
-@@ -17,6 +17,9 @@
+ option java_outer_classname = "VerifierConfigProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.framework";
++option java_package = "org.tensorflow.proto.framework";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ 
+ // The config for graph verifiers.
+diff --git a/tensorflow/core/protobuf/worker.proto b/tensorflow/core/protobuf/worker.proto
+index 3a8fbcfb01..468b3a9d34 100644
+--- a/tensorflow/core/protobuf/worker.proto
++++ b/tensorflow/core/protobuf/worker.proto
+@@ -20,7 +20,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "WorkerProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.distruntime";
++option java_package = "org.tensorflow.proto.distruntime";
+ 
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "google/protobuf/any.proto";
+diff --git a/tensorflow/core/protobuf/worker_service.proto b/tensorflow/core/protobuf/worker_service.proto
+index 9ebbd553f2..725f4e82d0 100644
+--- a/tensorflow/core/protobuf/worker_service.proto
++++ b/tensorflow/core/protobuf/worker_service.proto
+@@ -18,7 +18,7 @@ syntax = "proto3";
+ package tensorflow.grpc;
+ option java_outer_classname = "WorkerServiceProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.distruntime";
++option java_package = "org.tensorflow.proto.distruntime";
+ option go_package = "github.com/tensorflow/tensorflow/tensorflow/go/core/protobuf";
+ import "tensorflow/core/protobuf/worker.proto";
+ 
+diff --git a/tensorflow/core/util/event.proto b/tensorflow/core/util/event.proto
+index f5dfffa671..9b1ffcbc24 100644
+--- a/tensorflow/core/util/event.proto
++++ b/tensorflow/core/util/event.proto
+@@ -7,7 +7,7 @@ import "tensorflow/core/framework/summary.proto";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "EventProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.util";
++option java_package = "org.tensorflow.proto.util";
+ 
+ // Protocol buffer representing an event that happened during
+ // the execution of a Brain model.
+diff --git a/tensorflow/core/util/memmapped_file_system.proto b/tensorflow/core/util/memmapped_file_system.proto
+index a988b45b6f..00718ceb32 100644
+--- a/tensorflow/core/util/memmapped_file_system.proto
++++ b/tensorflow/core/util/memmapped_file_system.proto
+@@ -17,6 +17,9 @@ syntax = "proto3";
  package tensorflow;
-
+ 
  option cc_enable_arenas = true;
 +option java_outer_classname = "MemmappedFileSystemProtos";
 +option java_multiple_files = true;
-+option java_package = "org.tensorflow.util";
-
++option java_package = "org.tensorflow.proto.util";
+ 
  // A message that describes one region of memmapped file.
  message MemmappedFileSystemDirectoryElement {
+diff --git a/tensorflow/core/util/saved_tensor_slice.proto b/tensorflow/core/util/saved_tensor_slice.proto
+index 6278685957..8fa3c28304 100644
+--- a/tensorflow/core/util/saved_tensor_slice.proto
++++ b/tensorflow/core/util/saved_tensor_slice.proto
+@@ -21,7 +21,7 @@ package tensorflow;
+ option cc_enable_arenas = true;
+ option java_outer_classname = "SavedTensorSliceProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.util";
++option java_package = "org.tensorflow.proto.util";
+ 
+ import "tensorflow/core/framework/tensor_shape.proto";
+ import "tensorflow/core/framework/tensor_slice.proto";
+diff --git a/tensorflow/core/util/test_log.proto b/tensorflow/core/util/test_log.proto
+index ddb7a0275a..4d63412a84 100644
+--- a/tensorflow/core/util/test_log.proto
++++ b/tensorflow/core/util/test_log.proto
+@@ -7,7 +7,7 @@ import "google/protobuf/wrappers.proto";
+ option cc_enable_arenas = true;
+ option java_outer_classname = "TestLogProtos";
+ option java_multiple_files = true;
+-option java_package = "org.tensorflow.util.testlog";
++option java_package = "org.tensorflow.proto.util.testlog";
+ 
+ package tensorflow;
+ 
