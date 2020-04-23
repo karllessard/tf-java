@@ -67,7 +67,7 @@ final class LongRawDataBuffer extends AbstractRawDataBuffer<Long, LongDataBuffer
       @Override
       public LongDataBuffer visit(LongBuffer buffer) {
         if (buffer.hasArray()) {
-          memory.copyTo(UnsafeMemoryHandle.fromArray(buffer.array(), buffer.position(), buffer.capacity()), size);
+          memory.copyTo(UnsafeMemoryHandle.fromArray(buffer.array(), buffer.position(), buffer.limit()), size);
         } else if (memory.isArray()) {
           buffer.put(memory.toArrayLongBuffer());
         } else {
@@ -101,7 +101,7 @@ final class LongRawDataBuffer extends AbstractRawDataBuffer<Long, LongDataBuffer
     if (memory.isArray()) {
       return visitor.visit(memory.toArrayLongBuffer());
     }
-    return visitor.visit(memory.byteOffset, memory.byteSize, memory.scale);
+    return visitor.visit(memory.rawOffset, memory.rawSize, memory.scale);
   }
 
   @Override

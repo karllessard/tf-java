@@ -18,6 +18,7 @@
 package org.tensorflow.tools.buffer.impl.raw;
 
 import java.nio.FloatBuffer;
+
 import org.tensorflow.tools.buffer.DataBuffer;
 import org.tensorflow.tools.buffer.DataStorageVisitor;
 import org.tensorflow.tools.buffer.FloatDataBuffer;
@@ -28,13 +29,11 @@ final class FloatRawDataBuffer extends AbstractRawDataBuffer<Float, FloatDataBuf
 
   @Override
   public float getFloat(long index) {
-    Validator.getArgs(this, index);
     return memory.getFloat(index);
   }
 
   @Override
   public FloatDataBuffer setFloat(float value, long index) {
-    Validator.setArgs(this, index);
     memory.setFloat(value, index);
     return this;
   }
@@ -67,7 +66,7 @@ final class FloatRawDataBuffer extends AbstractRawDataBuffer<Float, FloatDataBuf
       @Override
       public FloatDataBuffer visit(FloatBuffer buffer) {
         if (buffer.hasArray()) {
-          memory.copyTo(UnsafeMemoryHandle.fromArray(buffer.array(), buffer.position(), buffer.capacity()), size);
+          memory.copyTo(UnsafeMemoryHandle.fromArray(buffer.array(), buffer.position(), buffer.limit()), size);
         } else if (memory.isArray()) {
           buffer.put(memory.toArrayFloatBuffer());
         } else {
@@ -101,7 +100,7 @@ final class FloatRawDataBuffer extends AbstractRawDataBuffer<Float, FloatDataBuf
     if (memory.isArray()) {
       return visitor.visit(memory.toArrayFloatBuffer());
     }
-    return visitor.visit(memory.byteOffset, memory.byteSize, memory.scale);
+    return visitor.visit(memory.rawOffset, memory.rawSize, memory.scale);
   }
 
   @Override

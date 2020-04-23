@@ -95,7 +95,7 @@ final class BooleanRawDataBuffer extends AbstractRawDataBuffer<Boolean, BooleanD
     if (memory.isArray()) {
       return visitor.visit((boolean[])memory.object, memory.arrayOffset(boolean[].class), (int)memory.size());
     }
-    return visitor.visit(memory.byteOffset, memory.byteSize, memory.scale);
+    return visitor.visit(memory.rawOffset, memory.rawSize, memory.scale);
   }
 
   @Override

@@ -289,4 +289,8 @@ public interface DataBuffer<T> {
    */
   @Override
   boolean equals(Object obj);
+
+  default DataBufferWindow<? extends DataBuffer<T>> createWindow(long initialIndex, long size) {
+    return null;
+  }
 }

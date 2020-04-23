@@ -334,9 +334,9 @@ public final class Ops {
 
   public final SignalOps signal;
 
-  public final TrainOps train;
-
   public final QuantizationOps quantization;
+
+  public final TrainOps train;
 
   private final Scope scope;
 
@@ -356,8 +356,8 @@ public final class Ops {
     math = new MathOps(scope);
     audio = new AudioOps(scope);
     signal = new SignalOps(scope);
-    train = new TrainOps(scope);
     quantization = new QuantizationOps(scope);
+    train = new TrainOps(scope);
   }
 
   /**

@@ -30,18 +30,18 @@ final class UnsafeMemoryHandle {
     return fromArray(array, 0, length);
   }
 
-  static UnsafeMemoryHandle fromArray(Object array, int offset, int length) {
+  static UnsafeMemoryHandle fromArray(Object array, int arrayOffset, int length) {
     long scale = UnsafeReference.UNSAFE.arrayIndexScale(array.getClass());
-    long byteOffset = UnsafeReference.UNSAFE.arrayBaseOffset(array.getClass()) + (offset * scale);
-    return new UnsafeMemoryHandle(array, byteOffset, length * scale, scale);
+    int baseOffset = UnsafeReference.UNSAFE.arrayBaseOffset(array.getClass());
+    return new UnsafeMemoryHandle(array, baseOffset + (arrayOffset * scale), length * scale, scale);
   }
 
   static UnsafeMemoryHandle fromAddress(long address, long byteSize, long scale) {
-    return new UnsafeMemoryHandle(null, address, byteSize, scale);
+    return new UnsafeMemoryHandle(address, byteSize, scale);
   }
 
   long size() {
-    return byteSize / scale;
+    return rawSize / scale;
   }
 
   byte getByte(long index) {
@@ -101,27 +101,31 @@ final class UnsafeMemoryHandle {
   }
 
   void copyTo(UnsafeMemoryHandle memory, long length) {
-    UnsafeReference.UNSAFE.copyMemory(object, byteOffset, memory.object, memory.byteOffset, length * scale);
+    UnsafeReference.UNSAFE.copyMemory(object, rawOffset, memory.object, memory.rawOffset, length * scale);
   }
 
   UnsafeMemoryHandle offset(long index) {
     long offset = scale(index);
-    return new UnsafeMemoryHandle(object, this.byteOffset + offset, byteSize - offset, scale);
+    return new UnsafeMemoryHandle(object, this.rawOffset + offset, rawSize - offset, scale);
   }
 
   UnsafeMemoryHandle narrow(long size) {
-    return new UnsafeMemoryHandle(object, byteOffset, scale(size), scale);
+    return new UnsafeMemoryHandle(object, rawOffset, scale(size), scale);
   }
 
   UnsafeMemoryHandle slice(long index, long size) {
-    return new UnsafeMemoryHandle(object, this.byteOffset + scale(index), scale(size), scale);
+    return new UnsafeMemoryHandle(object, this.rawOffset + scale(index), scale(size), scale);
   }
 
   UnsafeMemoryHandle rescale(long scale) {
     if (object != null) {
       throw new IllegalStateException("Raw heap memory cannot be rescaled");
     }
-    return new UnsafeMemoryHandle(null, byteOffset, byteSize, scale);
+    return new UnsafeMemoryHandle(null, rawOffset, rawSize, scale);
+  }
+
+  void relocate(long index) {
+    rawOffset = baseOffset + scale(index);
   }
 
   boolean isArray() {
@@ -134,47 +138,57 @@ final class UnsafeMemoryHandle {
   }
 
   int arrayOffset(Class<?> arrayClass) {
-    return (int)((byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(arrayClass)) / scale);
+    return (int)((rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(arrayClass)) / scale);
   }
 
   ByteBuffer toArrayByteBuffer() {
-    return ByteBuffer.wrap((byte[])object, (int)byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(byte[].class), (int)size());
+    return ByteBuffer.wrap((byte[])object, (int)rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(byte[].class), (int)size());
   }
 
   ShortBuffer toArrayShortBuffer() {
-    return ShortBuffer.wrap((short[])object, (int)((byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(short[].class)) / scale), (int)size());
+    return ShortBuffer.wrap((short[])object, (int)((rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(short[].class)) / scale), (int)size());
   }
 
   IntBuffer toArrayIntBuffer() {
-    return IntBuffer.wrap((int[])object, (int)((byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(int[].class)) / scale), (int)size());
+    return IntBuffer.wrap((int[])object, (int)((rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(int[].class)) / scale), (int)size());
   }
 
   LongBuffer toArrayLongBuffer() {
-    return LongBuffer.wrap((long[])object, (int)((byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(long[].class)) / scale), (int)size());
+    return LongBuffer.wrap((long[])object, (int)((rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(long[].class)) / scale), (int)size());
   }
 
   FloatBuffer toArrayFloatBuffer() {
-    return FloatBuffer.wrap((float[])object, (int)((byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(float[].class)) / scale), (int)size());
+    return FloatBuffer.wrap((float[])object, (int)((rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(float[].class)) / scale), (int)size());
   }
 
   DoubleBuffer toArrayDoubleBuffer() {
-    return DoubleBuffer.wrap((double[])object, (int)((byteOffset - UnsafeReference.UNSAFE.arrayBaseOffset(double[].class)) / scale), (int)size());
+    return DoubleBuffer.wrap((double[])object, (int)((rawOffset - UnsafeReference.UNSAFE.arrayBaseOffset(double[].class)) / scale), (int)size());
   }
 
   final Object object;
-  final long byteOffset;
-  final long byteSize;
+  final long baseOffset;
+  long rawOffset;
+  final long rawSize;
   final long scale;
 
-  private UnsafeMemoryHandle(Object object, long byteOffset, long byteSize, long scale) {
+  private UnsafeMemoryHandle(Object object, long rawOffset, long rawSize, long scale) {
     this.object = object;
-    this.byteOffset = byteOffset;
-    this.byteSize = byteSize;
+    this.baseOffset = rawOffset;
+    this.rawOffset = rawOffset;
+    this.rawSize = rawSize;
+    this.scale = scale;
+  }
+
+  private UnsafeMemoryHandle(long address, long rawSize, long scale) {
+    this.object = null;
+    this.baseOffset = address;
+    this.rawOffset = address;
+    this.rawSize = rawSize;
     this.scale = scale;
   }
 
   private long align(long index) {
-    return byteOffset + index * scale;
+    return rawOffset + index * scale;
   }
 
   private long scale(long value) {

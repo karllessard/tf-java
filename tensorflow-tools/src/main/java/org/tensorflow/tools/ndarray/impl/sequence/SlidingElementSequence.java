@@ -19,42 +19,52 @@ package org.tensorflow.tools.ndarray.impl.sequence;
 
 import java.util.Iterator;
 import java.util.function.BiConsumer;
-import org.tensorflow.tools.ndarray.IllegalRankException;
+
+import org.tensorflow.tools.buffer.DataBufferWindow;
 import org.tensorflow.tools.ndarray.NdArray;
 import org.tensorflow.tools.ndarray.NdArraySequence;
 import org.tensorflow.tools.ndarray.impl.AbstractNdArray;
 
-public final class SingleElementSequence<T, U extends NdArray<T>> implements NdArraySequence<U> {
+public final class SlidingElementSequence<T, U extends NdArray<T>> implements NdArraySequence<U> {
 
-  public SingleElementSequence(AbstractNdArray<T, U> ndArray) {
+  public SlidingElementSequence(AbstractNdArray<T, U> ndArray, int dimensionIdx, U element, DataBufferWindow<?> elementWindow) {
     this.ndArray = ndArray;
+    this.dimensionIdx = dimensionIdx;
+    this.element = element;
+    this.elementWindow = elementWindow;
   }
 
   @Override
   public Iterator<U> iterator() {
-    return new Iterator<U>() {
-
-      @Override
-      public boolean hasNext() {
-        return element != null;
-      }
-
-      @Override
-      public U next() {
-        U ret = element;
-        element = null;
-        return ret;
-      }
-
-      @SuppressWarnings("unchecked")
-      private U element = (U)ndArray;
-    };
+    return new SequenceIterator();
   }
 
   @Override
   public void forEachIndexed(BiConsumer<long[], U> consumer) {
-    throw new IllegalRankException("Single element has no coordinates to iterate on, use forEach()");
+    PositionIterator.createIndexed(ndArray.dimensions(), dimensionIdx).forEachIndexed((long[] coords, long position) -> {
+      elementWindow.slideTo(position);
+      consumer.accept(coords, element);
+    });
+  }
+
+  private class SequenceIterator implements Iterator<U> {
+
+      @Override
+      public boolean hasNext() {
+        return positionIterator.hasNext();
+      }
+
+      @Override
+      public U next() {
+        elementWindow.slideTo(positionIterator.nextLong());
+        return element;
+      }
+
+      private final PositionIterator positionIterator = PositionIterator.create(ndArray.dimensions(), dimensionIdx);
   }
 
   private final AbstractNdArray<T, U> ndArray;
+  private final int dimensionIdx;
+  private final U element;
+  private final DataBufferWindow<?> elementWindow;
 }

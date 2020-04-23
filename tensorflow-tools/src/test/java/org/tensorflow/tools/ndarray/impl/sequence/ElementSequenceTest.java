@@ -37,8 +37,7 @@ public class ElementSequenceTest {
     IntNdArray array = NdArrays.ofInts(Shape.of(2, 3, 2));
 
     @SuppressWarnings("unchecked")
-    NdArraySequence<IntNdArray> sequence = ElementSequence
-        .create((AbstractNdArray<Integer, IntNdArray>)array, 1);
+    NdArraySequence<IntNdArray> sequence = new ElementSequence((AbstractNdArray<Integer, IntNdArray>)array, 1);
     List<long[]> coords = new ArrayList<>((int)array.shape().size());
     sequence.forEachIndexed((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
 
@@ -56,7 +55,7 @@ public class ElementSequenceTest {
     IntNdArray array = NdArrays.ofInts(Shape.of(2, 3, 2));
 
     @SuppressWarnings("unchecked")
-    NdArraySequence<IntNdArray> cursor = ElementSequence.create((AbstractNdArray<Integer, IntNdArray>)array, 2);
+    NdArraySequence<IntNdArray> cursor = new ElementSequence((AbstractNdArray<Integer, IntNdArray>)array, 2);
     List<long[]> coords = new ArrayList<>((int)array.shape().size());
     cursor.forEachIndexed((c, e) -> coords.add(Arrays.copyOf(c, c.length)));
 

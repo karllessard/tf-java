@@ -17,15 +17,40 @@
 package org.tensorflow.tools.ndarray.impl.dense;
 
 import org.tensorflow.tools.buffer.DataBuffer;
+import org.tensorflow.tools.buffer.DataBufferWindow;
 import org.tensorflow.tools.ndarray.IllegalRankException;
 import org.tensorflow.tools.ndarray.NdArray;
+import org.tensorflow.tools.ndarray.NdArraySequence;
 import org.tensorflow.tools.ndarray.impl.AbstractNdArray;
+import org.tensorflow.tools.ndarray.impl.dimension.Dimension;
 import org.tensorflow.tools.ndarray.impl.dimension.DimensionalSpace;
 import org.tensorflow.tools.ndarray.impl.dimension.RelativeDimensionalSpace;
+import org.tensorflow.tools.ndarray.impl.sequence.ElementSequence;
+import org.tensorflow.tools.ndarray.impl.sequence.SingleElementSequence;
+import org.tensorflow.tools.ndarray.impl.sequence.SlidingElementSequence;
 import org.tensorflow.tools.ndarray.index.Index;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends AbstractNdArray<T, U> {
+
+  @Override
+  public NdArraySequence<U> elements(int dimensionIdx) {
+    if (dimensionIdx >= shape().numDimensions()) {
+      throw new IllegalArgumentException("Cannot iterate elements in dimension '" + dimensionIdx +
+          "' of array with shape " + shape());
+    }
+    if (rank() == 0 && dimensionIdx < 0) {
+      return new SingleElementSequence<>(this);
+    }
+    Dimension iteratedDimension = dimensions().get(dimensionIdx);
+    DimensionalSpace elementSpace = dimensions().from(dimensionIdx + 1);
+    DataBufferWindow<? extends DataBuffer<T>> elementWindow = buffer().createWindow(0, elementSpace.physicalSize());
+    if (elementWindow != null) {
+      U element = instantiate(elementWindow.windowBuffer(), elementSpace);
+      return new SlidingElementSequence(this, dimensionIdx, element, elementWindow);
+    }
+    return new ElementSequence<>(this, dimensionIdx);
+  }
 
   @Override
   public U slice(long position, DimensionalSpace sliceDimensions) {
@@ -112,7 +137,7 @@ public abstract class AbstractDenseNdArray<T, U extends NdArray<T>> extends Abst
     super(dimensions);
   }
 
-  abstract protected DataBuffer<T> buffer();
+  abstract protected <P> DataBuffer<T> buffer();
 
   abstract U instantiate(DataBuffer<T> buffer, DimensionalSpace dimensions);
 

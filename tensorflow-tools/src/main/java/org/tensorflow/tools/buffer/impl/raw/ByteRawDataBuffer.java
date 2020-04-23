@@ -73,7 +73,7 @@ final class ByteRawDataBuffer extends AbstractRawDataBuffer<Byte, ByteDataBuffer
       @Override
       public ByteDataBuffer visit(ByteBuffer buffer) {
         if (buffer.hasArray()) {
-          memory.copyTo(UnsafeMemoryHandle.fromArray(buffer.array(), buffer.position(), buffer.capacity()), size);
+          memory.copyTo(UnsafeMemoryHandle.fromArray(buffer.array(), buffer.position(), buffer.limit()), size);
         } else if (memory.isArray()) {
           buffer.put(memory.toArrayByteBuffer());
         } else {
@@ -137,7 +137,7 @@ final class ByteRawDataBuffer extends AbstractRawDataBuffer<Byte, ByteDataBuffer
     if (memory.isArray()) {
       return visitor.visit(memory.toArrayByteBuffer());
     }
-    return visitor.visit(memory.byteOffset, memory.byteSize, memory.scale);
+    return visitor.visit(memory.rawOffset, memory.rawSize, memory.scale);
   }
 
   @Override

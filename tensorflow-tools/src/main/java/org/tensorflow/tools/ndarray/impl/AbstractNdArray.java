@@ -43,12 +43,12 @@ public abstract class AbstractNdArray<T, U extends NdArray<T>> implements NdArra
       throw new IllegalArgumentException("Cannot iterate elements in dimension '" + dimensionIdx +
           "' of array with shape " + shape());
     }
-    return ElementSequence.create(this, dimensionIdx);
+    return new ElementSequence(this, dimensionIdx);
   }
 
   @Override
   public NdArraySequence<U> scalars() {
-    return ElementSequence.create(this, shape().numDimensions() - 1);  // negative if this array is a scalar
+    return elements(shape().numDimensions() - 1);  // negative if this array is a scalar, should be handled in `elements(dimIdx)`
   }
 
   @Override

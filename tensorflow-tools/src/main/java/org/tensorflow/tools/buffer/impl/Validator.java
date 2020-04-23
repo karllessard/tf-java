@@ -21,9 +21,9 @@ import java.nio.BufferUnderflowException;
 import java.nio.ReadOnlyBufferException;
 import org.tensorflow.tools.buffer.DataBuffer;
 
-public class Validator {
+public final class Validator {
 
-  public static void createArgs(long size, long maxSize) {
+  public static final void createArgs(long size, long maxSize) {
     if (size < 0) {
       throw new IllegalArgumentException("Size must be non-negative");
     }
@@ -32,28 +32,22 @@ public class Validator {
     }
   }
 
-  public static <T> void getArgs(DataBuffer<T> buffer, long index) {
-    if (index < 0) {
+  public static final <T> void getArgs(DataBuffer<T> buffer, long index) {
+    if (index < 0 || index >= buffer.size()) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
-    }
-    if (index >= buffer.size()) {
-      throw new IndexOutOfBoundsException("Index must be smaller than the buffer size");
     }
   }
 
-  public static <T> void setArgs(DataBuffer<T> buffer, long index) {
-    if (index < 0) {
+  public static final <T> void setArgs(DataBuffer<T> buffer, long index) {
+    if (index < 0 || index >= buffer.size()) {
       throw new IndexOutOfBoundsException("Index must be non-negative");
-    }
-    if (index >= buffer.size()) {
-      throw new IndexOutOfBoundsException("Index must be smaller than the buffer size");
     }
     if (buffer.isReadOnly()) {
       throw new ReadOnlyBufferException();
     }
   }
 
-  public static <T> void copyToArgs(DataBuffer<T> src, DataBuffer<T> dst, long size) {
+  public static final <T> void copyToArgs(DataBuffer<T> src, DataBuffer<T> dst, long size) {
     if (dst == src) {
       throw new IllegalArgumentException("Source cannot be the same buffer as destination");
     }
@@ -68,14 +62,14 @@ public class Validator {
     }
   }
 
-  public static <T> void readArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
+  public static final <T> void readArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
     if (length > buffer.size()) {
       throw new BufferUnderflowException();
     }
     arrayArgs(arrayLength, offset, length);
   }
 
-  public static <T> void writeArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
+  public static final <T> void writeArgs(DataBuffer<T> buffer, int arrayLength, int offset, int length) {
     if (length > buffer.size()) {
       throw new BufferOverflowException();
     }
@@ -85,7 +79,7 @@ public class Validator {
     arrayArgs(arrayLength, offset, length);
   }
 
-  public static <T> void offsetArgs(DataBuffer<T> buffer, long index) {
+  public static final <T> void offsetArgs(DataBuffer<T> buffer, long index) {
     if (index < 0) {
       throw new IllegalArgumentException("Index must be non-negative");
     }
@@ -94,7 +88,7 @@ public class Validator {
     }
   }
 
-  public static <T> void narrowArgs(DataBuffer<T> buffer, long size) {
+  public static final <T> void narrowArgs(DataBuffer<T> buffer, long size) {
     if (size < 0) {
       throw new IllegalArgumentException("Size must be non-negative");
     }
@@ -103,7 +97,7 @@ public class Validator {
     }
   }
 
-  public static <T> void sliceArgs(DataBuffer<T> buffer, long index, long size) {
+  public static final <T> void sliceArgs(DataBuffer<T> buffer, long index, long size) {
     if (index < 0) {
       throw new IllegalArgumentException("Index must be non-negative");
     }
@@ -115,7 +109,7 @@ public class Validator {
     }
   }
 
-  private static void arrayArgs(int arrayLength, int offset, int length) {
+  private static final void arrayArgs(int arrayLength, int offset, int length) {
     if (offset < 0) {
       throw new IndexOutOfBoundsException("Offset must be non-negative");
     }

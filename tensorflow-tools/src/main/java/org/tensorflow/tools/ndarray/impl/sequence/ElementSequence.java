@@ -24,13 +24,11 @@ import org.tensorflow.tools.ndarray.NdArraySequence;
 import org.tensorflow.tools.ndarray.impl.AbstractNdArray;
 import org.tensorflow.tools.ndarray.impl.dimension.DimensionalSpace;
 
-public class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence<U> {
+public final class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence<U> {
 
-  public static <T, U extends NdArray<T>> NdArraySequence<U> create(AbstractNdArray<T, U> ndArray, int dimensionIdx) {
-    if (ndArray.rank() == 0 && dimensionIdx < 0) {
-      return new SingleElementSequence<>(ndArray);
-    }
-    return new ElementSequence<>(ndArray, dimensionIdx);
+  public ElementSequence(AbstractNdArray<T, U> ndArray, int dimensionIdx) {
+    this.ndArray = ndArray;
+    this.dimensionIdx = dimensionIdx;
   }
 
   @Override
@@ -57,11 +55,6 @@ public class ElementSequence<T, U extends NdArray<T>> implements NdArraySequence
     PositionIterator.createIndexed(ndArray.dimensions(), dimensionIdx).forEachIndexed((long[] coords, long position) ->
         consumer.accept(coords, ndArray.slice(position, elementDimensions))
     );
-  }
-
-  private ElementSequence(AbstractNdArray<T, U> ndArray, int dimensionIdx) {
-    this.ndArray = ndArray;
-    this.dimensionIdx = dimensionIdx;
   }
 
   private final AbstractNdArray<T, U> ndArray;
