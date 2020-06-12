@@ -3,10 +3,10 @@ on:
   pull_request:
     branches:
       - master
-    types: [opened, unlabeled]
+    types: [opened, reopened, synchronize, unlabeled]
 jobs:
   linux-x86_64:
-    if: github.event_name == 'opened' || github.event.label.name == 'Full Build'
+    if: github.event_name != 'unlabeled' || github.event.label.name == 'Full Build'
     runs-on: ubuntu-latest
     container: nvidia/cuda:10.1-cudnn7-devel-centos7
     steps:
@@ -34,7 +34,7 @@ jobs:
           mvn clean install -Possrh,dev -B -U -e -Djavacpp.platform=linux-x86_64
           df -h
   macosx-x86_64:
-    if: github.event_name == 'opened' || github.event.label.name == 'Full Build'
+    if: github.event_name != 'unlabeled' || github.event.label.name == 'Full Build'
     runs-on: macos-latest
     steps:
       - name: Checkout repository
@@ -49,7 +49,7 @@ jobs:
           mvn clean install -Possrh,dev -B -U -e -Djavacpp.platform=macosx-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   windows-x86_64:
-    if: github.event_name == 'opened' || github.event.label.name == 'Full Build'
+    if: github.event_name != 'unlabeled' || github.event.label.name == 'Full Build'
     runs-on: windows-latest
     steps:
       - name: Configure page file
