@@ -9,7 +9,7 @@ on:
     types: [opened, labeled, unlabeled]
 env:
   FULL_BUILD: ${{ github.event_name == 'push' || github.event.label.name == 'Full Build' }}
-  MAVEN_PROFILES: if $FULL_BUILD 'hi' else 'there'
+  TEST_PROFILES: if $FULL_BUILD 'hi' else 'there'
 jobs:
   linux-x86_64:
     runs-on: ubuntu-latest
@@ -21,6 +21,7 @@ jobs:
       - name: Install environment
         run: |
           echo $BUILD_TYPE
+          echo $TEST_PROFILES
           yum -y update
           yum -y install centos-release-scl-rh epel-release
           yum -y install java-1.8.0-openjdk-devel devtoolset-7 rh-git218 patch python36-devel python36-pip python36-six
