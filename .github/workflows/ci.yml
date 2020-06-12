@@ -6,10 +6,10 @@ on:
   pull_request:
     branches:
       - master
-    types: [opened, labeled, unlabeled]
+    types: [labeled]
 jobs:
   linux-x86_64:
-    if: github.event_name == 'push' || github.event.label.name == 'Full Build'
+    if: github.event_name == 'push' || github.event.label.name == 'CI Build'
     runs-on: ubuntu-latest
     container: nvidia/cuda:10.1-cudnn7-devel-centos7
     strategy:
@@ -47,7 +47,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=linux-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   macosx-x86_64:
-    if: github.event_name == 'push' || github.event.label.name == 'Full Build'
+    if: github.event_name == 'push' || github.event.label.name == 'CI Build'
     runs-on: macos-latest
     strategy:
       matrix:
@@ -76,7 +76,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=macosx-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   windows-x86_64:
-    if: github.event_name == 'push' || github.event.label.name == 'Full Build'
+    if: github.event_name == 'push' || github.event.label.name == 'CI Build'
     runs-on: windows-latest
     strategy:
       matrix:
