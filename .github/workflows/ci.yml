@@ -9,7 +9,7 @@ on:
     types: [opened, labeled, unlabeled]
 env:
   FULL_BUILD: ${{ github.event_name == 'push' || github.event.label.name == 'Full Build' }}
-  TEST_PROFILES: if $FULL_BUILD 'hi' else 'there'
+  TEST_PROFILES: ${{ if $FULL_BUILD 'hi' else 'there' }}
 jobs:
   linux-x86_64:
     if: 'false'
