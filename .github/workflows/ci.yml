@@ -8,7 +8,7 @@ on:
       - master
     types: [opened, labeled, unlabeled]
 env:
-  FULL_BUILD: ${{ github.event_name == 'push' || github.event.pull_request.labels.contains("Full Build") }}
+  FULL_BUILD: ${{ github.event_name == 'push' || github.event.label.name == 'Full Build' }}
 jobs:
   linux-x86_64:
     runs-on: ubuntu-latest
