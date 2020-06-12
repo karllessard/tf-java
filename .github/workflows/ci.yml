@@ -8,7 +8,7 @@ on:
       - master
     types: [opened, labeled, unlabeled]
 env:
-  BUILD_TYPE: ${{ github.event_name == "push" }}
+  BUILD_TYPE: ${{ github.event_name == 'push' }}
 jobs:
   linux-x86_64:
     if: github.event_name == "push" || matrix.ext == ""
