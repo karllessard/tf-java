@@ -6,9 +6,12 @@ on:
   pull_request:
     branches:
       - master
-
+    types: [opened, labeled, unlabeled]
+env:
+  BUILD_TYPE: ${{ github.event_name == "push" }}
 jobs:
   linux-x86_64:
+    if: github.event_name == "push" || matrix.ext == ""
     runs-on: ubuntu-latest
     container: nvidia/cuda:10.1-cudnn7-devel-centos7
     strategy:
@@ -17,6 +20,7 @@ jobs:
     steps:
       - name: Install environment
         run: |
+          echo $BUILD_TYPE
           yum -y update
           yum -y install centos-release-scl-rh epel-release
           yum -y install java-1.8.0-openjdk-devel devtoolset-7 rh-git218 patch python36-devel python36-pip python36-six
@@ -46,6 +50,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=linux-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   macosx-x86_64:
+    if: github.event_name == "push" || matrix.ext == ""
     runs-on: macos-latest
     strategy:
       matrix:
@@ -74,6 +79,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=macosx-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   windows-x86_64:
+    if: github.event_name == "push" || matrix.ext == ""
     runs-on: windows-latest
     strategy:
       matrix:
