@@ -9,6 +9,7 @@ on:
     types: [opened, labeled, unlabeled]
 env:
   FULL_BUILD: ${{ github.event_name == 'push' || github.event.label.name == 'Full Build' }}
+  MAVEN_PROFILES: if $FULL_BUILD 'hi' else 'there'
 jobs:
   linux-x86_64:
     runs-on: ubuntu-latest
@@ -16,7 +17,6 @@ jobs:
     strategy:
       matrix:
         ext: ["", -mkl, -gpu, -mkl-gpu]
-    if: matrix.ext == '-mkl'
     steps:
       - name: Install environment
         run: |
