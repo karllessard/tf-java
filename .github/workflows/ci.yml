@@ -7,12 +7,9 @@ on:
     branches:
       - master
     types: [opened, labeled, unlabeled]
-env:
-  FULL_BUILD: ${{ github.event_name == 'push' || github.event.label.name == 'Full Build' }}
-  TEST_PROFILES: ${{ if $FULL_BUILD 'hi' else 'there' }}
 jobs:
   linux-x86_64:
-    if: 'false'
+    if: github.event_name == 'push' || github.event.label.name == 'Full Build'
     runs-on: ubuntu-latest
     container: nvidia/cuda:10.1-cudnn7-devel-centos7
     strategy:
@@ -21,8 +18,6 @@ jobs:
     steps:
       - name: Install environment
         run: |
-          echo $BUILD_TYPE
-          echo $TEST_PROFILES
           yum -y update
           yum -y install centos-release-scl-rh epel-release
           yum -y install java-1.8.0-openjdk-devel devtoolset-7 rh-git218 patch python36-devel python36-pip python36-six
@@ -52,6 +47,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=linux-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   macosx-x86_64:
+    if: github.event_name == 'push' || github.event.label.name == 'Full Build'
     runs-on: macos-latest
     strategy:
       matrix:
@@ -59,7 +55,6 @@ jobs:
     steps:
       - name: Install environment
         run: |
-          echo $TEST_PROFILES
           python3 -m pip install six
           echo Downloading Bazel
           curl -L https://github.com/bazelbuild/bazel/releases/download/2.0.0/bazel-2.0.0-installer-darwin-x86_64.sh -o bazel.sh --retry 10
@@ -81,7 +76,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=macosx-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   windows-x86_64:
-    if: 'false'
+    if: github.event_name == 'push' || github.event.label.name == 'Full Build'
     runs-on: windows-latest
     strategy:
       matrix:
@@ -147,7 +142,7 @@ jobs:
       - name: Redeploy snapshot artifacts
         run: |
           cd tensorflow-core
-          mvn dependency:resolve -Possrh -Predeploy -N -B -U -e -Djavacpp.platform.custom -Djavacpp.platform.linux-x86_64 -Djavacpp.platform.macosx-x86_64
+          mvn dependency:resolve -Possrh,redeploy -N -B -U -e -Djavacpp.platform.custom -Djavacpp.platform.linux-x86_64 -Djavacpp.platform.macosx-x86_64
           cp $HOME/.m2/repository/org/tensorflow/tensorflow-core-api/*-SNAPSHOT/tensorflow-core-api-*-SNAPSHOT*.jar .
           for f in *.jar; do
             if [[ $f =~ tensorflow-core-api-.*SNAPSHOT-(.*).jar ]]; then
@@ -157,4 +152,4 @@ jobs:
             fi
           done
           echo "<settings><servers><server><id>ossrh</id><username>${{ secrets.CI_DEPLOY_USERNAME }}</username><password>${{ secrets.CI_DEPLOY_PASSWORD }}</password></server></servers></settings>" > $HOME/.m2/settings.xml
-          mvn clean deploy -Possrh -Predeploy -N -B -U -e -Dfiles=$FILES -Dtypes=$TYPES -Dclassifiers=$CLASSIFIERS
+          mvn clean deploy -Possrh,redeploy -N -B -U -e -Dfiles=$FILES -Dtypes=$TYPES -Dclassifiers=$CLASSIFIERS
