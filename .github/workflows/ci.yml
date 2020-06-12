@@ -11,7 +11,7 @@ env:
   BUILD_TYPE: ${{ github.event_name == 'push' }}
 jobs:
   linux-x86_64:
-    if: github.event_name == 'push' || !matrix.ext
+    if: github.event_name == 'push' || matrix.ext == ''
     runs-on: ubuntu-latest
     container: nvidia/cuda:10.1-cudnn7-devel-centos7
     strategy:
