@@ -11,7 +11,7 @@ env:
   BUILD_TYPE: ${{ github.event_name == 'push' }}
 jobs:
   linux-x86_64:
-    if: github.event_name == 'push' || matrix.ext == ''
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     container: nvidia/cuda:10.1-cudnn7-devel-centos7
     strategy:
@@ -50,7 +50,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=linux-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   macosx-x86_64:
-    if: github.event_name == 'push' || !matrix.ext
+    if: github.event_name == 'push'
     runs-on: macos-latest
     strategy:
       matrix:
@@ -79,7 +79,7 @@ jobs:
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=macosx-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
   windows-x86_64:
-    if: github.event_name == 'push' || !matrix.ext
+    if: github.event_name == 'push'
     runs-on: windows-latest
     strategy:
       matrix:
