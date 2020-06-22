@@ -89,6 +89,8 @@
       </dependencies>
       <properties>
         <javacpp.build.skip>true</javacpp.build.skip>
+        <javacpp.parser.skip>true</javacpp.build.skip>
+        <javacpp.compiler.skip>true</javacpp.compiler.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
       </properties>
     </profile>
