@@ -39,7 +39,7 @@ jobs:
           echo "Fixing HOME to /root (was '$HOME')"
           export HOME=/root
           mkdir -p $HOME/.m2
-          [[ "${{ contains(github.event.labels.*.name, 'Full Build') }}" ]] && MAVEN_PROFILES=-Possrh,dev || MAVEN_PROFILES=-Possrh
+          [[ "${{ !contains(github.event.labels.*.name, 'Full Build') }}" ]] && MAVEN_PROFILES=-Possrh,dev || MAVEN_PROFILES=-Possrh
           mvn clean install $MAVEN_PROFILES -B -U -e -Djavacpp.platform=linux-x86_64
           df -h
   macosx-x86_64:
