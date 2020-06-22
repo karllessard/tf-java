@@ -70,6 +70,30 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <!--
+    Dev Profile
+      This profile skips the native libraries build and other resource-consuming tasks for local
+      development. Note that any changes applied to the code that may impact the C API bindings
+      requires a full build.
+    -->
+    <profile>
+      <id>dev</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.tensorflow</groupId>
+          <artifactId>tensorflow-core-api</artifactId>
+          <version>${project.version}</version>
+          <classifier>${native.classifier}</classifier>
+        </dependency>
+      </dependencies>
+      <properties>
+        <javacpp.build.skip>true</javacpp.build.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+      </properties>
+    </profile>
+  </profiles>
+  
   <build>
     <plugins>
       <plugin>
