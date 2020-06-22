@@ -5,14 +5,14 @@ on:
       - master
     types: [opened, synchronize, labeled, unlabeled]
 jobs:
-  validate-event:
-    if: (github.event.action == 'labeled' || github.event.action == 'unlabeled') && github.event.label.name != 'Full Build'
-    uses: andymckay/cancel-action@0.2
   linux-x86_64:
     runs-on: ubuntu-latest
     env:
       PROFILE: ${{  if contains(github.event.labels.*.name, 'Full Build') then '-Pdev' else '' }}
     steps:
+      - name: Validate event
+        if: (github.event.action == 'labeled' || github.event.action == 'unlabeled') && github.event.label.name != 'Full Build'
+        uses: andymckay/cancel-action@0.2
       - name: Install environment
         run: |
           yum -y update
