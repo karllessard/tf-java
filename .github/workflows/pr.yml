@@ -1,9 +1,9 @@
 name: PR build
 on:
   pull_request:
-    #branches:
-    #  - master
-    #types: [opened, reopened, synchronize, labeled, unlabeled]
+    branches:
+      - master
+    types: [opened, reopened, synchronize, labeled, unlabeled]
 jobs:
   linux-x86_64:
     runs-on: ubuntu-latest
