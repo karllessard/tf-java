@@ -37,4 +37,3 @@ public interface DoubleTensor extends DoubleNdArray, Tensor<Double> {
   @Override
   DoubleTensor write(DoubleDataBuffer src);
 }
-

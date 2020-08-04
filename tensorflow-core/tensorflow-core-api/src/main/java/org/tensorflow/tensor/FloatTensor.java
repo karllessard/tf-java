@@ -37,4 +37,3 @@ public interface FloatTensor extends FloatNdArray, Tensor<Float> {
   @Override
   FloatTensor write(FloatDataBuffer src);
 }
-

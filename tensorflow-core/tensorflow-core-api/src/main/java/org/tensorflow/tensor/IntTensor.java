@@ -37,4 +37,3 @@ public interface IntTensor extends IntNdArray, Tensor<Integer> {
   @Override
   IntTensor write(IntDataBuffer src);
 }
-

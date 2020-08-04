@@ -36,4 +36,3 @@ public interface ByteTensor extends ByteNdArray, Tensor<Byte> {
   @Override
   ByteTensor write(ByteDataBuffer src);
 }
-

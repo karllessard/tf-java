@@ -37,4 +37,3 @@ public interface LongTensor extends LongNdArray, Tensor<Long> {
   @Override
   LongTensor write(LongDataBuffer src);
 }
-

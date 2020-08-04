@@ -37,4 +37,3 @@ public interface BooleanTensor extends BooleanNdArray, Tensor<Boolean> {
   @Override
   BooleanTensor write(BooleanDataBuffer src);
 }
-

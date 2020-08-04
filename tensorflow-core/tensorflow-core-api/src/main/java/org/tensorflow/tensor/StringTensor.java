@@ -12,18 +12,17 @@ public interface StringTensor extends Tensor<String> {
   NdArray<byte[]> asBytes();
 
   @Override
-  Tensor<String> set(NdArray<String> src, long... coordinates);
+  StringTensor set(NdArray<String> src, long... coordinates);
 
   @Override
-  Tensor<String> setObject(String value, long... coordinates);
+  StringTensor setObject(String value, long... coordinates);
 
   @Override
-  Tensor<String> copyTo(NdArray<String> dst);
+  StringTensor copyTo(NdArray<String> dst);
 
   @Override
-  Tensor<String> read(DataBuffer<String> dst);
+  StringTensor read(DataBuffer<String> dst);
 
   @Override
-  Tensor<String> write(DataBuffer<String> src);
+  StringTensor write(DataBuffer<String> src);
 }
-
