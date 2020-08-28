@@ -29,8 +29,8 @@ import org.tensorflow.proto.framework.TensorShapeProto.Dim;
  */
 public class Signature  {
 
-  /** The default signature name, when not provided */
-  public static final String DEFAULT_NAME = "serving_default";
+  /** The default signature key, when not provided */
+  public static final String DEFAULT_KEY = "serving_default";
 
   /**
    * Builds a new function signature.
@@ -38,15 +38,15 @@ public class Signature  {
   public static class Builder {
 
     /**
-     * Sets the name of this signature.
+     * Sets the unique key of this signature.
      *
-     * <p/>When not set explicitly, the default value is {@link #DEFAULT_NAME}.
+     * <p/>When not set explicitly, the default value is {@link #DEFAULT_KEY}.
      *
-     * @param name signature name
+     * @param key signature key
      * @return this builder
      */
-    public Builder name(String name) {
-      this.name = name;
+    public Builder key(String key) {
+      this.key = key;
       return this;
     }
 
@@ -90,7 +90,7 @@ public class Signature  {
      * Returns a signature from the provided data.
      */
     public Signature build() {
-      return new Signature(name, signatureBuilder.build());
+      return new Signature(key, signatureBuilder.build());
     }
 
     private static TensorInfo toTensorInfo(Output<?> operand) {
@@ -106,7 +106,7 @@ public class Signature  {
           .build();
     }
 
-    private String name = DEFAULT_NAME;
+    private String key = DEFAULT_KEY;
     private final SignatureDef.Builder signatureBuilder = SignatureDef.newBuilder();
   }
 
@@ -118,10 +118,10 @@ public class Signature  {
   }
 
   /**
-   * Return the name of this signature
+   * Return the key of this signature
    */
-  public String name() {
-    return name;
+  public String key() {
+    return key;
   }
 
   /**
@@ -149,11 +149,11 @@ public class Signature  {
     return signatureDef;
   }
 
-  private final String name;
+  private final String key;
   private final SignatureDef signatureDef;
 
-  Signature(String name, SignatureDef signatureDef) {
-    this.name = name;
+  Signature(String key, SignatureDef signatureDef) {
+    this.key = key;
     this.signatureDef = signatureDef;
   }
 }

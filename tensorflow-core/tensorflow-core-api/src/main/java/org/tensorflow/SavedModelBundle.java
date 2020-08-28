@@ -150,16 +150,16 @@ public class SavedModelBundle implements AutoCloseable {
      */
     public Exporter withFunction(ConcreteFunction function) {
       Signature signature = function.signature();
-      if (functions.containsKey(signature.name())) {
-        throw new IllegalArgumentException("Function \"" + signature.name() + "\" was already added to the model");
+      if (functions.containsKey(signature.key())) {
+        throw new IllegalArgumentException("Function \"" + signature.key() + "\" was already added to the model");
       }
-      functions.put(signature.name(), function);
+      functions.put(signature.key(), function);
       if (session == null) {
         session = function.session();
       } else if (session != function.session()) {
         throw new UnsupportedOperationException("Saving multiple functions with different graphs/sessions is not supported yet.");
       }
-      metaGraphDefBuilder.putSignatureDef(signature.name(), signature.asSignatureDef());
+      metaGraphDefBuilder.putSignatureDef(signature.key(), signature.asSignatureDef());
       return this;
     }
 
@@ -280,20 +280,20 @@ public class SavedModelBundle implements AutoCloseable {
    * Return a {@link ConcreteFunction} corresponding to the function signature.
    *
    * <pre>{@code
-   * ConcreteFunction myFunction = savedModelBundle.function("myFunctionSignatureName");
+   * ConcreteFunction myFunction = savedModelBundle.function("mySignatureKey");
    * Map<String, Tensor<?>> outputTensorMap = myFunction.call(session, inputTensorMap);
    * }</pre>
    *
-   * @param functionSignatureName name of the {@code SignatureDef} in the saved model.
-   * @return TfFunction object that can be used to make calls to the tf.function
-   * @throws IllegalArgumentException if {@code functionSignatureName} is not found in this
+   * @param signatureKey name of the {@code SignatureDef} in the saved model.
+   * @return object that can be used to make calls to a function
+   * @throws IllegalArgumentException if {@code signatureKey} is not found in this
    *                                  saved model.
    */
-  public ConcreteFunction function(String functionSignatureName) {
-    ConcreteFunction function = functions.get(functionSignatureName);
+  public ConcreteFunction function(String signatureKey) {
+    ConcreteFunction function = functions.get(signatureKey);
     if (function == null) {
       throw new IllegalArgumentException(
-          String.format("Function with signature [%s] not found", functionSignatureName));
+          String.format("Function with signature [%s] not found", signatureKey));
     }
     return function;
   }
@@ -319,7 +319,7 @@ public class SavedModelBundle implements AutoCloseable {
     if (functions.size() == 1) {
       function = functions.values().iterator().next();
     } else {
-      function = functions.get(Signature.DEFAULT_NAME);
+      function = functions.get(Signature.DEFAULT_KEY);
     }
     if (function == null) {
       throw new IllegalArgumentException("Cannot elect a default function for this model");

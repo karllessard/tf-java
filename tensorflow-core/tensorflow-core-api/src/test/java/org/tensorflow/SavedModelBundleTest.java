@@ -37,10 +37,8 @@ import org.tensorflow.op.core.Init;
 import org.tensorflow.op.core.Placeholder;
 import org.tensorflow.op.core.ReduceSum;
 import org.tensorflow.op.core.Variable;
-import org.tensorflow.op.math.Sign;
 import org.tensorflow.proto.framework.ConfigProto;
 import org.tensorflow.proto.framework.RunOptions;
-import org.tensorflow.proto.framework.SavedModel;
 import org.tensorflow.proto.framework.SignatureDef;
 import org.tensorflow.proto.framework.TensorInfo;
 import org.tensorflow.types.TFloat32;
@@ -121,10 +119,10 @@ public class SavedModelBundleTest {
       assertNotNull(savedModel.metaGraphDef());
       assertNotNull(savedModel.metaGraphDef().getSaverDef());
       assertEquals(1, savedModel.metaGraphDef().getSignatureDefCount());
-      assertEquals(Signature.DEFAULT_NAME,
+      assertEquals(Signature.DEFAULT_KEY,
           savedModel.metaGraphDef().getSignatureDefMap().keySet().iterator().next());
 
-      ConcreteFunction function = savedModel.function(Signature.DEFAULT_NAME);
+      ConcreteFunction function = savedModel.function(Signature.DEFAULT_KEY);
       assertNotNull(function);
 
       Signature signature = function.signature();
@@ -186,7 +184,7 @@ public class SavedModelBundleTest {
       }
     }
     try (SavedModelBundle model = SavedModelBundle.load(testFolder.toString())) {
-      ConcreteFunction f1 = model.function(Signature.DEFAULT_NAME);
+      ConcreteFunction f1 = model.function(Signature.DEFAULT_KEY);
       assertNotNull(f1);
       try (Tensor<TFloat32> x = TFloat32.tensorOf(StdArrays.ndCopyOf(new float[]{2, 2}));
           Tensor<TFloat32> t = f1.call(x).expect(TFloat32.DTYPE)) {
@@ -231,12 +229,12 @@ public class SavedModelBundleTest {
   }
 
   @Test
-  public void cannotExportMultipleFunctionsWithSameSignatureName() throws IOException {
+  public void cannotExportMultipleFunctionsWithSameSignatureKey() throws IOException {
     Path testFolder = Files.createTempDirectory("tf-saved-model-export-test");
     try (Graph g = new Graph()) {
       Ops tf = Ops.create(g);
       Signature f1Signature = buildGraphWithVariables(tf, Shape.of(1, 1));
-      Signature f2Signature = buildIdentityGraph(tf, Signature.DEFAULT_NAME);
+      Signature f2Signature = buildIdentityGraph(tf, Signature.DEFAULT_KEY);
       try (Session s = new Session(g);
           ConcreteFunction f1 = ConcreteFunction.create(f1Signature, s);
           ConcreteFunction f2 = ConcreteFunction.create(f2Signature, s)) {
@@ -263,10 +261,10 @@ public class SavedModelBundleTest {
     return Signature.builder().input("input", x).output("reducedSum", z).build();
   }
 
-  private static Signature buildIdentityGraph(Ops tf, String signatureName) {
+  private static Signature buildIdentityGraph(Ops tf, String signatureKey) {
     Placeholder<TFloat32> x = tf.placeholder(TFloat32.DTYPE, Placeholder.shape(Shape.scalar()));
     Identity<TFloat32> xprime = tf.identity(x);
-    return Signature.builder().name(signatureName).input("x", x).output("x", xprime).build();
+    return Signature.builder().key(signatureKey).input("x", x).output("x", xprime).build();
   }
 
   private static RunOptions sillyRunOptions() {
