@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - r[0-9].*
   pull_request:
     branches:
       - master
@@ -63,11 +64,22 @@ jobs:
           echo "Fixing HOME to /root (was '$HOME')"
           export HOME=/root
           mkdir -p $HOME/.m2
-          [[ "${{ github.event_name }}" == "push" ]] && MAVEN_PHASE=deploy || MAVEN_PHASE=install
+          [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "master" ]] && MAVEN_PHASE=deploy || MAVEN_PHASE=install
           echo "<settings><servers><server><id>ossrh</id><username>${{ secrets.CI_DEPLOY_USERNAME }}</username><password>${{ secrets.CI_DEPLOY_PASSWORD }}</password></server></servers></settings>" > $HOME/.m2/settings.xml
           echo Executing Maven $MAVEN_PHASE
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=linux-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
+      - name: Extract version
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        run: echo ::set-env name=TF_VERSION::$(mvn -q --non-recursive exec:exec -Dexec.executable='echo' -Dexec.args="\${project.version}")
+      - name: Upload native artifacts
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        uses: shallwefootball/upload-s3-action@v1.1.2
+        with:
+          aws_key_id: ${{ secrets.CI_STORAGE_ID }}
+          aws_secret_access_key: ${{ secrets.CI_STORAGE_ACCESS_KEY }}
+          aws_bucket: "tensorflow-java/staging/"
+          source_dir: "tensorflow-core/tensorflow-core-api/target/tensorflow-core-api-$TF_VERSION-linux-x86_64${{ matrix.ext }}.jar"
   macosx-x86_64:
     if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'CI build')
     runs-on: macos-latest
@@ -84,6 +96,9 @@ jobs:
           brew install libomp
       - name: Checkout repository
         uses: actions/checkout@v1
+      - name: Extract version
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        run: echo ::set-env name=TF_VERSION::$(mvn -q --non-recursive exec:exec -Dexec.executable='echo' -Dexec.args="\${project.version}")
       - name: Build project
         run: |
           git --version
@@ -91,12 +106,23 @@ jobs:
           mvn -version
           bazel version
           mkdir -p $HOME/.m2
-          [[ "${{ github.event_name }}" == "push" ]] && MAVEN_PHASE=deploy || MAVEN_PHASE=install
+          [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "master" ]] && MAVEN_PHASE=deploy || MAVEN_PHASE=install
           echo "<settings><servers><server><id>ossrh</id><username>${{ secrets.CI_DEPLOY_USERNAME }}</username><password>${{ secrets.CI_DEPLOY_PASSWORD }}</password></server></servers></settings>" > $HOME/.m2/settings.xml
           df -h
           echo Executing Maven $MAVEN_PHASE
           mvn clean $MAVEN_PHASE -Possrh -B -U -e -Djavacpp.platform=macosx-x86_64 -Djavacpp.platform.extension=${{ matrix.ext }}
           df -h
+      - name: Extract version
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        run: echo ::set-env name=TF_VERSION::$(mvn -q --non-recursive exec:exec -Dexec.executable='echo' -Dexec.args="\${project.version}")
+      - name: Upload native artifacts
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        uses: shallwefootball/upload-s3-action@v1.1.2
+        with:
+          aws_key_id: ${{ secrets.CI_STORAGE_ID }}
+          aws_secret_access_key: ${{ secrets.CI_STORAGE_ACCESS_KEY }}
+          aws_bucket: "tensorflow-java/staging/"
+          source_dir: "tensorflow-core/tensorflow-core-api/target/tensorflow-core-api-$TF_VERSION-macosx-x86_64${{ matrix.ext }}.jar"
   windows-x86_64:
     if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'CI build')
     runs-on: windows-latest
@@ -129,6 +155,9 @@ jobs:
           echo %JAVA_HOME%
       - name: Checkout repository
         uses: actions/checkout@v1
+      - name: Extract version
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        run: echo ::set-env name=TF_VERSION::$(mvn -q --non-recursive exec:exec -Dexec.executable='echo' -Dexec.args="\${project.version}")
       - name: Build project
         shell: cmd
         run: |
@@ -148,7 +177,7 @@ jobs:
           call mvn -version
           bazel version
           mkdir %USERPROFILE%\.m2
-          if "${{ github.event_name }}"=="push" (set MAVEN_PHASE=deploy) else (set MAVEN_PHASE=install)
+          if "${{ github.event_name }}"=="push" && "${{ github.ref }}" == "master" (set MAVEN_PHASE=deploy) else (set MAVEN_PHASE=install)
           echo ^<settings^>^<servers^>^<server^>^<id^>ossrh^</id^>^<username^>${{ secrets.CI_DEPLOY_USERNAME }}^</username^>^<password^>${{ secrets.CI_DEPLOY_PASSWORD }}^</password^>^</server^>^</servers^>^</settings^> > %USERPROFILE%\.m2\settings.xml
           df -h
           wmic pagefile list /format:list
@@ -157,8 +186,19 @@ jobs:
           if ERRORLEVEL 1 exit /b
           df -h
           wmic pagefile list /format:list
-  redeploy:
-    if: github.event_name == 'push'
+      - name: Extract version
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        run: echo ::set-env name=TF_VERSION::$(mvn -q --non-recursive exec:exec -Dexec.executable='echo' -Dexec.args="\${project.version}")
+      - name: Upload native artifacts
+        if: github.event_name == 'push' && "${{ github.ref }}" != "master"
+        uses: shallwefootball/upload-s3-action@v1.1.2
+        with:
+          aws_key_id: ${{ secrets.CI_STORAGE_ID }}
+          aws_secret_access_key: ${{ secrets.CI_STORAGE_ACCESS_KEY }}
+          aws_bucket: "tensorflow-java/staging/"
+          source_dir: "tensorflow-core/tensorflow-core-api/target/tensorflow-core-api-$TF_VERSION-windows-x86_64${{ matrix.ext }}.jar"
+  redeploy-snapshots:
+    if: github.event_name == 'push' && "${{ github.ref }}" == "master"
     needs: [linux-x86_64, macosx-x86_64, windows-x86_64]
     runs-on: ubuntu-latest
     steps:
