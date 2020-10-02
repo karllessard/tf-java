@@ -53,3 +53,4 @@ gradleBuild
 .classpath
 
 **/target
+settings.xml
