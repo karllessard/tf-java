@@ -37,7 +37,7 @@ import org.tensorflow.types.family.TType;
  *
  * <p>Usage of this class is meant to be kept internal.
  */
-public abstract class AbstractDenseTensor<T> implements Tensor<T> {
+public abstract class AbstractTensor<T> implements Tensor<T> {
 
   @Override
   @SuppressWarnings("unchecked")
@@ -74,7 +74,7 @@ public abstract class AbstractDenseTensor<T> implements Tensor<T> {
     return String.format("%s tensor with shape %s", dtype.toString(), shape());
   }
 
-  protected AbstractDenseTensor(TF_Tensor nativeHandle, DataType<?> dtype) {
+  protected AbstractTensor(TF_Tensor nativeHandle, DataType<?> dtype) {
     this.nativeHandle = nativeHandle;
     this.dtype = dtype;
     nativeHandle.retainReference();
@@ -100,6 +100,6 @@ public abstract class AbstractDenseTensor<T> implements Tensor<T> {
     return handle;
   }
 
-  private final TF_Tensor nativeHandle;
-  private final DataType<?> dtype;
+  protected final TF_Tensor nativeHandle;
+  protected final DataType<?> dtype;
 }

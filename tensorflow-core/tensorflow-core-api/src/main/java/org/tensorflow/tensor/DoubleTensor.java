@@ -1,4 +1,4 @@
-package org.tensorflow.types.tensor;
+package org.tensorflow.tensor;
 
 import org.tensorflow.Tensor;
 import org.tensorflow.ndarray.DoubleNdArray;
