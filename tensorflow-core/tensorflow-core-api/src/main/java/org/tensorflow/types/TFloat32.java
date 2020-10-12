@@ -37,7 +37,8 @@ import org.tensorflow.types.family.TFloating;
 public interface TFloat32 extends FloatTensor, TFloating<TFloat32, Float> {
 
   /** Type metadata */
-  DataType<TFloat32> DTYPE = DataType.create("FLOAT", 1, 4, TFloat32Impl::new);
+  DataType<TFloat32> DTYPE = DataType.create("FLOAT", 1, 4,
+      TFloat32.class, TFloat32Impl::new);
 
   /**
    * Allocates a new tensor for storing a single float value.

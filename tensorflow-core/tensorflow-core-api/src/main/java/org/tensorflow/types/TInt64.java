@@ -37,7 +37,8 @@ import org.tensorflow.types.family.TNumber;
 public interface TInt64 extends LongTensor, TNumber<TInt64, Long> {
 
   /** Type metadata */
-  DataType<TInt64> DTYPE = DataType.create("INT64", 9, 8, TInt64Impl::new);
+  DataType<TInt64> DTYPE = DataType.create("INT64", 9, 8,
+      TInt64.class, TInt64Impl::new);
 
   /**
    * Allocates a new tensor for storing a single long value.

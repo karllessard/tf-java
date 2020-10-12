@@ -43,7 +43,8 @@ import org.tensorflow.types.family.TType;
 public interface TBool extends BooleanTensor, TType<TBool, Boolean> {
 
   /** Type metadata */
-  DataType<TBool> DTYPE = DataType.create("BOOL", 10, 1, TBoolImpl::new);
+  DataType<TBool> DTYPE = DataType.create("BOOL", 10, 1,
+      TBool.class, TBoolImpl::new);
 
   /**
    * Allocates a new tensor for storing a single boolean value.

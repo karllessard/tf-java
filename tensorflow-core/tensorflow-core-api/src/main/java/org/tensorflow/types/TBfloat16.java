@@ -50,7 +50,8 @@ import org.tensorflow.types.family.TFloating;
 public interface TBfloat16 extends FloatTensor, TFloating<TBfloat16, Float> {
 
   /** Type metadata */
-  DataType<TBfloat16> DTYPE = DataType.create("BFLOAT16", 14, 2, TBfloat16Impl::new);
+  DataType<TBfloat16> DTYPE = DataType.create("BFLOAT16", 14, 2,
+      TBfloat16.class, TBfloat16Impl::new);
 
   /**
    * Allocates a new tensor for storing a single float value.

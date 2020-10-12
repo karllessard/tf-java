@@ -36,7 +36,8 @@ import org.tensorflow.types.family.TNumber;
 public interface TInt32 extends IntTensor, TNumber<TInt32, Integer> {
 
   /** Type metadata */
-  DataType<TInt32> DTYPE = DataType.create("INT32", 3, 4, TInt32Impl::new);
+  DataType<TInt32> DTYPE = DataType.create("INT32", 3, 4,
+      TInt32.class, TInt32Impl::new);
 
   /**
    * Allocates a new tensor for storing a single int value.

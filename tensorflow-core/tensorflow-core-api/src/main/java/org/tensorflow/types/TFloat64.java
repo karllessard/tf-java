@@ -37,7 +37,8 @@ import org.tensorflow.types.family.TFloating;
 public interface TFloat64 extends DoubleTensor, TFloating<TFloat64, Double> {
 
   /** Type metadata */
-  DataType<TFloat64> DTYPE = DataType.create("DOUBLE", 2, 8, TFloat64Impl::new);
+  DataType<TFloat64> DTYPE = DataType.create("DOUBLE", 2, 8,
+      TFloat64.class, TFloat64Impl::new);
 
   /**
    * Allocates a new tensor for storing a single double value.

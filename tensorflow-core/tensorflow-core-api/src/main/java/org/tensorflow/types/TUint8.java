@@ -37,7 +37,8 @@ import org.tensorflow.types.family.TNumber;
 public interface TUint8 extends ByteTensor, TNumber<TUint8, Byte> {
 
   /** Type metadata */
-  DataType<TUint8> DTYPE = DataType.create("UINT8", 4, 1, TUint8Impl::new);
+  DataType<TUint8> DTYPE = DataType.create("UINT8", 4, 1,
+      TUint8.class, TUint8Impl::new);
 
   /**
    * Allocates a new tensor for storing a single byte value.

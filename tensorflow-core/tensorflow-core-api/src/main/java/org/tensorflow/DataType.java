@@ -41,10 +41,12 @@ public final class DataType<T extends TType> {
    * @param name readable-name for this type
    * @param value must match the corresponding TF_* value in the TensorFlow C API.
    * @param byteSize size of an element of this type, in bytes, -1 if unknown
-   * @param tensorMapper method for instantiating tensor from a native reference
+   * @param tensorClass the subclass of {@link TType} that corresponds to this `DataType`
+   * @param instantiator method for instantiating tensor from a native reference
    */
-  public static <T extends TType> DataType<T> create(String name, int value, int byteSize, TensorInstantiator<T> instantiator) {
-    return new DataType<>(name, value, byteSize, instantiator);
+  public static <T extends TType> DataType<T> create(String name, int value, int byteSize,
+      Class<T> tensorClass, TensorInstantiator<T> instantiator) {
+    return new DataType<>(name, value, byteSize, tensorClass, instantiator);
   }
 
   /**
@@ -81,6 +83,20 @@ public final class DataType<T extends TType> {
   }
 
   /**
+   * Returns the subclass of {@link TType} that corresponds to this `DataType`.
+   */
+  public Class<?> getTensorClass() {
+    return tensorClass;
+  }
+
+  /**
+   * Indicates whether this <code>DataType</code>'s tensor class is a subtype of <code>ttype</code>.
+   */
+  public boolean hasType(Class<? extends TType<?, ?>> ttype) {
+    return ttype.isAssignableFrom(tensorClass);
+  }
+
+  /**
    * Instantiate a tensor of this datatype from the provided native handle
    *
    * @param handle tensor native handle
@@ -93,12 +109,15 @@ public final class DataType<T extends TType> {
   private final int nativeCode;
   private final int byteSize;
   private final String name;
+  private final Class<?> tensorClass;
   private final TensorInstantiator<T> tensorInstantiator;
 
-  private DataType(String name, int nativeCode, int byteSize, TensorInstantiator<T> tensorInstantiator) {
+  private DataType(String name, int nativeCode, int byteSize,
+      Class<?> tensorClass, TensorInstantiator<T> tensorInstantiator) {
     this.name = name;
     this.nativeCode = nativeCode;
     this.byteSize = byteSize;
+    this.tensorClass = tensorClass;
     this.tensorInstantiator = tensorInstantiator;
   }
 }

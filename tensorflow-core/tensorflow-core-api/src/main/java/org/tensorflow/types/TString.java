@@ -49,7 +49,8 @@ public interface TString extends StringTensor, TType<TString, String> {
   /**
    * Type metadata
    */
-  DataType<TString> DTYPE = DataType.create("STRING", 7, -1, TStringImpl::new);
+  DataType<TString> DTYPE = DataType.create("STRING", 7, -1,
+      TString.class, TStringImpl::new);
 
   /**
    * Allocates a new tensor for storing a string scalar.
