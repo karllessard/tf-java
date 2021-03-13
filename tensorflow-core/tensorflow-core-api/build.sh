@@ -2,35 +2,30 @@
 # Script to build native TensorFlow libraries
 set -eu
 
-# Allows us to use ccache with Bazel on Mac
-export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
-
-export BAZEL_VC="${VCINSTALLDIR:-}"
-if [[ -d $BAZEL_VC ]]; then
-    export BUILD_FLAGS="--copt=//arch:AVX `#--copt=//arch:AVX2` --define=override_eigen_strong_inline=true"
-    export PYTHON_BIN_PATH=$(which python.exe)
-else
-    export BUILD_FLAGS="--copt=-msse4.1 --copt=-msse4.2 --copt=-mavx `#--copt=-mavx2 --copt=-mfma` --linkopt=-lstdc++ --host_linkopt=-lstdc++"
-    export PYTHON_BIN_PATH=$(which python3)
+if [[ "${CLASSIFIER:-}" == *linux* ]]; then
+    if [[ "${CLASSIFIER:-}" == *gpu* ]]; then
+        export BUILD_FLAGS="--config=release_gpu_linux"
+    else
+        export BUILD_FLAGS="--config=release_cpu_linux"
+    fi
+    export BUILD_FLAGS="$BUILD_FLAGS --copt=-msse4.1 --copt=-msse4.2 --linkopt=-lstdc++ --host_linkopt=-lstdc++ --python_path=$(which python3)"
+elif [[ "${CLASSIFIER:-}" == *windows* ]]; then
+    if [[ "${CLASSIFIER:-}" == *gpu* ]]; then
+        export BUILD_FLAGS="--config=release_gpu_windows"
+    else
+        export BUILD_FLAGS="--config=release_cpu_windows"
+    fi
+    export BUILD_FLAGS="$BUILD_FLAGS --copt=//arch:AVX --define=override_eigen_strong_inline=true --python_path=$(which python.exe)"
+elif [[ "${CLASSIFIER:-}" == *macos* ]]; then
+    export BUILD_FLAGS="--config=release_cpu_macos --copt=-msse4.1 --copt=-msse4.2 --linkopt=-lstdc++ --host_linkopt=-lstdc++ --python_path=$(which python3)"
 fi
 
-if [[ "${EXTENSION:-}" == *mkl* ]]; then
+if [[ "${CLASSIFIER:-}" == *mkl* ]]; then
     export BUILD_FLAGS="$BUILD_FLAGS --config=mkl"
 fi
 
-if [[ "${EXTENSION:-}" == *gpu* ]]; then
-    export BUILD_FLAGS="$BUILD_FLAGS --config=cuda"
-    export TF_CUDA_COMPUTE_CAPABILITIES="${TF_CUDA_COMPUTE_CAPABILITIES:-"3.5,7.0"}"
-    if [[ -z ${TF_CUDA_PATHS:-} ]] && [[ -d ${CUDA_PATH:-} ]]; then
-        # Work around some issue with Bazel preventing it from detecting CUDA on Windows
-        export TF_CUDA_PATHS="$CUDA_PATH"
-    fi
-fi
-
-BUILD_FLAGS="$BUILD_FLAGS --experimental_repo_remote_exec --python_path="$PYTHON_BIN_PATH" --output_filter=DONT_MATCH_ANYTHING --verbose_failures"
-
 # Always allow distinct host configuration since we rely on the host JVM for a few things (this was disabled by default on windows)
-BUILD_FLAGS="$BUILD_FLAGS --distinct_host_configuration=true"
+BUILD_FLAGS="$BUILD_FLAGS --distinct_host_configuration=true --verbose_failures"
 
 # Build C/C++ API of TensorFlow itself including a target to generate ops for Java
 bazel build $BUILD_FLAGS ${BUILD_USER_FLAGS:-} \

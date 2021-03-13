@@ -259,7 +259,7 @@
                 <argument>${project.basedir}/build.sh</argument>
               </buildCommand>
               <environmentVariables>
-                <EXTENSION>${javacpp.platform.extension}</EXTENSION>
+                <CLASSIFIER>${native.classifier}</CLASSIFIER>
                 <BUILD_USER_FLAGS>${native.build.flags}</BUILD_USER_FLAGS>
               </environmentVariables>
               <workingDirectory>${project.basedir}</workingDirectory>
