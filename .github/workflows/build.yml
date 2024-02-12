@@ -79,7 +79,7 @@ jobs:
       - name: Configure Java
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
+          distribution: 'zulu'
           java-version: '17'
       - name: Checkout repository
         uses: actions/checkout@v1
